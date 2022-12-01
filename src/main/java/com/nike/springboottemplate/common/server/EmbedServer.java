@@ -117,10 +117,6 @@ public class EmbedServer {
 
     /**
      * netty_http
-     * <p>
-     * Copy from : https://github.com/xuxueli/xxl-rpc
-     *
-     * @author xuxueli 2015-11-24 22:25:15
      */
     public static class EmbedHttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
         private static final Logger logger = LoggerFactory.getLogger(EmbedHttpServerHandler.class);

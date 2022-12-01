@@ -117,11 +117,6 @@ dependencies {
 	implementation 'com.sun.mail:jakarta.mail:1.6.7'
 
 
-
-
-
-
-
 	// Spring dependencies
     implementation("org.springframework.boot:spring-boot-starter-actuator") //https://howtodoinjava.com/spring-boot/actuator-endpoints-example/
 

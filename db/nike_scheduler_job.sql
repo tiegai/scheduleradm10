@@ -1,8 +1,5 @@
-#
-# XXL-JOB v2.4.0-SNAPSHOT
-# Copyright (c) 2015-present, xuxueli.
 
-CREATE database if NOT EXISTS `xxl_job` default character set utf8mb4 collate utf8mb4_unicode_ci;
+CREATE database if NOT EXISTS `nike_scheduler_job` default character set utf8mb4 collate utf8mb4_unicode_ci;
 use `nike_scheduler_job`;
 
 SET NAMES utf8mb4;

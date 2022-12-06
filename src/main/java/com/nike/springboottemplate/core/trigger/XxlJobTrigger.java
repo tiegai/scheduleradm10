@@ -122,7 +122,7 @@ public class XxlJobTrigger {
         jobLog.setJobIdGroup(jobInfo.getIdGroup());
         jobLog.setTriggerTime(new Date());
         //basic jobLog not insert
-        if(jobInfo.getJobGroup() != 0){
+        if(jobInfo.getJobGroup() != 1){
             XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().save(jobLog);
         }
         logger.debug(">>>>>>>>>>> xxl-job trigger start, jobId:{}", jobLog.getId());

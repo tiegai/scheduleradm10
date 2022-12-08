@@ -455,7 +455,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 		jobInfo.setMisfireStrategy("DO_NOTHING");
 		jobInfo.setExecutorBlockStrategy("SERIAL_EXECUTION");
 		jobInfo.setExecutorHandler("httpJobHandler");
-		//jobInfo.setExecutorParam("url:http://localhost:8088/actor/postTest\\r\\nmethod:POST\\r\\ndata:params=jerry_add");
+//		jobInfo.setExecutorParam("url:http://localhost:8088/actor/postTest"+"\r\n"+"method:POST"+"\r\n"+"data:"+"id="+idGroup);
 		jobInfo.setExecutorParam(nikeJobInfoRequest.getJourneyAddress()+"id="+idGroup);
 		String[] times = null;
 		List<Date> timesList = new ArrayList<>();

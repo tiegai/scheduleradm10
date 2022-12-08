@@ -4,7 +4,7 @@
 <mapper namespace="com.nike.springboottemplate.dao.XxlJobRegistryDao">
 	
 	<resultMap id="XxlJobRegistry" type="com.nike.springboottemplate.core.model.XxlJobRegistry" >
-		<result column="id" property="id" />
+		<result column="pk_id" property="id" />
 	    <result column="registry_group" property="registryGroup" />
 	    <result column="registry_key" property="registryKey" />
 	    <result column="registry_value" property="registryValue" />
@@ -12,7 +12,7 @@
 	</resultMap>
 
 	<sql id="Base_Column_List">
-		t.id,
+		t.pk_id,
 		t.registry_group,
 		t.registry_key,
 		t.registry_value,
@@ -20,14 +20,14 @@
 	</sql>
 
 	<select id="findDead" parameterType="java.util.HashMap" resultType="java.lang.Integer" >
-		SELECT t.id
+		SELECT t.pk_id
 		FROM xxl_job_registry AS t
 		WHERE t.update_time <![CDATA[ < ]]> DATE_ADD(#{nowTime},INTERVAL -#{timeout} SECOND)
 	</select>
 	
 	<delete id="removeDead" parameterType="java.lang.Integer" >
 		DELETE FROM xxl_job_registry
-		WHERE id in
+		WHERE pk_id in
 		<foreach collection="ids" item="item" open="(" close=")" separator="," >
 			#{item}
 		</foreach>

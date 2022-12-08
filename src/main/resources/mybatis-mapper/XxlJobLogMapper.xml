@@ -4,7 +4,7 @@
 <mapper namespace="com.nike.springboottemplate.dao.XxlJobLogDao">
 	
 	<resultMap id="XxlJobLog" type="com.nike.springboottemplate.core.model.XxlJobLog" >
-		<result column="id" property="id" />
+		<result column="pk_id" property="id" />
 
 		<result column="job_group" property="jobGroup" />
 		<result column="job_id" property="jobId" />
@@ -28,7 +28,7 @@
 	</resultMap>
 
 	<sql id="Base_Column_List">
-		t.id,
+		t.pk_id,
 		t.job_group,
 		t.job_id,
 		t.job_id_group,
@@ -50,15 +50,15 @@
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_job_log AS t
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
-			<if test="jobId==0 and jobGroup gt 0">
+			<if test="jobGroup gt 0">
 				AND t.job_group = #{jobGroup}
 			</if>
 			<if test="jobId gt 0">
 				AND t.job_id = #{jobId}
 			</if>
-			<if test="jobIdGroup gt 0">
+			<!--<if test="jobIdGroup gt 0">
 				AND t.job_id_group = #{jobIdGroup}
-			</if>
+			</if>-->
 			<if test="triggerTimeStart != null">
 				AND t.trigger_time <![CDATA[ >= ]]> #{triggerTimeStart}
 			</if>
@@ -87,15 +87,15 @@
 		SELECT count(1)
 		FROM xxl_job_log AS t
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
-			<if test="jobId==0 and jobGroup gt 0">
+			<if test="jobGroup gt 0">
 				AND t.job_group = #{jobGroup}
 			</if>
 			<if test="jobId gt 0">
 				AND t.job_id = #{jobId}
 			</if>
-			<if test="jobIdGroup gt 0">
+			<!--<if test="jobIdGroup gt 0">
 				AND t.job_id_group = #{jobIdGroup}
-			</if>
+			</if>-->
 			<if test="triggerTimeStart != null">
 				AND t.trigger_time <![CDATA[ >= ]]> #{triggerTimeStart}
 			</if>
@@ -121,7 +121,7 @@
 	<select id="load" parameterType="java.lang.Long" resultMap="XxlJobLog">
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_job_log AS t
-		WHERE t.id = #{id}
+		WHERE t.pk_id = #{id}
 	</select>
 
 	
@@ -157,7 +157,7 @@
 			`executor_param`= #{executorParam},
 			`executor_sharding_param`= #{executorShardingParam},
 			`executor_fail_retry_count`= #{executorFailRetryCount}
-		WHERE `id`= #{id}
+		WHERE `pk_id`= #{id}
 	</update>
 
 	<update id="updateHandleInfo">
@@ -166,7 +166,7 @@
 			`handle_time`= #{handleTime}, 
 			`handle_code`= #{handleCode},
 			`handle_msg`= #{handleMsg}
-		WHERE `id`= #{id}
+		WHERE `pk_id`= #{id}
 	</update>
 	
 	<delete id="delete" >
@@ -196,7 +196,7 @@
     </select>
 
 	<select id="findClearLogIds" resultType="long" >
-		SELECT id FROM xxl_job_log
+		SELECT pk_id FROM xxl_job_log
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
 			<if test="jobGroup gt 0">
 				AND job_group = #{jobGroup}
@@ -208,9 +208,9 @@
 				AND trigger_time <![CDATA[ <= ]]> #{clearBeforeTime}
 			</if>
 			<if test="clearBeforeNum gt 0">
-				AND id NOT in(
-				SELECT id FROM(
-				SELECT id FROM xxl_job_log AS t
+				AND pk_id NOT in(
+				SELECT pk_id FROM(
+				SELECT pk_id FROM xxl_job_log AS t
 				<trim prefix="WHERE" prefixOverrides="AND | OR" >
 					<if test="jobGroup gt 0">
 						AND t.job_group = #{jobGroup}
@@ -225,27 +225,27 @@
 				)
 			</if>
 		</trim>
-		order by id asc
+		order by pk_id asc
 		LIMIT #{pagesize}
 	</select>
 
 	<delete id="clearLog" >
 		delete from xxl_job_log
-		WHERE id in
+		WHERE pk_id in
 		<foreach collection="logIds" item="item" open="(" close=")" separator="," >
 			#{item}
 		</foreach>
 	</delete>
 
 	<select id="findFailJobLogIds" resultType="long" >
-		SELECT id FROM `xxl_job_log`
+		SELECT pk_id FROM `xxl_job_log`
 		WHERE !(
 			(trigger_code in (0, 200) and handle_code = 0)
 			OR
 			(handle_code = 200)
 		)
 		AND `alarm_status` = 0
-		ORDER BY id ASC
+		ORDER BY pk_id ASC
 		LIMIT #{pagesize}
 	</select>
 
@@ -253,12 +253,12 @@
 		UPDATE xxl_job_log
 		SET
 			`alarm_status` = #{newAlarmStatus}
-		WHERE `id`= #{logId} AND `alarm_status` = #{oldAlarmStatus}
+		WHERE `pk_id`= #{logId} AND `alarm_status` = #{oldAlarmStatus}
 	</update>
 
 	<select id="findLostJobIds" resultType="long" >
 		SELECT
-			t.id
+			t.pk_id
 		FROM
 			xxl_job_log t
 			LEFT JOIN xxl_job_registry t2 ON t.executor_address = t2.registry_value
@@ -266,7 +266,7 @@
 			t.trigger_code = 200
 				AND t.handle_code = 0
 				AND t.trigger_time <![CDATA[ <= ]]> #{losedTime}
-				AND t2.id IS NULL;
+				AND t2.pk_id IS NULL;
 	</select>
 	<!--
 	SELECT t.id

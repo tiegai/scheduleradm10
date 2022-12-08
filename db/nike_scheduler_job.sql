@@ -6,8 +6,8 @@ SET NAMES utf8;
 
 CREATE TABLE `xxl_job_info` (
   `pk_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `id_group` int(11) NOT NULL COMMENT '任务组ID',
-  `job_group` int(11) NOT NULL COMMENT '执行器主键ID',
+  `id_group` bigint(20) NOT NULL COMMENT '任务组ID',
+  `job_group` bigint(20) NOT NULL COMMENT '执行器主键ID',
   `job_desc` varchar(255) NOT NULL,
   `add_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
@@ -37,9 +37,9 @@ CREATE TABLE `xxl_job_info` (
 
 CREATE TABLE `xxl_job_log` (
   `pk_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `job_group` int(11) NOT NULL COMMENT '执行器主键ID',
-  `job_id` int(11) NOT NULL COMMENT '任务，主键ID',
-  `job_id_group` int(11) NOT NULL COMMENT '任务组ID',
+  `job_group` bigint(20) NOT NULL COMMENT '执行器主键ID',
+  `job_id` bigint(20) NOT NULL COMMENT '任务，主键ID',
+  `job_id_group` bigint(20) NOT NULL COMMENT '任务组ID',
   `executor_address` varchar(255) DEFAULT NULL COMMENT '执行器地址，本次执行的地址',
   `executor_handler` varchar(255) DEFAULT NULL COMMENT '执行器任务handler',
   `executor_param` varchar(512) DEFAULT NULL COMMENT '执行器任务参数',
@@ -70,8 +70,8 @@ CREATE TABLE `xxl_job_log_report` (
 
 CREATE TABLE `xxl_job_logglue` (
   `pk_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `job_id` int(11) NOT NULL COMMENT '任务，主键ID',
-  `job_id_group` int(11) NOT NULL COMMENT '任务组ID',
+  `job_id` bigint(20) NOT NULL COMMENT '任务，主键ID',
+  `job_id_group` bigint(20) NOT NULL COMMENT '任务组ID',
   `glue_type` varchar(50) DEFAULT NULL COMMENT 'GLUE类型',
   `glue_source` mediumtext COMMENT 'GLUE源代码',
   `glue_remark` varchar(128) NOT NULL COMMENT 'GLUE备注',

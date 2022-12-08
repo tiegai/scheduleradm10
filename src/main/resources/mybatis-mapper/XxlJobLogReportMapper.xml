@@ -4,7 +4,7 @@
 <mapper namespace="com.nike.springboottemplate.dao.XxlJobLogReportDao">
 	
 	<resultMap id="XxlJobLogReport" type="com.nike.springboottemplate.core.model.XxlJobLogReport" >
-		<result column="id" property="id" />
+		<result column="pk_id" property="id" />
 	    <result column="trigger_day" property="triggerDay" />
 		<result column="running_count" property="runningCount" />
 	    <result column="suc_count" property="sucCount" />
@@ -12,7 +12,7 @@
 	</resultMap>
 
 	<sql id="Base_Column_List">
-		t.id,
+		t.pk_id,
 		t.trigger_day,
 		t.running_count,
 		t.suc_count,

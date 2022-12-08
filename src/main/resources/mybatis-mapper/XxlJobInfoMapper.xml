@@ -257,13 +257,13 @@
 	<update id="autoStartJobs">
 		UPDATE xxl_job_info
 		SET trigger_status = 1
-		WHERE trigger_status = 0  and NOW() >= trigger_start_time and trigger_end_time >= NOW()
+		WHERE trigger_status = 0  and date_add(NOW(),interval 8 hour)  >= trigger_start_time and trigger_end_time >= date_add(NOW(),interval 8 hour)
 	</update>
 
 	<update id="autoStopJobs">
 		UPDATE xxl_job_info
 		SET trigger_status = 0
-		WHERE NOW() >= trigger_end_time and trigger_status = 1
+		WHERE date_add(NOW(),interval 8 hour) >= trigger_end_time and trigger_status = 1
 	</update>
 
 	<update id="manualStartJobs" parameterType="java.util.HashMap">

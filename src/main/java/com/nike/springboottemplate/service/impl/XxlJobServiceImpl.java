@@ -1,6 +1,7 @@
 package com.nike.springboottemplate.service.impl;
 
 import com.google.gson.Gson;
+import com.nike.springboottemplate.core.constant.ConCollections;
 import com.nike.springboottemplate.core.cron.CronExpression;
 import com.nike.springboottemplate.core.model.*;
 import com.nike.springboottemplate.core.route.ExecutorRouteStrategyEnum;
@@ -437,31 +438,30 @@ public class XxlJobServiceImpl implements XxlJobService {
 	public ReturnT<String> addJobList(NikeJobInfoRequest nikeJobInfoRequest) {
 		// add in db
 		XxlJobInfo jobInfo = new XxlJobInfo();
-		Integer idGroup = nikeJobInfoRequest.getId();
+		Integer idGroup = nikeJobInfoRequest.getJourneyId();
 		jobInfo.setIdGroup(idGroup);
 		jobInfo.setJobGroup(nikeJobInfoRequest.getCampaignId());
 		jobInfo.setJobDesc(nikeJobInfoRequest.getDescription());
 		jobInfo.setAddTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(nikeJobInfoRequest.getCreatedTime())));
 		jobInfo.setUpdateTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(nikeJobInfoRequest.getModifiedTime())));
 		jobInfo.setGlueUpdatetime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(nikeJobInfoRequest.getModifiedTime())));
-		String beginStr = nikeJobInfoRequest.getPeriodicStart();
+		String beginStr = nikeJobInfoRequest.getPeriodicBegin();
 		String endStr = nikeJobInfoRequest.getPeriodicEnd();
 		jobInfo.setTriggerStartTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(beginStr)));
 		jobInfo.setTriggerEndTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(endStr)));
-		jobInfo.setAuthor("nike");
-		jobInfo.setScheduleType("CRON");
-		jobInfo.setGlueType("BEAN");
-		jobInfo.setExecutorRouteStrategy("FIRST");
-		jobInfo.setMisfireStrategy("DO_NOTHING");
-		jobInfo.setExecutorBlockStrategy("SERIAL_EXECUTION");
-		jobInfo.setExecutorHandler("httpJobHandler");
-//		jobInfo.setExecutorParam("url:http://localhost:8088/actor/postTest"+"\r\n"+"method:POST"+"\r\n"+"data:"+"id="+idGroup);
+		jobInfo.setAuthor(ConCollections.AUTHOR);
+		jobInfo.setScheduleType(ConCollections.SCHEDULE_TYPE);
+		jobInfo.setGlueType(ConCollections.GLUE_TYPE);
+		jobInfo.setExecutorRouteStrategy(ConCollections.EXECUTOR_ROUTE_STRATEGY);
+		jobInfo.setMisfireStrategy(ConCollections.MISFIRE_STRATEGY);
+		jobInfo.setExecutorBlockStrategy(ConCollections.EXECUTOR_BLOCK_STRATEGY);
+		jobInfo.setExecutorHandler(ConCollections.EXECUTOR_HANDLER);
 		jobInfo.setExecutorParam(nikeJobInfoRequest.getJourneyAddress()+"id="+idGroup);
 		String[] times = null;
 		List<Date> timesList = new ArrayList<>();
 		//once
-		if(0 == nikeJobInfoRequest.getPeriodicType()){
-			if(nikeJobInfoRequest.getPeriodicValues()==null){
+		if(nikeJobInfoRequest.getPeriodicType().equals(ConCollections.PERIODIC_ONCE)){
+			if(nikeJobInfoRequest.getNextStartTime()==null){
 				return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_add")+I18nUtil.getString("system_fail")) );
 			}
 		}else{ // not once
@@ -489,7 +489,18 @@ public class XxlJobServiceImpl implements XxlJobService {
 		// 根据多个触发时间，创建多个job
 		//String returnTimes = "";
 //		List<String> returnTimesList = new ArrayList<>();
-		if(1 == nikeJobInfoRequest.getPeriodicType()){
+		if(nikeJobInfoRequest.getPeriodicType().equals(ConCollections.PERIODIC_ONCE)){
+			String nextStart = UtcLocalDateUtil.utcStrToLocalStr(nikeJobInfoRequest.getNextStartTime());
+			Integer year = Integer.parseInt(nextStart.split("\\s+")[0].split("-")[0]);
+			Integer month = Integer.parseInt(nextStart.split("\\s+")[0].split("-")[1]);
+			Integer day = Integer.parseInt(nextStart.split("\\s+")[0].split("-")[2]);
+			Integer hour = Integer.parseInt(nextStart.split("\\s+")[1].split(":")[0]);
+			Integer minute = Integer.parseInt(nextStart.split("\\s+")[1].split(":")[1]);
+			Integer second = Integer.parseInt(nextStart.split("\\s+")[1].split(":")[2]);
+			//0 40 17 2 12 ? 2022-2022
+			jobInfo.setScheduleConf(second+" "+minute+" "+hour+" "+day+" "+month+" "+"?"+" "+year+"-"+year);
+			xxlJobInfoDao.save(jobInfo);
+		}else if(nikeJobInfoRequest.getPeriodicType().equals(ConCollections.PERIODIC_DAILY)){
 			for(int i = 0; i < times.length; i++){
 				String[] timesStr = times[i].split(":");
 				jobInfo.setScheduleConf(Integer.parseInt("0")+" "+Integer.parseInt(timesStr[1])+" "+Integer.parseInt(timesStr[0])+" "+"* * ?");
@@ -505,7 +516,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 			}else {
 				returnTimes = returnTimesList.get(0);
 			}*/
-		}else if(2 == nikeJobInfoRequest.getPeriodicType()){
+		}else if(nikeJobInfoRequest.getPeriodicType().equals(ConCollections.PERIODIC_WEEKLY)){
 			for(int i = 0; i < times.length; i++){
 				String[] timesStr = times[i].split(":");
 				String week = nikeJobInfoRequest.getPeriodicValues();
@@ -522,7 +533,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 			}else {
 				returnTimes = returnTimesList.get(0);
 			}*/
-		}else if(3 == nikeJobInfoRequest.getPeriodicType()){
+		}else if(nikeJobInfoRequest.getPeriodicType().equals(ConCollections.PERIODIC_MONTHLY)){
 			for(int i = 0; i < times.length; i++){
 				String[] timesStr = times[i].split(":");
 				String day = nikeJobInfoRequest.getPeriodicValues();
@@ -539,33 +550,22 @@ public class XxlJobServiceImpl implements XxlJobService {
 			}else {
 				returnTimes = returnTimesList.get(0);
 			}*/
-		}else if(0 == nikeJobInfoRequest.getPeriodicType()){
-			String nextStart = UtcLocalDateUtil.utcStrToLocalStr(nikeJobInfoRequest.getNextStart());
-			Integer year = Integer.parseInt(nextStart.split("\\s+")[0].split("-")[0]);
-			Integer month = Integer.parseInt(nextStart.split("\\s+")[0].split("-")[1]);
-			Integer day = Integer.parseInt(nextStart.split("\\s+")[0].split("-")[2]);
-			Integer hour = Integer.parseInt(nextStart.split("\\s+")[1].split(":")[0]);
-			Integer minute = Integer.parseInt(nextStart.split("\\s+")[1].split(":")[1]);
-			Integer second = Integer.parseInt(nextStart.split("\\s+")[1].split(":")[2]);
-			//0 40 17 2 12 ? 2022-2022
-			jobInfo.setScheduleConf(second+" "+minute+" "+hour+" "+day+" "+month+" "+"?"+" "+year+"-"+year);
-			xxlJobInfoDao.save(jobInfo);
 		}
 
 		NikeJobInfoResponse response = new NikeJobInfoResponse();
-		response.setId(idGroup);
+		response.setJourneyId(idGroup);
 		// 校验是否全成功创建所有job,并返回nextStart
 		List<String> cronList = xxlJobInfoDao.getCronByIdGroup(idGroup);
-		if(0 == nikeJobInfoRequest.getPeriodicType()){
+		if(nikeJobInfoRequest.getPeriodicType().equals(ConCollections.PERIODIC_ONCE)){
 			if(cronList.size() != 1){
 				return new ReturnT<String>(ReturnT.FAIL_CODE,"addJobList is failed");
 			}
-			response.setNextStart(nikeJobInfoRequest.getNextStart());
+			response.setNextStartTime(nikeJobInfoRequest.getNextStartTime());
 		}else{
 			if(cronList.size() != timesList.size()){
 				return new ReturnT<String>(ReturnT.FAIL_CODE,"addJobList is failed");
 			}
-			response.setNextStart(CronUtil.cronListNextStart(cronList, UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(beginStr))));
+			response.setNextStartTime(CronUtil.cronListNextStart(cronList, UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(beginStr))));
 		}
 
 		/*nikeJobInfo.setTimes(returnTimes);
@@ -583,7 +583,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 	@Override
 	@Transactional
 	public ReturnT<String> deleteJobList(NikeJobInfoRequest nikeJobInfoRequest) {
-		Integer idGroup = nikeJobInfoRequest.getId();
+		Integer idGroup = nikeJobInfoRequest.getJourneyId();
 		List<String> cronList = xxlJobInfoDao.getCronByIdGroup(idGroup);
 		if (cronList.size() < 0) {
 			return new ReturnT<String>("SUCCESS");
@@ -597,7 +597,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 	@Override
 	@Transactional
 	public ReturnT<String> modifyJobList(NikeJobInfoRequest nikeJobInfoRequest) {
-		xxlJobInfoDao.deleteByIdGroup(nikeJobInfoRequest.getId());
+		xxlJobInfoDao.deleteByIdGroup(nikeJobInfoRequest.getJourneyId());
 		ReturnT<String> returnT = addJobList(nikeJobInfoRequest);
 		return returnT;
 	}
@@ -730,7 +730,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 	public ReturnT<String> queryJobExeRecs(NikeJobInfoRequest nikeJobInfoRequest) {
 //		List<Integer> ids = xxlJobInfoDao.getIdByIdGroup(nikeJobInfoRequest.getId());
 //		List<XxlJobLog> logList = xxlJobLogDao.loadList(ids);
-		List<XxlJobLog> logList = xxlJobLogDao.loadByJobIdGroup(nikeJobInfoRequest.getId());
+		List<XxlJobLog> logList = xxlJobLogDao.loadByJobIdGroup(nikeJobInfoRequest.getJourneyId());
 		Gson gson = new Gson();
 		String listToJsonString = gson.toJson(logList);
 		return new ReturnT<String>(listToJsonString);
@@ -750,21 +750,21 @@ public class XxlJobServiceImpl implements XxlJobService {
 
 	@Override
 	public ReturnT<String> manualStartJobs(NikeJobInfoRequest nikeJobInfoRequest){
-		xxlJobInfoDao.manualStartJobs(nikeJobInfoRequest.getId());
+		xxlJobInfoDao.manualStartJobs(nikeJobInfoRequest.getJourneyId());
 		return ReturnT.SUCCESS;
 	}
 
 	@Override
 	public ReturnT<String> manualStopJobs(NikeJobInfoRequest nikeJobInfoRequest){
-		xxlJobInfoDao.manualStopJobs(nikeJobInfoRequest.getId());
+		xxlJobInfoDao.manualStopJobs(nikeJobInfoRequest.getJourneyId());
 		return ReturnT.SUCCESS;
 	}
 
 	@Override
 	public ReturnT<String> queryJobNextStart(NikeJobInfoRequest nikeJobInfoRequest){
 		NikeJobInfoResponse response = new NikeJobInfoResponse();
-		Integer idGroup = nikeJobInfoRequest.getId();
-		response.setId(idGroup);
+		Integer idGroup = nikeJobInfoRequest.getJourneyId();
+		response.setJourneyId(idGroup);
 		List<XxlJobInfo> jobInfoList = xxlJobInfoDao.getJobsByIdGroup(idGroup);
 		Date begin = jobInfoList.get(0).getTriggerStartTime();
 		Date end = jobInfoList.get(0).getTriggerEndTime();
@@ -778,9 +778,9 @@ public class XxlJobServiceImpl implements XxlJobService {
 		}
 		String nextStart = CronUtil.cronListNextStart(cronList,start);
 		if(end.before(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(nextStart)))){
-			response.setNextStart("no next start");
+			response.setNextStartTime("no next start");
 		}else{
-			response.setNextStart(nextStart);
+			response.setNextStartTime(nextStart);
 		}
 		Gson gson = new Gson();
 		String jsonString = gson.toJson(response);

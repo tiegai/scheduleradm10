@@ -2,23 +2,23 @@ package com.nike.springboottemplate.core.model;
 
 public class NikeJobInfoResponse {
 
-    private int id;
+    private int journeyId;
 
-    private String nextStart;
+    private String nextStartTime;
 
-    public int getId() {
-        return id;
+    public int getJourneyId() {
+        return journeyId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setJourneyId(int journeyId) {
+        this.journeyId = journeyId;
     }
 
-    public String getNextStart() {
-        return nextStart;
+    public String getNextStartTime() {
+        return nextStartTime;
     }
 
-    public void setNextStart(String nextStart) {
-        this.nextStart = nextStart;
+    public void setNextStartTime(String nextStartTime) {
+        this.nextStartTime = nextStartTime;
     }
 }

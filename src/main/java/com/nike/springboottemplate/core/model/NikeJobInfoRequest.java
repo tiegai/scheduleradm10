@@ -2,7 +2,7 @@ package com.nike.springboottemplate.core.model;
 
 public class NikeJobInfoRequest {
 
-    private int id;
+    private int journeyId;
 
     private int version;
 
@@ -16,9 +16,9 @@ public class NikeJobInfoRequest {
 
     private String description;
 
-    private int periodicType; //0-once;1-daily;2-weekly;3-monthly
+    private String periodicType;
 
-    private String periodicStart;
+    private String periodicBegin;
 
     private String periodicEnd;
 
@@ -26,7 +26,7 @@ public class NikeJobInfoRequest {
 
     private String periodicTimes;
 
-    private String nextStart;
+    private String nextStartTime;
 
     private int audienceId;
 
@@ -36,12 +36,12 @@ public class NikeJobInfoRequest {
 
     private String journeyAddress;
 
-    public int getId() {
-        return id;
+    public int getJourneyId() {
+        return journeyId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setJourneyId(int journeyId) {
+        this.journeyId = journeyId;
     }
 
     public int getVersion() {
@@ -92,20 +92,20 @@ public class NikeJobInfoRequest {
         this.description = description;
     }
 
-    public int getPeriodicType() {
+    public String getPeriodicType() {
         return periodicType;
     }
 
-    public void setPeriodicType(int periodicType) {
+    public void setPeriodicType(String periodicType) {
         this.periodicType = periodicType;
     }
 
-    public String getPeriodicStart() {
-        return periodicStart;
+    public String getPeriodicBegin() {
+        return periodicBegin;
     }
 
-    public void setPeriodicStart(String periodicStart) {
-        this.periodicStart = periodicStart;
+    public void setPeriodicBegin(String periodicBegin) {
+        this.periodicBegin = periodicBegin;
     }
 
     public String getPeriodicEnd() {
@@ -156,12 +156,12 @@ public class NikeJobInfoRequest {
         this.modifiedTime = modifiedTime;
     }
 
-    public String getNextStart() {
-        return nextStart;
+    public String getNextStartTime() {
+        return nextStartTime;
     }
 
-    public void setNextStart(String nextStart) {
-        this.nextStart = nextStart;
+    public void setNextStartTime(String nextStartTime) {
+        this.nextStartTime = nextStartTime;
     }
 
     public String getJourneyAddress() {

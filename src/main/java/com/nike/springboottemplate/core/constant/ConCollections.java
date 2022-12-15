@@ -15,4 +15,6 @@ public class ConCollections {
     public static final String EXECUTOR_BLOCK_STRATEGY= "SERIAL_EXECUTION";
     public static final String EXECUTOR_HANDLER= "httpJobHandler";
 
+    public static final String ENGINE_URL_PARAMS= "journeyId=";
+
 }

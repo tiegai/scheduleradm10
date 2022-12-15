@@ -64,7 +64,7 @@ public class UtcLocalDateUtil {
     }
 
 
-/*    public static String utcToStr(String dateStr){
+    public static String utcToStr(String dateStr){
         String returnDate = null;
         try {
             SimpleDateFormat sdfUtc = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -75,7 +75,7 @@ public class UtcLocalDateUtil {
             e.printStackTrace();
         }
         return returnDate;
-    }*/
+    }
 
 /*    public static String utcTimeStrToLocalTimeStr(String dateStr){
         SimpleDateFormat sdfUtc = new SimpleDateFormat("HH:mm:ss'Z'");
@@ -92,11 +92,14 @@ public class UtcLocalDateUtil {
     }*/
 
     public static void main(String[] args) {
-        System.out.println(utcStrToLocalStr("2022-12-01T23:00Z"));
+        //System.out.println(utcStrToLocalStr("2022-12-01T23:00Z"));
         //System.out.println(strToDate(utcToLocalStr("2022-12-01T23:00Z")));
         //System.out.println(strToTime("10:12:00"));
         //System.out.println(utcTimeToLocalStr("10:12Z"));
         //System.out.println(utcToStr("2022-12-01T23:00Z"));
-        System.out.println(localStrToUtcStr("2022-11-24 18:50:00"));
+        //System.out.println(localStrToUtcStr("2022-11-24 18:50:00"));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        System.out.println(sdf.format(new Date()));
+        System.out.println(utcToStr("2022-12-01T23:00:00Z"));
     }
 }

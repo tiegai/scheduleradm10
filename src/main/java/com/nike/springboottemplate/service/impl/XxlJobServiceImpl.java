@@ -456,7 +456,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 		jobInfo.setMisfireStrategy(ConCollections.MISFIRE_STRATEGY);
 		jobInfo.setExecutorBlockStrategy(ConCollections.EXECUTOR_BLOCK_STRATEGY);
 		jobInfo.setExecutorHandler(ConCollections.EXECUTOR_HANDLER);
-		jobInfo.setExecutorParam(nikeJobInfoRequest.getJourneyAddress()+"id="+idGroup);
+		jobInfo.setExecutorParam(nikeJobInfoRequest.getJourneyAddress()+ConCollections.ENGINE_URL_PARAMS+idGroup);
 		String[] times = null;
 		List<Date> timesList = new ArrayList<>();
 		//once

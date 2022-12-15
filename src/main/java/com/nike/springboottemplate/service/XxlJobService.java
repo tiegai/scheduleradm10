@@ -2,6 +2,7 @@ package com.nike.springboottemplate.service;
 
 
 import com.nike.springboottemplate.core.model.NikeJobInfoRequest;
+import com.nike.springboottemplate.core.model.NikeJobLogRequest;
 import com.nike.springboottemplate.core.model.XxlJobInfo;
 import com.nike.springboottemplate.common.biz.model.ReturnT;
 
@@ -114,6 +115,14 @@ public interface 	XxlJobService {
 	 * @return
 	 */
 	public ReturnT<String> queryJobExeRecs(NikeJobInfoRequest nikeJobInfoRequest);
+
+	/**
+	 * add queryJobExeRecspageList
+	 *
+	 * @param
+	 * @return
+	 */
+	public ReturnT<String> queryJobExeRecsPageList(NikeJobLogRequest nikeJobLogRequest);
 
 	/**
 	 * autoStartJobs

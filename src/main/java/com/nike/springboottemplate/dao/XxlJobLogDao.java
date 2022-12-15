@@ -64,4 +64,19 @@ public interface XxlJobLogDao {
 
 	public int deleteByJobIdGroup(@Param("jobIdGroup") int jobIdGroup);
 
+	public List<XxlJobLog> recsPageList(@Param("offset") int offset,
+									@Param("pagesize") int pagesize,
+									@Param("jobGroup") int jobGroup,
+									@Param("jobIdGroup") int jobIdGroup,
+									@Param("triggerTimeStart") Date triggerTimeStart,
+									@Param("triggerTimeEnd") Date triggerTimeEnd,
+									@Param("logStatus") int logStatus);
+	public int recsPageListCount(@Param("offset") int offset,
+							 @Param("pagesize") int pagesize,
+							 @Param("jobGroup") int jobGroup,
+							 @Param("jobIdGroup") int jobIdGroup,
+							 @Param("triggerTimeStart") Date triggerTimeStart,
+							 @Param("triggerTimeEnd") Date triggerTimeEnd,
+							 @Param("logStatus") int logStatus);
+
 }

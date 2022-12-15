@@ -235,6 +235,13 @@ public class JobInfoController {
 		return xxlJobService.queryJobExeRecs(nikeJobInfoRequest);
 	}
 
+	@RequestMapping("/queryJobExeRecsPageList")
+	@ResponseBody
+	@PermissionLimit(limit = false)
+	public ReturnT<String> queryJobExeRecsPageList(@RequestBody NikeJobLogRequest nikeJobLogRequest) {
+		return xxlJobService.queryJobExeRecsPageList(nikeJobLogRequest);
+	}
+
 	@RequestMapping("/queryJobNextStart")
 	@ResponseBody
 	@PermissionLimit(limit = false)

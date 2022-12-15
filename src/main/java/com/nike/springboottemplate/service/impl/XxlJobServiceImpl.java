@@ -737,6 +737,39 @@ public class XxlJobServiceImpl implements XxlJobService {
 	}
 
 	@Override
+	public ReturnT<String> queryJobExeRecsPageList(NikeJobLogRequest nikeJobLogRequest) {
+		int start = nikeJobLogRequest.getStart();
+		int length = nikeJobLogRequest.getLength();
+		int jobGroup = nikeJobLogRequest.getJobGroup();
+		int jobIdGroup = nikeJobLogRequest.getJourneyId();
+		String filterTime = nikeJobLogRequest.getFilterTime();
+		int logStatus = nikeJobLogRequest.getLogStatus();
+
+		Date triggerTimeStart = null;
+		Date triggerTimeEnd = null;
+		if (filterTime!=null && filterTime.trim().length()>0) {
+			String[] temp = filterTime.split(" - ");
+			if (temp.length == 2) {
+				triggerTimeStart = DateUtil.parseDateTime(temp[0]);
+				triggerTimeEnd = DateUtil.parseDateTime(temp[1]);
+			}
+		}
+		// page query
+		List<XxlJobLog> list = xxlJobLogDao.recsPageList(start, length, jobGroup, jobIdGroup, triggerTimeStart, triggerTimeEnd, logStatus);
+		int list_count = xxlJobLogDao.recsPageListCount(start, length, jobGroup, jobIdGroup, triggerTimeStart, triggerTimeEnd, logStatus);
+
+		// package result
+		Map<String, Object> maps = new HashMap<String, Object>();
+		maps.put("recordsTotal", list_count);		// 总记录数
+		maps.put("recordsFiltered", list_count);	// 过滤后的总记录数
+		maps.put("data", list);  					// 分页列表
+
+		Gson gson = new Gson();
+		String mapsToJsonString = gson.toJson(maps);
+		return new ReturnT<String>(mapsToJsonString);
+	}
+
+	@Override
 	public ReturnT<String> autoStartJobs(){
 		xxlJobInfoDao.autoStartJobs();
 		return ReturnT.SUCCESS;

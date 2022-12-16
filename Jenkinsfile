@@ -62,8 +62,8 @@ def config = [
 			],
 			infrastructure: [
 				loadBalancer: [
-					loadBalancerTargetGroupArn	: 'arn:aws-cn:elasticloadbalancing:cn-northwest-1:128123422106:targetgroup/springboottemplate-tg/fbfe3ca90e1ee57b',
-					listenerArn					: 'arn:aws-cn:elasticloadbalancing:cn-northwest-1:128123422106:listener/app/springboottemplate-ALB/5451d7e91d7f8781/4af83b150b585ced'
+					loadBalancerTargetGroupArn	: 'arn:aws-cn:elasticloadbalancing:cn-northwest-1:128123422106:targetgroup/ncp-tg/fbfe3ca90e1ee57b',
+					listenerArn					: 'arn:aws-cn:elasticloadbalancing:cn-northwest-1:128123422106:listener/app/ncp-ALB/5451d7e91d7f8781/4af83b150b585ced'
 				]
 			],
 		],
@@ -85,8 +85,8 @@ def config = [
 			],
 			infrastructure: [
 				loadBalancer: [
-					loadBalancerTargetGroupArn	: 'arn:aws-cn:elasticloadbalancing:cn-northwest-1:128277374507:targetgroup/springboottemplate-tg/fbfe3ca90e1ee57b',
-					listenerArn					: 'arn:aws-cn:elasticloadbalancing:cn-northwest-1:128277374507:listener/app/springboottemplate-ALB/5451d7e91d7f8781/4af83b150b585ced'
+					loadBalancerTargetGroupArn	: 'arn:aws-cn:elasticloadbalancing:cn-northwest-1:128277374507:targetgroup/ncp-tg/fbfe3ca90e1ee57b',
+					listenerArn					: 'arn:aws-cn:elasticloadbalancing:cn-northwest-1:128277374507:listener/app/ncp-ALB/5451d7e91d7f8781/4af83b150b585ced'
 				]
 			]
 		],

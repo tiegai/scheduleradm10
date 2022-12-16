@@ -1,10 +1,10 @@
-package com.nike.springboottemplate.common.biz.client;
+package com.nike.ncp.common.biz.client;
 
-import com.nike.springboottemplate.common.biz.AdminBiz;
-import com.nike.springboottemplate.common.biz.model.HandleCallbackParam;
-import com.nike.springboottemplate.common.biz.model.RegistryParam;
-import com.nike.springboottemplate.common.biz.model.ReturnT;
-import com.nike.springboottemplate.common.util.XxlJobRemotingUtil;
+import com.nike.ncp.common.biz.AdminBiz;
+import com.nike.ncp.common.biz.model.HandleCallbackParam;
+import com.nike.ncp.common.biz.model.RegistryParam;
+import com.nike.ncp.common.biz.model.ReturnT;
+import com.nike.ncp.common.util.XxlJobRemotingUtil;
 
 import java.util.List;
 

@@ -1,11 +1,11 @@
-package com.nike.springboottemplate.service.impl;
+package com.nike.ncp.service.impl;
 
-import com.nike.springboottemplate.core.thread.JobCompleteHelper;
-import com.nike.springboottemplate.core.thread.JobRegistryHelper;
-import com.nike.springboottemplate.common.biz.AdminBiz;
-import com.nike.springboottemplate.common.biz.model.HandleCallbackParam;
-import com.nike.springboottemplate.common.biz.model.RegistryParam;
-import com.nike.springboottemplate.common.biz.model.ReturnT;
+import com.nike.ncp.common.biz.AdminBiz;
+import com.nike.ncp.common.biz.model.HandleCallbackParam;
+import com.nike.ncp.common.biz.model.RegistryParam;
+import com.nike.ncp.common.biz.model.ReturnT;
+import com.nike.ncp.core.thread.JobCompleteHelper;
+import com.nike.ncp.core.thread.JobRegistryHelper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

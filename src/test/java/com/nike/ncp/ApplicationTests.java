@@ -1,4 +1,4 @@
-package com.nike.springboottemplate;
+package com.nike.ncp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

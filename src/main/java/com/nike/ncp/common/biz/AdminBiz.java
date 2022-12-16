@@ -1,8 +1,8 @@
-package com.nike.springboottemplate.common.biz;
+package com.nike.ncp.common.biz;
 
-import com.nike.springboottemplate.common.biz.model.HandleCallbackParam;
-import com.nike.springboottemplate.common.biz.model.RegistryParam;
-import com.nike.springboottemplate.common.biz.model.ReturnT;
+import com.nike.ncp.common.biz.model.HandleCallbackParam;
+import com.nike.ncp.common.biz.model.RegistryParam;
+import com.nike.ncp.common.biz.model.ReturnT;
 
 import java.util.List;
 

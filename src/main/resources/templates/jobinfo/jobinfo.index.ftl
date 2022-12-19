@@ -246,8 +246,8 @@
 <textarea class="glueSource_java" style="display:none;" >
 package com.xxl.job.service.handler;
 
-import com.nike.ncp.common.context.XxlJobHelper;
-import com.nike.ncp.common.handler.IJobHandler;
+import context.common.com.nike.ncp.scheduler.XxlJobHelper;
+import handler.common.com.nike.ncp.scheduler.IJobHandler;
 
 public class DemoGlueJobHandler extends IJobHandler {
 

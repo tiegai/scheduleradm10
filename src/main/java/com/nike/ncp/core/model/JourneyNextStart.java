@@ -1,6 +1,6 @@
 package com.nike.ncp.core.model;
 
-public class NikeJobInfoResponse {
+public class JourneyNextStart {
 
     private int journeyId;
 

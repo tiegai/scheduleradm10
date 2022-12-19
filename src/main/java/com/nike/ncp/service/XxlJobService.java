@@ -1,9 +1,7 @@
 package com.nike.ncp.service;
 
 
-import com.nike.ncp.core.model.NikeJobInfoRequest;
 import com.nike.ncp.core.model.XxlJobInfo;
-import com.nike.ncp.core.model.NikeJobLogRequest;
 import com.nike.ncp.common.biz.model.ReturnT;
 
 import java.util.Date;
@@ -82,81 +80,5 @@ public interface 	XxlJobService {
 	 * @return
 	 */
 	public ReturnT<Map<String,Object>> chartInfo(Date startDate, Date endDate);
-
-
-	/**
-	 * add addJobList
-	 *
-	 * @param nikeJobInfoRequest
-	 * @return
-	 */
-	public ReturnT<String> addJobList(NikeJobInfoRequest nikeJobInfoRequest);
-
-	/**
-	 * add deleteJobList
-	 *
-	 * @param
-	 * @return
-	 */
-	public ReturnT<String> deleteJobList(NikeJobInfoRequest nikeJobInfoRequest);
-
-	/**
-	 * add modifyJobList
-	 *
-	 * @param
-	 * @return
-	 */
-	public ReturnT<String> modifyJobList(NikeJobInfoRequest nikeJobInfoRequest);
-
-	/**
-	 * add queryJobExeRecs
-	 *
-	 * @param
-	 * @return
-	 */
-	public ReturnT<String> queryJobExeRecs(NikeJobInfoRequest nikeJobInfoRequest);
-
-	/**
-	 * add queryJobExeRecspageList
-	 *
-	 * @param
-	 * @return
-	 */
-	public ReturnT<String> queryJobExeRecsPageList(NikeJobLogRequest nikeJobLogRequest);
-
-	/**
-	 * autoStartJobs
-	 *
-	 * @return
-	 */
-	public ReturnT<String> autoStartJobs();
-
-	/**
-	 * autoStopJobs
-	 *
-	 * @return
-	 */
-	public ReturnT<String> autoStopJobs();
-
-	/**
-	 * manualStartJobs
-	 *
-	 * @return
-	 */
-	public ReturnT<String> manualStartJobs(NikeJobInfoRequest nikeJobInfoRequest);
-
-	/**
-	 * manualStopJobs
-	 *
-	 * @return
-	 */
-	public ReturnT<String> manualStopJobs(NikeJobInfoRequest nikeJobInfoRequest);
-
-	/**
-	 * queryJobNextStart
-	 *
-	 * @return
-	 */
-	public ReturnT<String> queryJobNextStart(NikeJobInfoRequest nikeJobInfoRequest);
 
 }

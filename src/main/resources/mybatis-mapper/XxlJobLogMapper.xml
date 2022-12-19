@@ -290,12 +290,12 @@
 		order by t.trigger_time desc
 	</select>-->
 
-	<select id="loadByJobIdGroup"  resultMap="XxlJobLog">
+<!--	<select id="loadByJobIdGroup"  resultMap="XxlJobLog">
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_job_log AS t
 		WHERE t.job_id_group = #{jobIdGroup}
 		order by t.trigger_time desc
-	</select>
+	</select>-->
 
 	<delete id="deleteByJobIdGroup" >
 		delete from xxl_job_log
@@ -306,9 +306,9 @@
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_job_log AS t
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
-			<if test="jobGroup gt 0">
+			<!--<if test="jobGroup gt 0">
 				AND t.job_group = #{jobGroup}
-			</if>
+			</if>-->
 			<if test="jobIdGroup gt 0">
 				AND t.job_id_group = #{jobIdGroup}
 			</if>
@@ -340,9 +340,9 @@
 		SELECT count(1)
 		FROM xxl_job_log AS t
 		<trim prefix="WHERE" prefixOverrides="AND | OR" >
-			<if test="jobGroup gt 0">
+			<!--<if test="jobGroup gt 0">
 				AND t.job_group = #{jobGroup}
-			</if>
+			</if>-->
 			<if test="jobIdGroup gt 0">
 				AND t.job_id_group = #{jobIdGroup}
 			</if>

@@ -60,7 +60,7 @@ public interface XxlJobLogDao {
 
 //	public List<XxlJobLog> loadList(@Param("ids") List<Integer> ids);
 
-//	public int deleteByJobIdGroup(@Param("jobIdGroup") int jobIdGroup);
+	public int deleteByJobIdGroup(@Param("jobIdGroup") int jobIdGroup);
 
 	public List<XxlJobLog> recsPageList(@Param("offset") int offset,
 									@Param("pagesize") int pagesize,

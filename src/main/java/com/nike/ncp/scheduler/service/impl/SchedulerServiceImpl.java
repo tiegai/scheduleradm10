@@ -8,6 +8,7 @@ import com.nike.ncp.scheduler.dao.XxlJobInfoDao;
 import com.nike.ncp.scheduler.dao.XxlJobLogDao;
 import com.nike.ncp.scheduler.dao.XxlJobLogGlueDao;
 import com.nike.ncp.scheduler.core.model.*;
+import com.nike.ncp.scheduler.exception.ApiExceptions;
 import com.nike.ncp.scheduler.service.SchedulerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,14 +68,13 @@ public class SchedulerServiceImpl implements SchedulerService {
         //once
         if(journeyInfo.getPeriodicType().equals(ConCollections.PERIODIC_ONCE)){
             if(journeyInfo.getNextStartTime()==null){
-                return null;
+                throw ApiExceptions.invalidRequest();
                 //return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_add")+I18nUtil.getString("system_fail")) );
             }
         }else{ // not once
             times = journeyInfo.getPeriodicTimes().split(",");
             if(times.length<1){
-                return null;
-
+                throw ApiExceptions.invalidRequest();
                 //return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_add")+I18nUtil.getString("system_fail")) );
             }
             for(int i=0;i<times.length;i++){
@@ -166,13 +166,13 @@ public class SchedulerServiceImpl implements SchedulerService {
         List<String> cronList = xxlJobInfoDao.getCronByIdGroup(idGroup);
         if(journeyInfo.getPeriodicType().equals(ConCollections.PERIODIC_ONCE)){
             if(cronList.size() != 1){
-                return null;
+                ApiExceptions.itemNotFound();
                // return new ReturnT<String>(ReturnT.FAIL_CODE,"addJobList is failed");
             }
             //response.setNextStartTime(journeyInfo.getNextStartTime());
         }else{
             if(cronList.size() != timesList.size()){
-                return null;
+                ApiExceptions.itemNotFound();
                 //return new ReturnT<String>(ReturnT.FAIL_CODE,"addJobList is failed");
             }
             journeyInfo.setNextStartTime(CronUtil.cronListNextStart(cronList, UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(beginStr))));

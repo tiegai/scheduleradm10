@@ -37,8 +37,6 @@ public class JourneyInfo {
 
 //    private int audienceId;
 
-
-
 //    private String journeyAddress;
 
 

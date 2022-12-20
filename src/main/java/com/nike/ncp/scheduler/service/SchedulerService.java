@@ -1,8 +1,8 @@
 package com.nike.ncp.scheduler.service;
 
 import com.nike.ncp.scheduler.core.model.JourneyInfo;
+import com.nike.ncp.scheduler.core.model.JourneyLogRes;
 import com.nike.ncp.scheduler.core.model.JourneyNextStart;
-import com.nike.ncp.scheduler.core.model.JourneyLog;
 
 public interface SchedulerService {
 
@@ -12,7 +12,7 @@ public interface SchedulerService {
      * @param
      * @return
      */
-    public JourneyInfo addJobs(JourneyInfo journeyInfo);
+    public JourneyNextStart addJobs(JourneyInfo journeyInfo);
 
     /**
      * add modifyJobList
@@ -20,7 +20,7 @@ public interface SchedulerService {
      * @param
      * @return
      */
-    public JourneyInfo modifyJob(Integer journeyId, JourneyInfo journeyInfo);
+    public JourneyNextStart modifyJob(Integer journeyId, JourneyInfo journeyInfo);
 
     /**
      * autoStartJobs
@@ -64,7 +64,7 @@ public interface SchedulerService {
      * @param
      * @return
      */
-    public JourneyLog queryJobExeRecs(Integer journeyId, int page, int size, int status, String filterTime);
+    public JourneyLogRes queryJobExeRecs(Integer journeyId, int page, int size, int status, String filterTime);
 
     /**
      * queryJobNextStart

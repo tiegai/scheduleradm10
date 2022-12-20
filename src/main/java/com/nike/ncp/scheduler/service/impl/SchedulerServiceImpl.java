@@ -27,6 +27,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     @Value("${ncp.engine.url}")
     private String engineUrl;
 
+
     @Value("${ncp.scheduler.executor.job.group}")
     private Integer jobGroup;
 
@@ -41,7 +42,7 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     @Override
     @Transactional
-    public JourneyInfo addJobs(JourneyInfo journeyInfo) {
+    public JourneyNextStart addJobs(JourneyInfo journeyInfo) {
         // add in db
         XxlJobInfo jobInfo = new XxlJobInfo();
         Integer idGroup = journeyInfo.getJourneyId();
@@ -69,13 +70,11 @@ public class SchedulerServiceImpl implements SchedulerService {
         if(journeyInfo.getPeriodicType().equals(ConCollections.PERIODIC_ONCE)){
             if(journeyInfo.getNextStartTime()==null){
                 throw ApiExceptions.invalidRequest();
-                //return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_add")+I18nUtil.getString("system_fail")) );
             }
         }else{ // not once
             times = journeyInfo.getPeriodicTimes().split(",");
             if(times.length<1){
                 throw ApiExceptions.invalidRequest();
-                //return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_add")+I18nUtil.getString("system_fail")) );
             }
             for(int i=0;i<times.length;i++){
                 timesList.add(UtcLocalDateUtil.strToTime(times[i]+":00"));
@@ -160,45 +159,32 @@ public class SchedulerServiceImpl implements SchedulerService {
 			}*/
         }
 
-//        JourneyNextStart response = new JourneyNextStart();
-//        response.setJourneyId(idGroup);
+        JourneyNextStart response = new JourneyNextStart();
+        response.setJourneyId(idGroup);
         // 校验是否全成功创建所有job,并返回nextStart
         List<String> cronList = xxlJobInfoDao.getCronByIdGroup(idGroup);
         if(journeyInfo.getPeriodicType().equals(ConCollections.PERIODIC_ONCE)){
             if(cronList.size() != 1){
-                ApiExceptions.itemNotFound();
-               // return new ReturnT<String>(ReturnT.FAIL_CODE,"addJobList is failed");
+                throw ApiExceptions.itemNotFound();
             }
-            //response.setNextStartTime(journeyInfo.getNextStartTime());
+            response.setNextStartTime(journeyInfo.getNextStartTime());
         }else{
             if(cronList.size() != timesList.size()){
-                ApiExceptions.itemNotFound();
-                //return new ReturnT<String>(ReturnT.FAIL_CODE,"addJobList is failed");
+                throw ApiExceptions.itemNotFound();
             }
-            journeyInfo.setNextStartTime(CronUtil.cronListNextStart(cronList, UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(beginStr))));
+            response.setNextStartTime(CronUtil.cronListNextStart(cronList, UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(beginStr))));
         }
-
-		/*nikeJobInfo.setTimes(returnTimes);
-		JSONObject jsonObject = (JSONObject) JSONObject.toJSON(nikeJobInfo);
-		nikeJobListEntity.setData(jsonObject.toString());
-		JSONObject jsonObjectReturn = (JSONObject) JSONObject.toJSON(nikeJobListEntity);
-		return new ReturnT<String>(jsonObjectReturn.toString());*/
-
-/*        Gson gson = new Gson();
-//		String listToJsonString = gson.toJson(cronList);
-        String jsonString = gson.toJson(response);
-        return new ReturnT<String>(jsonString);*/
-        return journeyInfo;
+        return response;
     }
 
 
     @Override
     @Transactional
-    public JourneyInfo modifyJob(Integer journeyId, JourneyInfo journeyInfo) {
+    public JourneyNextStart modifyJob(Integer journeyId, JourneyInfo journeyInfo) {
         xxlJobInfoDao.deleteByIdGroup(journeyId);
         journeyInfo.setJourneyId(journeyId);
-        JourneyInfo journeyInfoRes = addJobs(journeyInfo);
-        return journeyInfoRes;
+        JourneyNextStart journeyNextStart = addJobs(journeyInfo);
+        return journeyNextStart;
     }
 
 
@@ -228,7 +214,6 @@ public class SchedulerServiceImpl implements SchedulerService {
         List<String> cronList = xxlJobInfoDao.getCronByIdGroup(journeyId);
         if (cronList.size() < 0) {
             return;
-            //return new ReturnT<String>("SUCCESS");
         }
         xxlJobInfoDao.deleteByIdGroup(journeyId);
         xxlJobLogDao.deleteByJobIdGroup(journeyId);
@@ -236,7 +221,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     @Override
-    public JourneyLog queryJobExeRecs(Integer journeyId, int page, int size, int status, String filterTime) {
+    public JourneyLogRes queryJobExeRecs(Integer journeyId, int page, int size, int status, String filterTime) {
 
         Date triggerTimeStart = null;
         Date triggerTimeEnd = null;
@@ -251,15 +236,15 @@ public class SchedulerServiceImpl implements SchedulerService {
         List<XxlJobLog> list = xxlJobLogDao.recsPageList(page, size, journeyId, triggerTimeStart, triggerTimeEnd, status);
         int list_count = xxlJobLogDao.recsPageListCount(page, size, journeyId, triggerTimeStart, triggerTimeEnd, status);
 
-        JourneyLog journeyLog = new JourneyLog();
-        journeyLog.setJourneyId(journeyId);
-        journeyLog.setStatus(status);
-        journeyLog.setPage(page);
-        journeyLog.setSize(size);
-        journeyLog.setRecordsTotal(list_count);
-        journeyLog.setJourneyLogList(list);
-
-        return journeyLog;
+        JourneyLogRes journeyLogRes = new JourneyLogRes();
+        JourneyLogPage journeyLogPage = new JourneyLogPage();
+        journeyLogPage.setTotal(list_count);
+        journeyLogPage.setSize(size);
+        journeyLogPage.setCurrent(page);
+        journeyLogPage.setPages(page);
+        journeyLogRes.setData(list);
+        journeyLogRes.setPage(journeyLogPage);
+        return journeyLogRes;
     }
 
     @Override
@@ -267,6 +252,9 @@ public class SchedulerServiceImpl implements SchedulerService {
         JourneyNextStart response = new JourneyNextStart();
         response.setJourneyId(journeyId);
         List<XxlJobInfo> jobInfoList = xxlJobInfoDao.getJobsByIdGroup(journeyId);
+        if(jobInfoList == null || jobInfoList.size() < 1){
+            throw ApiExceptions.itemNotFound();
+        }
         Date begin = jobInfoList.get(0).getTriggerStartTime();
         Date end = jobInfoList.get(0).getTriggerEndTime();
         List<String> cronList = new ArrayList<>();
@@ -283,9 +271,6 @@ public class SchedulerServiceImpl implements SchedulerService {
         }else{
             response.setNextStartTime(nextStart);
         }
-        /*Gson gson = new Gson();
-        String jsonString = gson.toJson(response);
-        return new ReturnT<String>(jsonString);*/
         return response;
     }
 }

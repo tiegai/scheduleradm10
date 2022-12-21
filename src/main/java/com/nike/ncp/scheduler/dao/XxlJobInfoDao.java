@@ -48,15 +48,15 @@ public interface XxlJobInfoDao {
 
 	public int autoStopJobs();
 
-	public int manualStartJobs(@Param("idGroup") int idGroup);
+	public int manualStartJobs(@Param("journeyId") String journeyId);
 
-	public int manualStopJobs(@Param("idGroup") int idGroup);
+	public int manualStopJobs(@Param("journeyId") String journeyId);
 
-	public List<String> getCronByIdGroup(@Param("idGroup") int idGroup);
+	public List<String> getCronByJourneyId(@Param("journeyId") String journeyId);
 
-	public int deleteByIdGroup(@Param("idGroup") int idGroup);
+	public int deleteByJourneyId(@Param("journeyId") String journeyId);
 
-	public List<XxlJobInfo> getJobsByIdGroup(@Param("idGroup") int idGroup);
+	public List<XxlJobInfo> getJobsByJourneyId(@Param("journeyId") String journeyId);
 
 	/*public int deleteByIdsAndIdGroup(@Param("ids") List<Integer> ids,@Param("idGroup") int idGroup);*/
 }

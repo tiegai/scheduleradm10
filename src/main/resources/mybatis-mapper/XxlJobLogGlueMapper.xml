@@ -6,7 +6,7 @@
 	<resultMap id="XxlJobLogGlue" type="com.nike.ncp.scheduler.core.model.XxlJobLogGlue" >
 		<result column="pk_id" property="id" />
 	    <result column="job_id" property="jobId" />
-		<result column="job_id_group" property="jobIdGroup" />
+		<result column="journey_id" property="journeyId" />
 		<result column="glue_type" property="glueType" />
 	    <result column="glue_source" property="glueSource" />
 	    <result column="glue_remark" property="glueRemark" />
@@ -17,7 +17,7 @@
 	<sql id="Base_Column_List">
 		t.pk_id,
 		t.job_id,
-		t.job_id_group,
+		t.journey_id,
 		t.glue_type,
 		t.glue_source,
 		t.glue_remark,
@@ -28,7 +28,7 @@
 	<insert id="save" parameterType="com.nike.ncp.scheduler.core.model.XxlJobLogGlue" useGeneratedKeys="true" keyProperty="id" >
 		INSERT INTO xxl_job_logglue (
 			`job_id`,
-			`job_id_group`,
+			`journey_id`,
 			`glue_type`,
 			`glue_source`,
 			`glue_remark`,
@@ -36,7 +36,7 @@
 			`update_time`
 		) VALUES (
 			#{jobId},
-			#{jobIdGroup},
+			#{journeyId},
 			#{glueType},
 			#{glueSource},
 			#{glueRemark},
@@ -72,9 +72,9 @@
 		WHERE `job_id` = #{jobId}
 	</delete>
 
-	<delete id="deleteByJobIdGroup" parameterType="java.lang.Integer" >
+	<delete id="deleteByJourneyId" parameterType="java.lang.String" >
 		DELETE FROM xxl_job_logglue
-		WHERE `job_id_group` = #{jobIdGroup}
+		WHERE `journey_id` = #{journeyId}
 	</delete>
 	
 </mapper>

@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class JourneyInfo {
 
-    private int journeyId;
+    private String journeyId;
 
     private String description;
 

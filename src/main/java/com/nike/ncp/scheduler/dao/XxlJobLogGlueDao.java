@@ -20,6 +20,6 @@ public interface XxlJobLogGlueDao {
 
 	public int deleteByJobId(@Param("jobId") int jobId);
 
-	public int deleteByJobIdGroup(@Param("jobIdGroup") int jobIdGroup);
+	public int deleteByJourneyId(@Param("journeyId") String journeyId);
 	
 }

@@ -8,7 +8,7 @@
 
 		<result column="job_group" property="jobGroup" />
 		<result column="job_id" property="jobId" />
-		<result column="job_id_group" property="jobIdGroup" />
+		<result column="journey_id" property="journeyId" />
 
 		<result column="executor_address" property="executorAddress" />
 		<result column="executor_handler" property="executorHandler" />
@@ -31,7 +31,7 @@
 		t.pk_id,
 		t.job_group,
 		t.job_id,
-		t.job_id_group,
+		t.journey_id,
 		t.executor_address,
 		t.executor_handler,
 		t.executor_param,
@@ -129,14 +129,14 @@
 		INSERT INTO xxl_job_log (
 			`job_group`,
 			`job_id`,
-			`job_id_group`,
+			`journey_id`,
 			`trigger_time`,
 			`trigger_code`,
 			`handle_code`
 		) VALUES (
 			#{jobGroup},
 			#{jobId},
-			#{jobIdGroup},
+			#{journeyId},
 			#{triggerTime},
 			#{triggerCode},
 			#{handleCode}
@@ -297,9 +297,9 @@
 		order by t.trigger_time desc
 	</select>-->
 
-	<delete id="deleteByJobIdGroup" >
+	<delete id="deleteByJourneyId" >
 		delete from xxl_job_log
-		WHERE job_id_group = #{jobIdGroup}
+		WHERE journey_id = #{journeyId}
 	</delete>
 
 	<select id="recsPageList" resultMap="XxlJobLog">
@@ -309,8 +309,8 @@
 			<!--<if test="jobGroup gt 0">
 				AND t.job_group = #{jobGroup}
 			</if>-->
-			<if test="jobIdGroup gt 0">
-				AND t.job_id_group = #{jobIdGroup}
+			<if test="journeyId != null and journeyId != ''">
+				AND t.journey_id = #{journeyId}
 			</if>
 			<if test="triggerTimeStart != null">
 				AND t.trigger_time <![CDATA[ >= ]]> #{triggerTimeStart}
@@ -343,8 +343,8 @@
 			<!--<if test="jobGroup gt 0">
 				AND t.job_group = #{jobGroup}
 			</if>-->
-			<if test="jobIdGroup gt 0">
-				AND t.job_id_group = #{jobIdGroup}
+			<if test="journeyId != null and journeyId != ''">
+				AND t.journey_id = #{journeyId}
 			</if>
 			<if test="triggerTimeStart != null">
 				AND t.trigger_time <![CDATA[ >= ]]> #{triggerTimeStart}

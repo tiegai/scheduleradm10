@@ -45,8 +45,8 @@ public class SchedulerServiceImpl implements SchedulerService {
     public JourneyNextStart addJobs(JourneyInfo journeyInfo) {
         // add in db
         XxlJobInfo jobInfo = new XxlJobInfo();
-        Integer idGroup = journeyInfo.getJourneyId();
-        jobInfo.setIdGroup(idGroup);
+        String journeyId = journeyInfo.getJourneyId();
+        jobInfo.setJourneyId(journeyId);
         jobInfo.setJobGroup(jobGroup);
         jobInfo.setJobDesc(journeyInfo.getDescription());
         jobInfo.setAddTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(journeyInfo.getCreatedTime())));
@@ -54,8 +54,8 @@ public class SchedulerServiceImpl implements SchedulerService {
         jobInfo.setGlueUpdatetime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(journeyInfo.getModifiedTime())));
         String beginStr = journeyInfo.getPeriodicBegin();
         String endStr = journeyInfo.getPeriodicEnd();
-        jobInfo.setTriggerStartTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(beginStr)));
-        jobInfo.setTriggerEndTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(endStr)));
+        jobInfo.setJourneyStartTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(beginStr)));
+        jobInfo.setJourneyEndTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(endStr)));
         jobInfo.setAuthor(ConCollections.AUTHOR);
         jobInfo.setScheduleType(ConCollections.SCHEDULE_TYPE);
         jobInfo.setGlueType(ConCollections.GLUE_TYPE);
@@ -63,7 +63,7 @@ public class SchedulerServiceImpl implements SchedulerService {
         jobInfo.setMisfireStrategy(ConCollections.MISFIRE_STRATEGY);
         jobInfo.setExecutorBlockStrategy(ConCollections.EXECUTOR_BLOCK_STRATEGY);
         jobInfo.setExecutorHandler(ConCollections.EXECUTOR_HANDLER);
-        jobInfo.setExecutorParam(engineUrl+ConCollections.ENGINE_URL_PARAMS+idGroup);
+        jobInfo.setExecutorParam(engineUrl+ConCollections.ENGINE_URL_PARAMS+journeyId);
         String[] times = null;
         List<Date> timesList = new ArrayList<>();
         //once
@@ -160,9 +160,9 @@ public class SchedulerServiceImpl implements SchedulerService {
         }
 
         JourneyNextStart response = new JourneyNextStart();
-        response.setJourneyId(idGroup);
+        response.setJourneyId(journeyId);
         // 校验是否全成功创建所有job,并返回nextStart
-        List<String> cronList = xxlJobInfoDao.getCronByIdGroup(idGroup);
+        List<String> cronList = xxlJobInfoDao.getCronByJourneyId(journeyId);
         if(journeyInfo.getPeriodicType().equals(ConCollections.PERIODIC_ONCE)){
             if(cronList.size() != 1){
                 throw ApiExceptions.itemNotFound();
@@ -180,8 +180,8 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     @Override
     @Transactional
-    public JourneyNextStart modifyJob(Integer journeyId, JourneyInfo journeyInfo) {
-        xxlJobInfoDao.deleteByIdGroup(journeyId);
+    public JourneyNextStart modifyJob(String journeyId, JourneyInfo journeyInfo) {
+        xxlJobInfoDao.deleteByJourneyId(journeyId);
         journeyInfo.setJourneyId(journeyId);
         JourneyNextStart journeyNextStart = addJobs(journeyInfo);
         return journeyNextStart;
@@ -199,29 +199,29 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     @Override
-    public void manualStartJobs(Integer journeyId){
+    public void manualStartJobs(String journeyId){
         xxlJobInfoDao.manualStartJobs(journeyId);
     }
 
     @Override
-    public void manualStopJobs(Integer journeyId){
+    public void manualStopJobs(String journeyId){
         xxlJobInfoDao.manualStopJobs(journeyId);
     }
 
     @Override
     @Transactional
-    public void deleteJobs(Integer journeyId) {
-        List<String> cronList = xxlJobInfoDao.getCronByIdGroup(journeyId);
+    public void deleteJobs(String journeyId) {
+        List<String> cronList = xxlJobInfoDao.getCronByJourneyId(journeyId);
         if (cronList.size() < 0) {
             return;
         }
-        xxlJobInfoDao.deleteByIdGroup(journeyId);
-        xxlJobLogDao.deleteByJobIdGroup(journeyId);
-        xxlJobLogGlueDao.deleteByJobIdGroup(journeyId);
+        xxlJobInfoDao.deleteByJourneyId(journeyId);
+        xxlJobLogDao.deleteByJourneyId(journeyId);
+        xxlJobLogGlueDao.deleteByJourneyId(journeyId);
     }
 
     @Override
-    public JourneyLogRes queryJobExeRecs(Integer journeyId, int page, int size, int status, String filterTime) {
+    public JourneyLogRes queryJobExeRecs(String journeyId, int page, int size, int status, String filterTime) {
 
         Date triggerTimeStart = null;
         Date triggerTimeEnd = null;
@@ -248,15 +248,15 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     @Override
-    public JourneyNextStart queryJobNextStart(Integer journeyId){
+    public JourneyNextStart queryJobNextStart(String journeyId){
         JourneyNextStart response = new JourneyNextStart();
         response.setJourneyId(journeyId);
-        List<XxlJobInfo> jobInfoList = xxlJobInfoDao.getJobsByIdGroup(journeyId);
+        List<XxlJobInfo> jobInfoList = xxlJobInfoDao.getJobsByJourneyId(journeyId);
         if(jobInfoList == null || jobInfoList.size() < 1){
             throw ApiExceptions.itemNotFound();
         }
-        Date begin = jobInfoList.get(0).getTriggerStartTime();
-        Date end = jobInfoList.get(0).getTriggerEndTime();
+        Date begin = jobInfoList.get(0).getJourneyStartTime();
+        Date end = jobInfoList.get(0).getJourneyEndTime();
         List<String> cronList = new ArrayList<>();
         Date start = new Date();
         if(start.before(begin)){

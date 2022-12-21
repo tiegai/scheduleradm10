@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class JourneyNextStart {
 
-    private int journeyId;
+    private String journeyId;
 
     private String nextStartTime;
 

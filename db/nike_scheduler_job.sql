@@ -6,7 +6,7 @@ SET NAMES utf8;
 
 CREATE TABLE `xxl_job_info` (
   `pk_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `id_group` bigint(20) NOT NULL COMMENT '任务组ID',
+  `journey_id` varchar(255) NOT NULL,
   `job_group` bigint(20) NOT NULL COMMENT '执行器主键ID',
   `job_desc` varchar(255) NOT NULL,
   `add_time` datetime DEFAULT NULL,
@@ -30,8 +30,8 @@ CREATE TABLE `xxl_job_info` (
   `trigger_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '调度状态：0-停止，1-运行，2-人工停止',
   `trigger_last_time` bigint(13) NOT NULL DEFAULT '0' COMMENT '上次调度时间',
   `trigger_next_time` bigint(13) NOT NULL DEFAULT '0' COMMENT '下次调度时间',
-  `trigger_start_time` datetime DEFAULT NULL COMMENT '调度开始时间',
-  `trigger_end_time` datetime DEFAULT NULL COMMENT '调度结束时间',
+  `journey_start_time` datetime DEFAULT NULL COMMENT '调度开始时间',
+  `journey_end_time` datetime DEFAULT NULL COMMENT '调度结束时间',
   PRIMARY KEY (`pk_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -39,7 +39,7 @@ CREATE TABLE `xxl_job_log` (
   `pk_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `job_group` bigint(20) NOT NULL COMMENT '执行器主键ID',
   `job_id` bigint(20) NOT NULL COMMENT '任务，主键ID',
-  `job_id_group` bigint(20) NOT NULL COMMENT '任务组ID',
+  `journey_id` varchar(255) NOT NULL,
   `executor_address` varchar(255) DEFAULT NULL COMMENT '执行器地址，本次执行的地址',
   `executor_handler` varchar(255) DEFAULT NULL COMMENT '执行器任务handler',
   `executor_param` varchar(512) DEFAULT NULL COMMENT '执行器任务参数',
@@ -71,7 +71,7 @@ CREATE TABLE `xxl_job_log_report` (
 CREATE TABLE `xxl_job_logglue` (
   `pk_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `job_id` bigint(20) NOT NULL COMMENT '任务，主键ID',
-  `job_id_group` bigint(20) NOT NULL COMMENT '任务组ID',
+  `journey_id` varchar(255) NOT NULL,
   `glue_type` varchar(50) DEFAULT NULL COMMENT 'GLUE类型',
   `glue_source` mediumtext COMMENT 'GLUE源代码',
   `glue_remark` varchar(128) NOT NULL COMMENT 'GLUE备注',
@@ -119,8 +119,8 @@ INSERT INTO `xxl_job_group`(`pk_id`, `app_name`, `title`, `address_type`, `addre
 INSERT INTO `xxl_job_group`(`pk_id`, `app_name`, `title`, `address_type`, `address_list`, `update_time`) VALUES (2, 'ncp-scheduler-executor-business', 'ncp-business', 0, NULL, '2022-11-03 22:21:31' );
 INSERT INTO `xxl_job_user`(`pk_id`, `username`, `password`, `role`, `permission`) VALUES (1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', 1, NULL);
 INSERT INTO `xxl_job_lock` ( `lock_name`) VALUES ( 'schedule_lock');
-INSERT INTO `xxl_job_info` (`pk_id`,`id_group`,`job_group`,`job_desc`,`add_time`,`update_time`,`author`,`alarm_email`,`schedule_type`,`schedule_conf`,`misfire_strategy`,`executor_route_strategy`,`executor_handler`,`executor_param`,`executor_block_strategy`,`executor_timeout`,`executor_fail_retry_count`,`glue_type`,`glue_source`,`glue_remark`,`glue_updatetime`,`child_jobid`,`trigger_status`,`trigger_last_time`,`trigger_next_time`,`trigger_start_time`,`trigger_end_time`) VALUES (1,0,1,'启动-到点<非人工关闭>所有任务','2022-11-08 17:13:33','2022-11-09 16:53:01','ncp-scheduler','','CRON','* * * * * ?','DO_NOTHING','FIRST','basicHttpJobHandler','url:http://127.0.0.1:8080/ncp-scheduler-admin/jobinfo/autoStartJobs\r\nmethod:GET\r\n','SERIAL_EXECUTION',0,0,'BEAN','','GLUE代码初始化','2022-11-08 17:13:33','',1,1669975559000,1669975560000,NULL,NULL);
-INSERT INTO `xxl_job_info` (`pk_id`,`id_group`,`job_group`,`job_desc`,`add_time`,`update_time`,`author`,`alarm_email`,`schedule_type`,`schedule_conf`,`misfire_strategy`,`executor_route_strategy`,`executor_handler`,`executor_param`,`executor_block_strategy`,`executor_timeout`,`executor_fail_retry_count`,`glue_type`,`glue_source`,`glue_remark`,`glue_updatetime`,`child_jobid`,`trigger_status`,`trigger_last_time`,`trigger_next_time`,`trigger_start_time`,`trigger_end_time`) VALUES (2,0,1,'关闭-所有到期任务','2022-11-09 16:51:54','2022-11-09 16:52:40','ncp-scheduler','','CRON','* * * * * ?','DO_NOTHING','FIRST','basicHttpJobHandler','url:http://127.0.0.1:8080/ncp-scheduler-admin/jobinfo/autoStopJobs\r\nmethod:GET\r\n','SERIAL_EXECUTION',0,0,'BEAN','','GLUE代码初始化','2022-11-09 16:51:54','',1,1669975559000,1669975560000,NULL,NULL);
+INSERT INTO `xxl_job_info` (`pk_id`,`journey_id`,`job_group`,`job_desc`,`add_time`,`update_time`,`author`,`alarm_email`,`schedule_type`,`schedule_conf`,`misfire_strategy`,`executor_route_strategy`,`executor_handler`,`executor_param`,`executor_block_strategy`,`executor_timeout`,`executor_fail_retry_count`,`glue_type`,`glue_source`,`glue_remark`,`glue_updatetime`,`child_jobid`,`trigger_status`,`trigger_last_time`,`trigger_next_time`,`journey_start_time`,`journey_end_time`) VALUES (1,0,1,'start-to-point <non-manual shutdown> all tasks','2022-11-08 17:13:33','2022-11-09 16:53:01','ncp-scheduler','','CRON','* * * * * ?','DO_NOTHING','FIRST','basicHttpJobHandler','url:http://127.0.0.1:8080/ncp-scheduler-admin/v1/scheduler/autoStart\r\nmethod:GET\r\n','SERIAL_EXECUTION',0,0,'BEAN','','GLUE代码初始化','2022-11-08 17:13:33','',1,1669975559000,1669975560000,NULL,NULL);
+INSERT INTO `xxl_job_info` (`pk_id`,`journey_id`,`job_group`,`job_desc`,`add_time`,`update_time`,`author`,`alarm_email`,`schedule_type`,`schedule_conf`,`misfire_strategy`,`executor_route_strategy`,`executor_handler`,`executor_param`,`executor_block_strategy`,`executor_timeout`,`executor_fail_retry_count`,`glue_type`,`glue_source`,`glue_remark`,`glue_updatetime`,`child_jobid`,`trigger_status`,`trigger_last_time`,`trigger_next_time`,`journey_start_time`,`journey_end_time`) VALUES (2,0,1,'close-all tasks due','2022-11-09 16:51:54','2022-11-09 16:52:40','ncp-scheduler','','CRON','* * * * * ?','DO_NOTHING','FIRST','basicHttpJobHandler','url:http://127.0.0.1:8080/ncp-scheduler-admin/v1/scheduler/autoStop\r\nmethod:GET\r\n','SERIAL_EXECUTION',0,0,'BEAN','','GLUE代码初始化','2022-11-09 16:51:54','',1,1669975559000,1669975560000,NULL,NULL);
 
 commit;
 

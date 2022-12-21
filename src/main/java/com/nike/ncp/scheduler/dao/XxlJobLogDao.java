@@ -60,19 +60,19 @@ public interface XxlJobLogDao {
 
 //	public List<XxlJobLog> loadList(@Param("ids") List<Integer> ids);
 
-	public int deleteByJobIdGroup(@Param("jobIdGroup") int jobIdGroup);
+	public int deleteByJourneyId(@Param("journeyId") String journeyId);
 
 	public List<XxlJobLog> recsPageList(@Param("offset") int offset,
 									@Param("pagesize") int pagesize,
 									//@Param("jobGroup") int jobGroup,
-									@Param("jobIdGroup") int jobIdGroup,
+									@Param("journeyId") String journeyId,
 									@Param("triggerTimeStart") Date triggerTimeStart,
 									@Param("triggerTimeEnd") Date triggerTimeEnd,
 									@Param("logStatus") int logStatus);
 	public int recsPageListCount(@Param("offset") int offset,
 							 @Param("pagesize") int pagesize,
 							 //@Param("jobGroup") int jobGroup,
-							 @Param("jobIdGroup") int jobIdGroup,
+							 @Param("journeyId") String journeyId,
 							 @Param("triggerTimeStart") Date triggerTimeStart,
 							 @Param("triggerTimeEnd") Date triggerTimeEnd,
 							 @Param("logStatus") int logStatus);

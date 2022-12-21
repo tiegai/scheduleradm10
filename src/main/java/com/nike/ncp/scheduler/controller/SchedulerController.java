@@ -49,20 +49,20 @@ public class SchedulerController {
 
     @PutMapping("/jobs/{journeyId}")
     @PermissionLimit(limit = false)
-    public ResponseEntity<JourneyNextStart> modifyJob(@PathVariable(JOURNEY_ID) Integer journeyId,
+    public ResponseEntity<JourneyNextStart> modifyJob(@PathVariable(JOURNEY_ID) String journeyId,
                                                  @RequestBody JourneyInfo journeyInfo) {
         JourneyNextStart journeyNextStart = schedulerService.modifyJob(journeyId,journeyInfo);
         return ResponseEntity.ok().body(journeyNextStart);
     }
 
-    @PatchMapping("/autoStart")
+    @GetMapping("/autoStart")
     @PermissionLimit(limit = false)
     public ResponseEntity<Void> autoStartJobs() {
         schedulerService.autoStartJobs();
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/autoStop")
+    @GetMapping("/autoStop")
     @PermissionLimit(limit = false)
     public ResponseEntity<Void>  autoStopJobs() {
         schedulerService.autoStopJobs();
@@ -71,28 +71,28 @@ public class SchedulerController {
 
     @PatchMapping("/jobs/{journeyId}/start")
     @PermissionLimit(limit = false)
-    public ResponseEntity<Void> manualStartJobs(@PathVariable(JOURNEY_ID) Integer journeyId) {
+    public ResponseEntity<Void> manualStartJobs(@PathVariable(JOURNEY_ID) String journeyId) {
         schedulerService.manualStartJobs(journeyId);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/jobs/{journeyId}/stop")
     @PermissionLimit(limit = false)
-    public ResponseEntity<Void>  manualStopJobs(@PathVariable(JOURNEY_ID) Integer journeyId) {
+    public ResponseEntity<Void>  manualStopJobs(@PathVariable(JOURNEY_ID) String journeyId) {
         schedulerService.manualStopJobs(journeyId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/jobs/{journeyId}")
     @PermissionLimit(limit = false)
-    public ResponseEntity<Void> deleteJobs(@PathVariable(JOURNEY_ID) Integer journeyId) {
+    public ResponseEntity<Void> deleteJobs(@PathVariable(JOURNEY_ID) String journeyId) {
         schedulerService.deleteJobs(journeyId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/jobs/{journeyId}/recs")
     @PermissionLimit(limit = false)
-    public ResponseEntity<JourneyLogRes> queryJobExeRecs(@PathVariable(JOURNEY_ID) Integer journeyId,
+    public ResponseEntity<JourneyLogRes> queryJobExeRecs(@PathVariable(JOURNEY_ID) String journeyId,
                                                          @RequestParam(name = PAGE, defaultValue = "1") int page,
                                                          @RequestParam(name = SIZE, defaultValue = DEFAULT_PAGE_SIZE) int size,
                                                          @RequestParam(name = STATUS, required = false) int status,
@@ -103,7 +103,7 @@ public class SchedulerController {
 
     @GetMapping("/jobs/{journeyId}/nextStart")
     @PermissionLimit(limit = false)
-    public ResponseEntity<JourneyNextStart> queryJobNextStart(@PathVariable(JOURNEY_ID) Integer journeyId) {
+    public ResponseEntity<JourneyNextStart> queryJobNextStart(@PathVariable(JOURNEY_ID) String journeyId) {
         JourneyNextStart journeyNextStartResponse = schedulerService.queryJobNextStart(journeyId);
         return ResponseEntity.ok().body(journeyNextStartResponse);
     }

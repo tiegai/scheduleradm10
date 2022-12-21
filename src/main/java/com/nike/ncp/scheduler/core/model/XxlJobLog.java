@@ -13,7 +13,7 @@ public class XxlJobLog {
 	private int jobGroup;
 	private int jobId;
 
-	private int jobIdGroup;
+	private String journeyId;
 
 	// execute info
 	private String executorAddress;
@@ -155,11 +155,11 @@ public class XxlJobLog {
 		this.alarmStatus = alarmStatus;
 	}
 
-	public int getJobIdGroup() {
-		return jobIdGroup;
+	public String getJourneyId() {
+		return journeyId;
 	}
 
-	public void setJobIdGroup(int jobIdGroup) {
-		this.jobIdGroup = jobIdGroup;
+	public void setJourneyId(String journeyId) {
+		this.journeyId = journeyId;
 	}
 }

@@ -9,7 +9,7 @@ public class XxlJobInfo {
 	
 	private int id;				// 主键ID
 
-	private int idGroup;  		// 对应1个或N个id
+	private String journeyId;  		// 对应1个或N个id
 	
 	private int jobGroup;		// 执行器主键ID
 	private String jobDesc;
@@ -43,9 +43,9 @@ public class XxlJobInfo {
 	private long triggerLastTime;	// 上次调度时间
 	private long triggerNextTime;	// 下次调度时间
 
-	private Date triggerStartTime;	// 开始调度时间
+	private Date journeyStartTime;	// 开始调度时间
 
-	private Date triggerEndTime;	// 结束调度时间
+	private Date journeyEndTime;	// 结束调度时间
 
 
 	public int getId() {
@@ -240,27 +240,27 @@ public class XxlJobInfo {
 		this.triggerNextTime = triggerNextTime;
 	}
 
-	public Date getTriggerStartTime() {
-		return triggerStartTime;
+	public Date getJourneyStartTime() {
+		return journeyStartTime;
 	}
 
-	public void setTriggerStartTime(Date triggerStartTime) {
-		this.triggerStartTime = triggerStartTime;
+	public void setJourneyStartTime(Date journeyStartTime) {
+		this.journeyStartTime = journeyStartTime;
 	}
 
-	public Date getTriggerEndTime() {
-		return triggerEndTime;
+	public Date getJourneyEndTime() {
+		return journeyEndTime;
 	}
 
-	public void setTriggerEndTime(Date triggerEndTime) {
-		this.triggerEndTime = triggerEndTime;
+	public void setJourneyEndTime(Date journeyEndTime) {
+		this.journeyEndTime = journeyEndTime;
 	}
 
-	public int getIdGroup() {
-		return idGroup;
+	public String getJourneyId() {
+		return journeyId;
 	}
 
-	public void setIdGroup(int idGroup) {
-		this.idGroup = idGroup;
+	public void setJourneyId(String journeyId) {
+		this.journeyId = journeyId;
 	}
 }

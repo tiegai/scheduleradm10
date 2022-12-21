@@ -10,7 +10,7 @@ public class XxlJobLogGlue {
 	private int id;
 	private int jobId;				// 任务主键ID
 
-	private int jobIdGroup;
+	private String journeyId;
 	private String glueType;		// GLUE类型	#com.xxl.job.core.glue.GlueTypeEnum
 	private String glueSource;
 	private String glueRemark;
@@ -73,11 +73,11 @@ public class XxlJobLogGlue {
 		this.updateTime = updateTime;
 	}
 
-	public int getJobIdGroup() {
-		return jobIdGroup;
+	public String getJourneyId() {
+		return journeyId;
 	}
 
-	public void setJobIdGroup(int jobIdGroup) {
-		this.jobIdGroup = jobIdGroup;
+	public void setJourneyId(String journeyId) {
+		this.journeyId = journeyId;
 	}
 }

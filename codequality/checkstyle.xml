@@ -84,17 +84,18 @@
         <!-- Checks for Size Violations.                    -->
         <!-- See http://checkstyle.sf.net/config_sizes.html -->
         <!--<module name="LineLength">-->
-            <!--&lt;!&ndash; what is a good max value? &ndash;&gt;-->
-            <!--<property name="max" value="120"/>-->
-            <!--&lt;!&ndash; ignore lines like "$File: //depot/... $" &ndash;&gt;-->
-            <!--<property name="ignorePattern" value="\$File.*\$"/>-->
-            <!--<property name="severity" value="info"/>-->
+        <!--&lt;!&ndash; what is a good max value? &ndash;&gt;-->
+        <!--<property name="max" value="120"/>-->
+        <!--&lt;!&ndash; ignore lines like "$File: //depot/... $" &ndash;&gt;-->
+        <!--<property name="ignorePattern" value="\$File.*\$"/>-->
+        <!--<property name="severity" value="info"/>-->
         <!--</module>-->
         <module name="MethodLength">
             <property name="max" value="155"/>
         </module>
-        <module name="ParameterNumber"/>
-
+        <module name="ParameterNumber">
+            <property name="max" value="15"/>
+        </module>
 
         <!-- Checks for whitespace                               -->
         <!-- See http://checkstyle.sf.net/config_whitespace.html -->
@@ -139,7 +140,7 @@
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
         <!--<module name="MagicNumber">-->
-            <!--<property name="severity" value="warning"/>-->
+        <!--<property name="severity" value="warning"/>-->
         <!--</module>-->
         <module name="MissingSwitchDefault"/>
         <module name="SimplifyBooleanExpression"/>

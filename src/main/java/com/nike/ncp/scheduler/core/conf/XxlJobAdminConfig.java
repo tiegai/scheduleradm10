@@ -2,7 +2,11 @@ package com.nike.ncp.scheduler.core.conf;
 
 import com.nike.ncp.scheduler.core.scheduler.XxlJobScheduler;
 import com.nike.ncp.scheduler.core.alarm.JobAlarmer;
-import com.nike.ncp.scheduler.dao.*;
+import com.nike.ncp.scheduler.dao.XxlJobGroupDao;
+import com.nike.ncp.scheduler.dao.XxlJobInfoDao;
+import com.nike.ncp.scheduler.dao.XxlJobLogDao;
+import com.nike.ncp.scheduler.dao.XxlJobRegistryDao;
+import com.nike.ncp.scheduler.dao.XxlJobLogReportDao;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;

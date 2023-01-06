@@ -1,4 +1,6 @@
-package com.nike.ncp.scheduler.core.old;//package com.xxl.job.admin.core.quartz;
+package com.nike.ncp.scheduler.core.old;
+
+//package com.xxl.job.admin.core.quartz;
 //
 //import org.quartz.SchedulerConfigException;
 //import org.quartz.spi.ThreadPool;

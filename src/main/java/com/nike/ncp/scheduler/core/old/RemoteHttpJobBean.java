@@ -1,4 +1,6 @@
-package com.nike.ncp.scheduler.core.old;//package com.xxl.job.admin.core.jobbean;
+package com.nike.ncp.scheduler.core.old;
+
+//package com.xxl.job.admin.core.jobbean;
 //
 //import com.xxl.job.admin.core.thread.JobTriggerPoolHelper;
 //import com.xxl.job.admin.core.trigger.TriggerTypeEnum;

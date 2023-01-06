@@ -6,10 +6,8 @@ import java.util.Date;
  * xxl-job log for glue, used to track job code process
  */
 public class XxlJobLogGlue {
-	
 	private int id;
 	private int jobId;				// 任务主键ID
-
 	private String journeyId;
 	private String glueType;		// GLUE类型	#com.xxl.job.core.glue.GlueTypeEnum
 	private String glueSource;

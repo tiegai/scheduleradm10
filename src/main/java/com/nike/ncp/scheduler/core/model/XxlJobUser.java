@@ -3,7 +3,6 @@ package com.nike.ncp.scheduler.core.model;
 import org.springframework.util.StringUtils;
 
 public class XxlJobUser {
-	
 	private int id;
 	private String username;		// 账号
 	private String password;		// 密码
@@ -51,7 +50,7 @@ public class XxlJobUser {
 	}
 
 	// plugin
-	public boolean validPermission(int jobGroup){
+	public boolean validPermission(int jobGroup) {
 		if (this.role == 1) {
 			return true;
 		} else {

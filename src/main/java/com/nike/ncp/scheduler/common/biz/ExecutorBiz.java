@@ -17,7 +17,7 @@ public interface ExecutorBiz {
      * @param idleBeatParam
      * @return
      */
-    public ReturnT<String> idleBeat(IdleBeatParam idleBeatParam);
+    ReturnT<String> idleBeat(IdleBeatParam idleBeatParam);
 
     /**
      * run

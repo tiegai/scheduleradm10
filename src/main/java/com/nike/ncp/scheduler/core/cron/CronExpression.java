@@ -1,18 +1,14 @@
 /*
  * All content copyright Terracotta, Inc., unless otherwise indicated. All rights reserved.
- * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not 
  * use this file except in compliance with the License. You may obtain a copy 
- * of the License at 
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0 
- *   
+ * of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software 
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
  * License for the specific language governing permissions and limitations 
  * under the License.
- * 
  */
 
 package com.nike.ncp.scheduler.core.cron;
@@ -29,7 +25,6 @@ import java.util.*;
  * <P>
  * Cron expressions are comprised of 6 required fields and one optional field
  * separated by white space. The fields respectively are described as follows:
- * 
  * <table cellspacing="8">
  * <tr>
  * <th align="left">Field Name</th>
@@ -165,7 +160,6 @@ import java.util.*;
  * <P>
  * The legal characters and the names of months and days of the week are not
  * case sensitive.
- * 
  * <p>
  * <b>NOTES:</b>
  * <ul>
@@ -181,19 +175,13 @@ import java.util.*;
  * "0 0 14-6 ? * FRI-MON". </li>
  * </ul>
  * </p>
- * 
- * 
  * @author Sharada Jambula, James House
  * @author Contributions from Mads Henderson
  * @author Refactoring from CronTrigger to CronExpression by Aaron Craven
- *
  * Borrowed from quartz v2.3.1
- *
  */
 public final class CronExpression implements Serializable, Cloneable {
-
     private static final long serialVersionUID = 12423409423L;
-    
     protected static final int SECOND = 0;
     protected static final int MINUTE = 1;
     protected static final int HOUR = 2;
@@ -205,7 +193,6 @@ public final class CronExpression implements Serializable, Cloneable {
     protected static final int NO_SPEC_INT = 98; // '?'
     protected static final Integer ALL_SPEC = ALL_SPEC_INT;
     protected static final Integer NO_SPEC = NO_SPEC_INT;
-    
     protected static final Map<String, Integer> monthMap = new HashMap<String, Integer>(20);
     protected static final Map<String, Integer> dayMap = new HashMap<String, Integer>(60);
     static {
@@ -253,7 +240,6 @@ public final class CronExpression implements Serializable, Cloneable {
     /**
      * Constructs a new <CODE>CronExpression</CODE> based on the specified 
      * parameter.
-     * 
      * @param cronExpression String representation of the cron expression the
      *                       new object should represent
      * @throws ParseException
@@ -273,7 +259,6 @@ public final class CronExpression implements Serializable, Cloneable {
     /**
      * Constructs a new {@code CronExpression} as a copy of an existing
      * instance.
-     * 
      * @param expression
      *            The existing cron expression to be copied
      */
@@ -298,7 +283,6 @@ public final class CronExpression implements Serializable, Cloneable {
      * Indicates whether the given date satisfies the cron expression. Note that
      * milliseconds are ignored, so two Dates falling on different milliseconds
      * of the same second will always have the same result here.
-     * 
      * @param date the date to evaluate
      * @return a boolean indicating whether the given date satisfies the cron
      *         expression
@@ -319,7 +303,6 @@ public final class CronExpression implements Serializable, Cloneable {
     /**
      * Returns the next date/time <I>after</I> the given date/time which
      * satisfies the cron expression.
-     * 
      * @param date the date/time at which to begin the search for the next valid
      *             date/time
      * @return the next valid date/time
@@ -331,7 +314,6 @@ public final class CronExpression implements Serializable, Cloneable {
     /**
      * Returns the next date/time <I>after</I> the given date/time which does
      * <I>not</I> satisfy the expression
-     * 
      * @param date the date/time at which to begin the search for the next 
      *             invalid date/time
      * @return the next valid date/time
@@ -389,7 +371,6 @@ public final class CronExpression implements Serializable, Cloneable {
     
     /**
      * Returns the string representation of the <CODE>CronExpression</CODE>
-     * 
      * @return a string representation of the <CODE>CronExpression</CODE>
      */
     @Override
@@ -400,7 +381,6 @@ public final class CronExpression implements Serializable, Cloneable {
     /**
      * Indicates whether the specified cron expression can be parsed into a 
      * valid cron expression
-     * 
      * @param cronExpression the expression to evaluate
      * @return a boolean indicating whether the given expression is a valid cron
      *         expression
@@ -1566,7 +1546,6 @@ public final class CronExpression implements Serializable, Cloneable {
     /**
      * Advance the calendar to the particular hour paying particular attention
      * to daylight saving problems.
-     * 
      * @param cal the calendar to operate on
      * @param hour the hour to set
      */

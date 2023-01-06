@@ -19,9 +19,8 @@ import java.util.concurrent.*;
  */
 public class JobCompleteHelper {
 	private static Logger logger = LoggerFactory.getLogger(JobCompleteHelper.class);
-	
 	private static JobCompleteHelper instance = new JobCompleteHelper();
-	public static JobCompleteHelper getInstance(){
+	public static JobCompleteHelper getInstance() {
 		return instance;
 	}
 
@@ -30,7 +29,7 @@ public class JobCompleteHelper {
 	private ThreadPoolExecutor callbackThreadPool = null;
 	private Thread monitorThread;
 	private volatile boolean toStop = false;
-	public void start(){
+	public void start() {
 
 		// for callback
 		callbackThreadPool = new ThreadPoolExecutor(
@@ -76,7 +75,7 @@ public class JobCompleteHelper {
 						Date losedTime = DateUtil.addMinutes(new Date(), -10);
 						List<Long> losedJobIds  = XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().findLostJobIds(losedTime);
 
-						if (losedJobIds!=null && losedJobIds.size()>0) {
+						if (losedJobIds != null && losedJobIds.size() > 0) {
 							for (Long logId: losedJobIds) {
 
 								XxlJobLog jobLog = new XxlJobLog();
@@ -84,7 +83,7 @@ public class JobCompleteHelper {
 
 								jobLog.setHandleTime(new Date());
 								jobLog.setHandleCode(ReturnT.FAIL_CODE);
-								jobLog.setHandleMsg( I18nUtil.getString("joblog_lost_fail") );
+								jobLog.setHandleMsg(I18nUtil.getString("joblog_lost_fail"));
 
 								XxlJobCompleter.updateHandleInfoAndFinish(jobLog);
 							}
@@ -115,7 +114,7 @@ public class JobCompleteHelper {
 		monitorThread.start();
 	}
 
-	public void toStop(){
+	public void toStop() {
 		toStop = true;
 
 		// stop registryOrRemoveThreadPool
@@ -141,7 +140,7 @@ public class JobCompleteHelper {
 				for (HandleCallbackParam handleCallbackParam: callbackParamList) {
 					ReturnT<String> callbackResult = callback(handleCallbackParam);
 					logger.debug(">>>>>>>>> JobApiController.callback {}, handleCallbackParam={}, callbackResult={}",
-							(callbackResult.getCode()== ReturnT.SUCCESS_CODE?"success":"fail"), handleCallbackParam, callbackResult);
+							(callbackResult.getCode() == ReturnT.SUCCESS_CODE ? "success" : "fail"), handleCallbackParam, callbackResult);
 				}
 			}
 		});
@@ -161,7 +160,7 @@ public class JobCompleteHelper {
 
 		// handle msg
 		StringBuffer handleMsg = new StringBuffer();
-		if (log.getHandleMsg()!=null) {
+		if (log.getHandleMsg() != null) {
 			handleMsg.append(log.getHandleMsg()).append("<br>");
 		}
 		if (handleCallbackParam.getHandleMsg() != null) {

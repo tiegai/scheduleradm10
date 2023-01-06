@@ -21,7 +21,7 @@ public class I18nUtil {
     private static Logger logger = LoggerFactory.getLogger(I18nUtil.class);
 
     private static Properties prop = null;
-    public static Properties loadI18nProp(){
+    public static Properties loadI18nProp() {
         if (prop != null) {
             return prop;
         }
@@ -59,14 +59,14 @@ public class I18nUtil {
     public static String getMultString(String... keys) {
         Map<String, String> map = new HashMap<String, String>();
 
-        Properties prop = loadI18nProp();
-        if (keys!=null && keys.length>0) {
+        Properties props = loadI18nProp();
+        if (keys != null && keys.length > 0) {
             for (String key: keys) {
-                map.put(key, prop.getProperty(key));
+                map.put(key, props.getProperty(key));
             }
         } else {
-            for (String key: prop.stringPropertyNames()) {
-                map.put(key, prop.getProperty(key));
+            for (String key: props.stringPropertyNames()) {
+                map.put(key, props.getProperty(key));
             }
         }
 

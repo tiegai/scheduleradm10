@@ -9,7 +9,7 @@ import java.util.List;
 
 
 public abstract class ExecutorRouter {
-    protected static Logger logger = LoggerFactory.getLogger(ExecutorRouter.class);
+    public static Logger logger = LoggerFactory.getLogger(ExecutorRouter.class);
 
     /**
      * route address

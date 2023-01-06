@@ -7,64 +7,64 @@ import java.util.TimeZone;
 
 public class UtcLocalDateUtil {
 
-    public static String utcStrToLocalStr(String dateStr){
+    public static String utcStrToLocalStr(String dateStr) {
         SimpleDateFormat sdfUtc = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         sdfUtc.setTimeZone(TimeZone.getTimeZone("UTC"));
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String returnDate = null;
-        try{
+        try {
             Date date = sdfUtc.parse(dateStr);
             returnDate = sdf.format(date);
-        }catch (ParseException e) {
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return returnDate;
     }
 
-    public static String localStrToUtcStr(String dateStr){
+    public static String localStrToUtcStr(String dateStr) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat sdfUtc = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         sdfUtc.setTimeZone(TimeZone.getTimeZone("UTC"));
         String returnDate = null;
-        try{
+        try {
             Date date = sdf.parse(dateStr);
             returnDate = sdfUtc.format(date);
-        }catch (ParseException e) {
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return returnDate;
     }
 
-    public static Date strToDate(String dateStr){
+    public static Date strToDate(String dateStr) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = null;
-        try{
+        try {
             date = sdf.parse(dateStr);
-        }catch (ParseException e) {
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return date;
     }
 
-    public static String dateToStr(Date date){
+    public static String dateToStr(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateStr = sdf.format(date);
         return dateStr;
     }
 
-    public static Date strToTime(String dateStr){
+    public static Date strToTime(String dateStr) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         Date date = null;
-        try{
+        try {
             date = sdf.parse(dateStr);
-        }catch (ParseException e) {
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return date;
     }
 
 
-    public static String utcToStr(String dateStr){
+    public static String utcToStr(String dateStr) {
         String returnDate = null;
         try {
             SimpleDateFormat sdfUtc = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");

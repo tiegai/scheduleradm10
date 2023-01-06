@@ -2,9 +2,6 @@ package com.nike.ncp.scheduler.core.trigger;
 
 import com.nike.ncp.scheduler.core.util.I18nUtil;
 
-/**
- * trigger type enum
- */
 public enum TriggerTypeEnum {
 
     MANUAL(I18nUtil.getString("jobconf_trigger_type_manual")),
@@ -14,7 +11,7 @@ public enum TriggerTypeEnum {
     API(I18nUtil.getString("jobconf_trigger_type_api")),
     MISFIRE(I18nUtil.getString("jobconf_trigger_type_misfire"));
 
-    private TriggerTypeEnum(String title){
+    TriggerTypeEnum(String title) {
         this.title = title;
     }
     private String title;

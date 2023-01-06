@@ -32,7 +32,7 @@ public enum ScheduleTypeEnum {
         return title;
     }
 
-    public static ScheduleTypeEnum match(String name, ScheduleTypeEnum defaultItem){
+    public static ScheduleTypeEnum match(String name, ScheduleTypeEnum defaultItem) {
         for (ScheduleTypeEnum item: ScheduleTypeEnum.values()) {
             if (item.name().equals(name)) {
                 return item;

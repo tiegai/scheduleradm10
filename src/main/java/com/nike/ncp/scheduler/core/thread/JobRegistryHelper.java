@@ -10,8 +10,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Collections;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.RejectedExecutionHandler;
+
+
 
 /**
  * job registry instance
@@ -20,7 +30,7 @@ public class JobRegistryHelper {
 	private static Logger logger = LoggerFactory.getLogger(JobRegistryHelper.class);
 
 	private static JobRegistryHelper instance = new JobRegistryHelper();
-	public static JobRegistryHelper getInstance(){
+	public static JobRegistryHelper getInstance() {
 		return instance;
 	}
 
@@ -28,7 +38,7 @@ public class JobRegistryHelper {
 	private Thread registryMonitorThread;
 	private volatile boolean toStop = false;
 
-	public void start(){
+	public void start() {
 
 		// for registry or remove
 		registryOrRemoveThreadPool = new ThreadPoolExecutor(
@@ -59,11 +69,11 @@ public class JobRegistryHelper {
 					try {
 						// auto registry group
 						List<XxlJobGroup> groupList = XxlJobAdminConfig.getAdminConfig().getXxlJobGroupDao().findByAddressType(0);
-						if (groupList!=null && !groupList.isEmpty()) {
+						if (groupList != null && !groupList.isEmpty()) {
 
 							// remove dead address (admin/executor)
 							List<Integer> ids = XxlJobAdminConfig.getAdminConfig().getXxlJobRegistryDao().findDead(RegistryConfig.DEAD_TIMEOUT, new Date());
-							if (ids!=null && ids.size()>0) {
+							if (ids != null && ids.size() > 0) {
 								XxlJobAdminConfig.getAdminConfig().getXxlJobRegistryDao().removeDead(ids);
 							}
 
@@ -91,14 +101,14 @@ public class JobRegistryHelper {
 							for (XxlJobGroup group: groupList) {
 								List<String> registryList = appAddressMap.get(group.getAppname());
 								String addressListStr = null;
-								if (registryList!=null && !registryList.isEmpty()) {
+								if (registryList != null && !registryList.isEmpty()) {
 									Collections.sort(registryList);
 									StringBuilder addressListSB = new StringBuilder();
 									for (String item:registryList) {
 										addressListSB.append(item).append(",");
 									}
 									addressListStr = addressListSB.toString();
-									addressListStr = addressListStr.substring(0, addressListStr.length()-1);
+									addressListStr = addressListStr.substring(0, addressListStr.length() - 1);
 								}
 								group.setAddressList(addressListStr);
 								group.setUpdateTime(new Date());
@@ -127,7 +137,7 @@ public class JobRegistryHelper {
 		registryMonitorThread.start();
 	}
 
-	public void toStop(){
+	public void toStop() {
 		toStop = true;
 
 		// stop registryOrRemoveThreadPool
@@ -195,7 +205,7 @@ public class JobRegistryHelper {
 		return ReturnT.SUCCESS;
 	}
 
-	private void freshGroupRegistryInfo(RegistryParam registryParam){
+	private void freshGroupRegistryInfo(RegistryParam registryParam) {
 		// Under consideration, prevent affecting core tables
 	}
 

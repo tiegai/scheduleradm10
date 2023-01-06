@@ -4,9 +4,16 @@ import com.nike.ncp.scheduler.common.biz.model.ReturnT;
 import com.nike.ncp.scheduler.common.biz.model.TriggerParam;
 import com.nike.ncp.scheduler.core.route.ExecutorRouter;
 
-import java.util.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * 单个JOB对应的每个执行器，使用频率最低的优先被选举
@@ -23,7 +30,7 @@ public class ExecutorRouteLFU extends ExecutorRouter {
         // cache clear
         if (System.currentTimeMillis() > CACHE_VALID_TIME) {
             jobLfuMap.clear();
-            CACHE_VALID_TIME = System.currentTimeMillis() + 1000*60*60*24;
+            CACHE_VALID_TIME = System.currentTimeMillis() + 1000 * 60 * 60 * 24;
         }
 
         // lfu item init
@@ -35,7 +42,7 @@ public class ExecutorRouteLFU extends ExecutorRouter {
 
         // put new
         for (String address: addressList) {
-            if (!lfuItemMap.containsKey(address) || lfuItemMap.get(address) >1000000 ) {
+            if (!lfuItemMap.containsKey(address) || lfuItemMap.get(address) > 1000000) {
                 lfuItemMap.put(address, new Random().nextInt(addressList.size()));  // 初始化时主动Random一次，缓解首次压力
             }
         }

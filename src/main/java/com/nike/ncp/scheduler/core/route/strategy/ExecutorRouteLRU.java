@@ -25,7 +25,7 @@ public class ExecutorRouteLRU extends ExecutorRouter {
         // cache clear
         if (System.currentTimeMillis() > CACHE_VALID_TIME) {
             jobLRUMap.clear();
-            CACHE_VALID_TIME = System.currentTimeMillis() + 1000*60*60*24;
+            CACHE_VALID_TIME = System.currentTimeMillis() + 1000 * 60 * 60 * 24;
         }
 
         // init lru

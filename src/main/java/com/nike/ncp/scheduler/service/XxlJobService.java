@@ -10,11 +10,9 @@ import java.util.Map;
 /**
  * core job action for xxl-job
  */
-public interface 	XxlJobService {
-
+public interface XxlJobService {
 	/**
 	 * page list
-	 *
 	 * @param start
 	 * @param length
 	 * @param jobGroup
@@ -70,7 +68,7 @@ public interface 	XxlJobService {
 	 *
 	 * @return
 	 */
-	Map<String,Object> dashboardInfo();
+	Map<String, Object> dashboardInfo();
 
 	/**
 	 * chart info
@@ -79,6 +77,6 @@ public interface 	XxlJobService {
 	 * @param endDate
 	 * @return
 	 */
-	ReturnT<Map<String,Object>> chartInfo(Date startDate, Date endDate);
+	ReturnT<Map<String, Object>> chartInfo(Date startDate, Date endDate);
 
 }

@@ -47,7 +47,7 @@ public class XxlJobRemotingUtil {
         @Override
         public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
         }
-    }};
+    } };
     // trust-https end
 
 
@@ -87,7 +87,7 @@ public class XxlJobRemotingUtil {
             connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
             connection.setRequestProperty("Accept-Charset", "application/json;charset=UTF-8");
 
-            if(accessToken!=null && accessToken.trim().length()>0){
+            if (accessToken != null && accessToken.trim().length() > 0) {
                 connection.setRequestProperty(XXL_JOB_ACCESS_TOKEN, accessToken);
             }
 
@@ -114,7 +114,7 @@ public class XxlJobRemotingUtil {
             // valid StatusCode
             int statusCode = connection.getResponseCode();
             if (statusCode != 200) {
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "xxl-job remoting fail, StatusCode("+ statusCode +") invalid. for url : " + url);
+                return new ReturnT<String>(ReturnT.FAIL_CODE, "xxl-job remoting fail, StatusCode(" + statusCode + ") invalid. for url : " + url);
             }
 
             // result
@@ -131,13 +131,13 @@ public class XxlJobRemotingUtil {
                 ReturnT returnT = GsonTool.fromJson(resultJson, ReturnT.class, returnTargClassOfT);
                 return returnT;
             } catch (Exception e) {
-                logger.error("xxl-job remoting (url="+url+") response content invalid("+ resultJson +").", e);
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "xxl-job remoting (url="+url+") response content invalid("+ resultJson +").");
+                logger.error("xxl-job remoting (url=" + url + ") response content invalid(" + resultJson + ").", e);
+                return new ReturnT<String>(ReturnT.FAIL_CODE, "xxl-job remoting (url=" + url + ") response content invalid(" + resultJson + ").");
             }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "xxl-job remoting error("+ e.getMessage() +"), for url : " + url);
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "xxl-job remoting error(" + e.getMessage() + "), for url : " + url);
         } finally {
             try {
                 if (bufferedReader != null) {

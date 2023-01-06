@@ -123,7 +123,7 @@ public class IpUtil {
                             InetAddress addressItem = toValidAddress(addresses.nextElement());
                             if (addressItem != null) {
                                 try {
-                                    if(addressItem.isReachable(100)){
+                                    if (addressItem.isReachable(100)) {
                                         return addressItem;
                                     }
                                 } catch (IOException e) {
@@ -166,7 +166,7 @@ public class IpUtil {
      *
      * @return String
      */
-    public static String getIp(){
+    public static String getIp() {
         return getLocalAddress().getHostAddress();
     }
 
@@ -176,19 +176,19 @@ public class IpUtil {
      * @param port
      * @return String
      */
-    public static String getIpPort(int port){
+    public static String getIpPort(int port) {
         String ip = getIp();
         return getIpPort(ip, port);
     }
 
-    public static String getIpPort(String ip, int port){
-        if (ip==null) {
+    public static String getIpPort(String ip, int port) {
+        if (ip == null) {
             return null;
         }
         return ip.concat(":").concat(String.valueOf(port));
     }
 
-    public static Object[] parseIpPort(String address){
+    public static Object[] parseIpPort(String address) {
         String[] array = address.split(":");
 
         String host = array[0];

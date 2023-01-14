@@ -19,19 +19,19 @@ public class ExecutorBizClient implements ExecutorBiz {
         }
     }
 
-    private String addressUrl;
+    private String addressUrl ;
     private String accessToken;
     private int timeout = 3;
 
 
     @Override
     public ReturnT<String> beat() {
-        return XxlJobRemotingUtil.postBody(addressUrl + "beat", accessToken, timeout, "", String.class);
+        return XxlJobRemotingUtil.postBody(addressUrl+"beat", accessToken, timeout, "", String.class);
     }
 
     @Override
-    public ReturnT<String> idleBeat(IdleBeatParam idleBeatParam) {
-        return XxlJobRemotingUtil.postBody(addressUrl + "idleBeat", accessToken, timeout, idleBeatParam, String.class);
+    public ReturnT<String> idleBeat(IdleBeatParam idleBeatParam){
+        return XxlJobRemotingUtil.postBody(addressUrl+"idleBeat", accessToken, timeout, idleBeatParam, String.class);
     }
 
     @Override

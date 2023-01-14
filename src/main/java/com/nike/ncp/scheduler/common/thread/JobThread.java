@@ -23,8 +23,9 @@ import java.util.concurrent.*;
 /**
  * handler thread
  */
-public class JobThread extends Thread {
+public class JobThread extends Thread{
 	private static Logger logger = LoggerFactory.getLogger(JobThread.class);
+
 	private int jobId;
 	private IJobHandler handler;
 	private LinkedBlockingQueue<TriggerParam> triggerQueue;
@@ -44,7 +45,7 @@ public class JobThread extends Thread {
 		this.triggerLogIdSet = Collections.synchronizedSet(new HashSet<Long>());
 
 		// assign job thread name
-		this.setName("xxl-job, JobThread-" + jobId + "-" + System.currentTimeMillis());
+		this.setName("xxl-job, JobThread-"+jobId+"-"+System.currentTimeMillis());
 	}
 	public IJobHandler getHandler() {
 		return handler;
@@ -71,16 +72,16 @@ public class JobThread extends Thread {
     /**
      * kill job thread
      *
-     * @param stopRea
+     * @param stopReason
      */
-	public void toStop(String stopRea) {
+	public void toStop(String stopReason) {
 		/**
 		 * Thread.interrupt只支持终止线程的阻塞状态(wait、join、sleep)，
 		 * 在阻塞出抛出InterruptedException异常,但是并不会终止运行的线程本身；
 		 * 所以需要注意，此处彻底销毁本线程，需要通过共享变量方式；
 		 */
 		this.toStop = true;
-		this.stopReason = stopRea;
+		this.stopReason = stopReason;
 	}
 
     /**
@@ -88,7 +89,7 @@ public class JobThread extends Thread {
      * @return
      */
     public boolean isRunningOrHasQueue() {
-        return running || triggerQueue.size() > 0;
+        return running || triggerQueue.size()>0;
     }
 
     @Override
@@ -102,7 +103,7 @@ public class JobThread extends Thread {
 		}
 
 		// execute
-		while (!toStop) {
+		while(!toStop){
 			running = false;
 			idleTimes++;
 
@@ -110,7 +111,7 @@ public class JobThread extends Thread {
             try {
 				// to check toStop signal, we need cycle, so wo cannot use queue.take(), instand of poll(timeout)
 				triggerParam = triggerQueue.poll(3L, TimeUnit.SECONDS);
-				if (triggerParam != null) {
+				if (triggerParam!=null) {
 					running = true;
 					idleTimes = 0;
 					triggerLogIdSet.remove(triggerParam.getLogId());
@@ -169,7 +170,9 @@ public class JobThread extends Thread {
 						XxlJobHelper.handleFail("job handle result lost.");
 					} else {
 						String tempHandleMsg = XxlJobContext.getXxlJobContext().getHandleMsg();
-						tempHandleMsg = (tempHandleMsg != null && tempHandleMsg.length() > 50000) ? tempHandleMsg.substring(0, 50000).concat("...") : tempHandleMsg;
+						tempHandleMsg = (tempHandleMsg!=null&&tempHandleMsg.length()>50000)
+								?tempHandleMsg.substring(0, 50000).concat("...")
+								:tempHandleMsg;
 						XxlJobContext.getXxlJobContext().setHandleMsg(tempHandleMsg);
 					}
 					XxlJobHelper.log("<br>----------- xxl-job job execute end(finish) -----------<br>----------- Result: handleCode="
@@ -180,7 +183,7 @@ public class JobThread extends Thread {
 
 				} else {
 					if (idleTimes > 30) {
-						if (triggerQueue.size() == 0) {	// avoid concurrent trigger causes jobId-lost
+						if(triggerQueue.size() == 0) {	// avoid concurrent trigger causes jobId-lost
 							XxlJobExecutor.removeJobThread(jobId, "excutor idel times over limit.");
 						}
 					}
@@ -199,7 +202,7 @@ public class JobThread extends Thread {
 
 				XxlJobHelper.log("<br>----------- JobThread Exception:" + errorMsg + "<br>----------- xxl-job job execute end(error) -----------");
 			} finally {
-                if (triggerParam != null) {
+                if(triggerParam != null) {
                     // callback handler info
                     if (!toStop) {
                         // commonm
@@ -207,7 +210,7 @@ public class JobThread extends Thread {
                         		triggerParam.getLogId(),
 								triggerParam.getLogDateTime(),
 								XxlJobContext.getXxlJobContext().getHandleCode(),
-								XxlJobContext.getXxlJobContext().getHandleMsg())
+								XxlJobContext.getXxlJobContext().getHandleMsg() )
 						);
                     } else {
                         // is killed
@@ -215,7 +218,7 @@ public class JobThread extends Thread {
                         		triggerParam.getLogId(),
 								triggerParam.getLogDateTime(),
 								XxlJobContext.HANDLE_CODE_FAIL,
-								stopReason + " [job running, killed]")
+								stopReason + " [job running, killed]" )
 						);
                     }
                 }
@@ -223,9 +226,9 @@ public class JobThread extends Thread {
         }
 
 		// callback trigger request in queue
-		while (triggerQueue != null && triggerQueue.size() > 0) {
+		while(triggerQueue !=null && triggerQueue.size()>0){
 			TriggerParam triggerParam = triggerQueue.poll();
-			if (triggerParam != null) {
+			if (triggerParam!=null) {
 				// is killed
 				TriggerCallbackThread.pushCallBack(new HandleCallbackParam(
 						triggerParam.getLogId(),

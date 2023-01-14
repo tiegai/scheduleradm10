@@ -48,7 +48,7 @@ public class XxlJobSimpleExecutor extends XxlJobExecutor {
 
 
     private void initJobHandlerMethodRepository(List<Object> xxlJobBeanList) {
-        if (xxlJobBeanList == null || xxlJobBeanList.size() == 0) {
+        if (xxlJobBeanList==null || xxlJobBeanList.size()==0) {
             return;
         }
 

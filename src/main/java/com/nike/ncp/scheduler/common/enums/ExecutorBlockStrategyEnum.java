@@ -9,7 +9,7 @@ public enum ExecutorBlockStrategyEnum {
     COVER_EARLY("Cover Early");
 
     private String title;
-    ExecutorBlockStrategyEnum(String title) {
+    private ExecutorBlockStrategyEnum (String title) {
         this.title = title;
     }
 

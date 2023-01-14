@@ -9,7 +9,7 @@ public interface ExecutorBiz {
      * beat
      * @return
      */
-    ReturnT<String> beat();
+    public ReturnT<String> beat();
 
     /**
      * idle beat
@@ -24,20 +24,20 @@ public interface ExecutorBiz {
      * @param triggerParam
      * @return
      */
-    ReturnT<String> run(TriggerParam triggerParam);
+    public ReturnT<String> run(TriggerParam triggerParam);
 
     /**
      * kill
      * @param killParam
      * @return
      */
-    ReturnT<String> kill(KillParam killParam);
+    public ReturnT<String> kill(KillParam killParam);
 
     /**
      * log
      * @param logParam
      * @return
      */
-    ReturnT<LogResult> log(LogParam logParam);
+    public ReturnT<LogResult> log(LogParam logParam);
 
 }

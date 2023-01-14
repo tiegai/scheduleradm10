@@ -34,8 +34,8 @@ public class ScriptUtil {
             fileOutputStream.close();
         } catch (Exception e) {
             throw e;
-        } finally {
-            if (fileOutputStream != null) {
+        }finally{
+            if(fileOutputStream != null){
                 fileOutputStream.close();
             }
         }
@@ -64,7 +64,7 @@ public class ScriptUtil {
             List<String> cmdarray = new ArrayList<>();
             cmdarray.add(command);
             cmdarray.add(scriptFile);
-            if (params != null && params.length > 0) {
+            if (params!=null && params.length>0) {
                 for (String param:params) {
                     cmdarray.add(param);
                 }

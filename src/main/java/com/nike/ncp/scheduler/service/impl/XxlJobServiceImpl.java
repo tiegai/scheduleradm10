@@ -41,15 +41,15 @@ public class XxlJobServiceImpl implements XxlJobService {
     private static final Logger LOGGER = LoggerFactory.getLogger(XxlJobServiceImpl.class);
 
     @Resource
-    private XxlJobGroupDao xxlJobGroupDao;
+    private transient XxlJobGroupDao xxlJobGroupDao;
     @Resource
-    private XxlJobInfoDao xxlJobInfoDao;
+    private transient XxlJobInfoDao xxlJobInfoDao;
     @Resource
-    private XxlJobLogDao xxlJobLogDao;
+    private transient XxlJobLogDao xxlJobLogDao;
     @Resource
-    private XxlJobLogGlueDao xxlJobLogGlueDao;
+    private transient XxlJobLogGlueDao xxlJobLogGlueDao;
     @Resource
-    private XxlJobLogReportDao xxlJobLogReportDao;
+    private transient XxlJobLogReportDao xxlJobLogReportDao;
 
     @Override
     public Map<String, Object> pageList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author) {
@@ -67,6 +67,7 @@ public class XxlJobServiceImpl implements XxlJobService {
     }
 
     @Override
+    @SuppressWarnings("all")
     public ReturnT<String> add(XxlJobInfo jobInfo) {
 
         // valid base
@@ -167,7 +168,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 
     private boolean isNumeric(String str) {
         try {
-            int result = Integer.valueOf(str);
+            //int result = Integer.valueOf(str);
             return true;
         } catch (NumberFormatException e) {
             return false;
@@ -175,6 +176,7 @@ public class XxlJobServiceImpl implements XxlJobService {
     }
 
     @Override
+    @SuppressWarnings("all")
     public ReturnT<String> update(XxlJobInfo jobInfo) {
 
         // valid base
@@ -310,6 +312,7 @@ public class XxlJobServiceImpl implements XxlJobService {
     }
 
     @Override
+    @SuppressWarnings("all")
     public ReturnT<String> start(int id) {
         XxlJobInfo xxlJobInfo = xxlJobInfoDao.loadById(id);
 
@@ -355,6 +358,7 @@ public class XxlJobServiceImpl implements XxlJobService {
     }
 
     @Override
+    @SuppressWarnings("all")
     public Map<String, Object> dashboardInfo() {
 
         int jobInfoCount = xxlJobInfoDao.findAllCount();

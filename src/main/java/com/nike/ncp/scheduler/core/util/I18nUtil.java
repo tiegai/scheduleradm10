@@ -61,6 +61,7 @@ public final class I18nUtil {
      * @param keys
      * @return
      */
+    @SuppressWarnings("all")
     public static String getMultString(String... keys) {
         Map<String, String> map = new HashMap<String, String>();
 

@@ -11,6 +11,7 @@ public final class UtcLocalDateUtil {
 
     }
 
+    @SuppressWarnings("all")
     public static String utcStrToLocalStr(String dateStr) {
         SimpleDateFormat sdfUtc = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         sdfUtc.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -25,6 +26,7 @@ public final class UtcLocalDateUtil {
         return returnDate;
     }
 
+    @SuppressWarnings("all")
     public static String localStrToUtcStr(String dateStr) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat sdfUtc = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -39,6 +41,7 @@ public final class UtcLocalDateUtil {
         return returnDate;
     }
 
+    @SuppressWarnings("all")
     public static Date strToDate(String dateStr) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = null;
@@ -50,12 +53,14 @@ public final class UtcLocalDateUtil {
         return date;
     }
 
+    @SuppressWarnings("all")
     public static String dateToStr(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateStr = sdf.format(date);
         return dateStr;
     }
 
+    @SuppressWarnings("all")
     public static Date strToTime(String dateStr) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         Date date = null;
@@ -67,7 +72,7 @@ public final class UtcLocalDateUtil {
         return date;
     }
 
-
+    @SuppressWarnings("all")
     public static String utcToStr(String dateStr) {
         String returnDate = null;
         try {
@@ -102,8 +107,8 @@ public final class UtcLocalDateUtil {
         //System.out.println(utcTimeToLocalStr("10:12Z"));
         //System.out.println(utcToStr("2022-12-01T23:00Z"));
         //System.out.println(localStrToUtcStr("2022-11-24 18:50:00"));
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println(sdf.format(new Date()));
-        System.out.println(utcToStr("2022-12-01T23:00:00Z"));
+        System.out.println(utcToStr("2022-12-01T23:00:00Z"));*/
     }
 }

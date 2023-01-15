@@ -15,6 +15,7 @@ public final class CronUtil {
 
     }
 
+    @SuppressWarnings("all")
     public static String cronNextStart(String cronStr, Date startDate) {
         String dateString = null;
         try {

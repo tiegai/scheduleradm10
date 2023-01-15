@@ -21,7 +21,7 @@ public class LoginService {
     public static final String LOGIN_IDENTITY_KEY = "XXL_JOB_LOGIN_IDENTITY";
 
     @Resource
-    private XxlJobUserDao xxlJobUserDao;
+    private transient XxlJobUserDao xxlJobUserDao;
 
 
     private String makeToken(XxlJobUser xxlJobUser) {
@@ -30,6 +30,7 @@ public class LoginService {
         return tokenHex;
     }
 
+    @SuppressWarnings("all")
     private XxlJobUser parseToken(String tokenHex) {
         XxlJobUser xxlJobUser = null;
         if (tokenHex != null) {
@@ -81,6 +82,7 @@ public class LoginService {
      * @param request
      * @return
      */
+    @SuppressWarnings("all")
     public XxlJobUser ifLogin(HttpServletRequest request, HttpServletResponse response) {
         String cookieToken = CookieUtil.getValue(request, LOGIN_IDENTITY_KEY);
         if (cookieToken != null) {

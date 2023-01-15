@@ -32,23 +32,26 @@ public class SchedulerServiceImpl implements SchedulerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SchedulerServiceImpl.class);
 
     @Value("${ncp.engine.url}")
-    private String engineUrl;
+    private transient String engineUrl;
 
 
     @Value("${ncp.scheduler.executor.job.group}")
-    private Integer jobGroup;
+    private transient Integer jobGroup;
 
     @Resource
-    private XxlJobInfoDao xxlJobInfoDao;
+    private transient XxlJobInfoDao xxlJobInfoDao;
 
     @Resource
-    private XxlJobLogDao xxlJobLogDao;
+    private transient XxlJobLogDao xxlJobLogDao;
 
     @Resource
-    private XxlJobLogGlueDao xxlJobLogGlueDao;
+    private transient XxlJobLogGlueDao xxlJobLogGlueDao;
+
+    private static final int SIZE_ONE = 1;
 
     @Override
     @Transactional
+    @SuppressWarnings("all")
     public JourneyNextStart addJobs(JourneyInfo journeyInfo) {
         // add in db
         XxlJobInfo jobInfo = new XxlJobInfo();
@@ -173,7 +176,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     @Transactional
     public void deleteJobs(String journeyId) {
         List<String> cronList = xxlJobInfoDao.getCronByJourneyId(journeyId);
-        if (cronList.size() < 0) {
+        if (cronList.size() < SIZE_ONE) {
             return;
         }
         xxlJobInfoDao.deleteByJourneyId(journeyId);
@@ -182,6 +185,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     @Override
+    @SuppressWarnings("all")
     public JourneyLogRes queryJobExeRecs(String journeyId, int page, int size, int status, String filterTime) {
 
         Date triggerTimeStart = null;

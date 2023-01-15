@@ -12,9 +12,21 @@ import java.util.List;
  */
 @Mapper
 public interface XxlJobInfoDao {
-    List<XxlJobInfo> pageList(@Param("offset") int offset, @Param("pagesize") int pagesize, @Param("jobGroup") int jobGroup, @Param("triggerStatus") int triggerStatus, @Param("jobDesc") String jobDesc, @Param("executorHandler") String executorHandler, @Param("author") String author);
+    List<XxlJobInfo> pageList(@Param("offset") int offset,
+                              @Param("pagesize") int pagesize,
+                              @Param("jobGroup") int jobGroup,
+                              @Param("triggerStatus") int triggerStatus,
+                              @Param("jobDesc") String jobDesc,
+                              @Param("executorHandler") String executorHandler,
+                              @Param("author") String author);
 
-    int pageListCount(@Param("offset") int offset, @Param("pagesize") int pagesize, @Param("jobGroup") int jobGroup, @Param("triggerStatus") int triggerStatus, @Param("jobDesc") String jobDesc, @Param("executorHandler") String executorHandler, @Param("author") String author);
+    int pageListCount(@Param("offset") int offset,
+                      @Param("pagesize") int pagesize,
+                      @Param("jobGroup") int jobGroup,
+                      @Param("triggerStatus") int triggerStatus,
+                      @Param("jobDesc") String jobDesc,
+                      @Param("executorHandler") String executorHandler,
+                      @Param("author") String author);
 
     int save(XxlJobInfo info);
 
@@ -36,15 +48,15 @@ public interface XxlJobInfoDao {
 
     int autoStopJobs();
 
-    int manualStartJobs(@Param("journeyId") String journeyId);
+    int manualStartJobs(@Param("manualStartJourneyId") String journeyId);
 
-    int manualStopJobs(@Param("journeyId") String journeyId);
+    int manualStopJobs(@Param("manualStopJourneyId") String journeyId);
 
-    List<String> getCronByJourneyId(@Param("journeyId") String journeyId);
+    List<String> getCronByJourneyId(@Param("cronJourneyId") String journeyId);
 
-    int deleteByJourneyId(@Param("journeyId") String journeyId);
+    int deleteByJourneyId(@Param("deleteJourneyId") String journeyId);
 
-    List<XxlJobInfo> getJobsByJourneyId(@Param("journeyId") String journeyId);
+    List<XxlJobInfo> getJobsByJourneyId(@Param("selectJourneyId") String journeyId);
 
     /*int deleteByIdsAndIdGroup(@Param("ids") List<Integer> ids,@Param("idGroup") int idGroup);*/
 }

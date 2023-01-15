@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nike.ncp.scheduler.dao.XxlJobLogDao">
-	
+
 	<resultMap id="XxlJobLog" type="com.nike.ncp.scheduler.core.model.XxlJobLog" >
 		<result column="pk_id" property="id" />
 
@@ -12,17 +12,17 @@
 
 		<result column="executor_address" property="executorAddress" />
 		<result column="executor_handler" property="executorHandler" />
-	    <result column="executor_param" property="executorParam" />
+		<result column="executor_param" property="executorParam" />
 		<result column="executor_sharding_param" property="executorShardingParam" />
 		<result column="executor_fail_retry_count" property="executorFailRetryCount" />
-	    
-	    <result column="trigger_time" property="triggerTime" />
-	    <result column="trigger_code" property="triggerCode" />
-	    <result column="trigger_msg" property="triggerMsg" />
-	    
-	    <result column="handle_time" property="handleTime" />
-	    <result column="handle_code" property="handleCode" />
-	    <result column="handle_msg" property="handleMsg" />
+
+		<result column="trigger_time" property="triggerTime" />
+		<result column="trigger_code" property="triggerCode" />
+		<result column="trigger_msg" property="triggerMsg" />
+
+		<result column="handle_time" property="handleTime" />
+		<result column="handle_code" property="handleCode" />
+		<result column="handle_msg" property="handleMsg" />
 
 		<result column="alarm_status" property="alarmStatus" />
 	</resultMap>
@@ -45,7 +45,7 @@
 		t.handle_msg,
 		t.alarm_status
 	</sql>
-	
+
 	<select id="pageList" resultMap="XxlJobLog">
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_job_log AS t
@@ -53,36 +53,36 @@
 			<if test="jobGroup gt 0">
 				AND t.job_group = #{jobGroup}
 			</if>
-			<if test="jobId gt 0">
-				AND t.job_id = #{jobId}
+			<if test="jobIdList gt 0">
+				AND t.job_id = #{jobIdList}
 			</if>
 			<!--<if test="jobIdGroup gt 0">
 				AND t.job_id_group = #{jobIdGroup}
 			</if>-->
-			<if test="triggerTimeStart != null">
-				AND t.trigger_time <![CDATA[ >= ]]> #{triggerTimeStart}
+			<if test="triggerTimeStartList != null">
+				AND t.trigger_time <![CDATA[ >= ]]> #{triggerTimeStartList}
 			</if>
-			<if test="triggerTimeEnd != null">
-				AND t.trigger_time <![CDATA[ <= ]]> #{triggerTimeEnd}
+			<if test="triggerTimeEndList != null">
+				AND t.trigger_time <![CDATA[ <= ]]> #{triggerTimeEndList}
 			</if>
-			<if test="logStatus == 1" >
+			<if test="logStatusList == 1" >
 				AND t.handle_code = 200
 			</if>
-			<if test="logStatus == 2" >
+			<if test="logStatusList == 2" >
 				AND (
-					t.trigger_code NOT IN (0, 200) OR
-					t.handle_code NOT IN (0, 200)
+				t.trigger_code NOT IN (0, 200) OR
+				t.handle_code NOT IN (0, 200)
 				)
 			</if>
-			<if test="logStatus == 3" >
+			<if test="logStatusList == 3" >
 				AND t.trigger_code = 200
 				AND t.handle_code = 0
 			</if>
 		</trim>
 		ORDER BY t.trigger_time DESC
-		LIMIT #{offset}, #{pagesize}
+		LIMIT #{offsetList}, #{pageSizeList}
 	</select>
-	
+
 	<select id="pageListCount" resultType="int">
 		SELECT count(1)
 		FROM xxl_job_log AS t
@@ -90,59 +90,59 @@
 			<if test="jobGroup gt 0">
 				AND t.job_group = #{jobGroup}
 			</if>
-			<if test="jobId gt 0">
-				AND t.job_id = #{jobId}
+			<if test="jobIdCount gt 0">
+				AND t.job_id = #{jobIdCount}
 			</if>
 			<!--<if test="jobIdGroup gt 0">
 				AND t.job_id_group = #{jobIdGroup}
 			</if>-->
-			<if test="triggerTimeStart != null">
-				AND t.trigger_time <![CDATA[ >= ]]> #{triggerTimeStart}
+			<if test="triggerTimeStartCount != null">
+				AND t.trigger_time <![CDATA[ >= ]]> #{triggerTimeStartCount}
 			</if>
-			<if test="triggerTimeEnd != null">
-				AND t.trigger_time <![CDATA[ <= ]]> #{triggerTimeEnd}
+			<if test="triggerTimeEndCount != null">
+				AND t.trigger_time <![CDATA[ <= ]]> #{triggerTimeEndCount}
 			</if>
-			<if test="logStatus == 1" >
+			<if test="logStatusCount == 1" >
 				AND t.handle_code = 200
 			</if>
-			<if test="logStatus == 2" >
+			<if test="logStatusCount == 2" >
 				AND (
-					t.trigger_code NOT IN (0, 200) OR
-					t.handle_code NOT IN (0, 200)
+				t.trigger_code NOT IN (0, 200) OR
+				t.handle_code NOT IN (0, 200)
 				)
 			</if>
-			<if test="logStatus == 3" >
+			<if test="logStatusCount == 3" >
 				AND t.trigger_code = 200
 				AND t.handle_code = 0
 			</if>
 		</trim>
 	</select>
-	
+
 	<select id="load" parameterType="java.lang.Long" resultMap="XxlJobLog">
 		SELECT <include refid="Base_Column_List" />
 		FROM xxl_job_log AS t
 		WHERE t.pk_id = #{id}
 	</select>
 
-	
+
 	<insert id="save" parameterType="com.nike.ncp.scheduler.core.model.XxlJobLog" useGeneratedKeys="true" keyProperty="id" >
 		INSERT INTO xxl_job_log (
-			`job_group`,
-			`job_id`,
-			`journey_id`,
-			`trigger_time`,
-			`trigger_code`,
-			`handle_code`
+		`job_group`,
+		`job_id`,
+		`journey_id`,
+		`trigger_time`,
+		`trigger_code`,
+		`handle_code`
 		) VALUES (
-			#{jobGroup},
-			#{jobId},
-			#{journeyId},
-			#{triggerTime},
-			#{triggerCode},
-			#{handleCode}
+		#{jobGroup},
+		#{jobId},
+		#{journeyId},
+		#{triggerTime},
+		#{triggerCode},
+		#{handleCode}
 		);
 		<!--<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
-			SELECT LAST_INSERT_ID() 
+			SELECT LAST_INSERT_ID()
 		</selectKey>-->
 	</insert>
 
@@ -162,38 +162,38 @@
 
 	<update id="updateHandleInfo">
 		UPDATE xxl_job_log
-		SET 
-			`handle_time`= #{handleTime}, 
+		SET
+			`handle_time`= #{handleTime},
 			`handle_code`= #{handleCode},
 			`handle_msg`= #{handleMsg}
 		WHERE `pk_id`= #{id}
 	</update>
-	
+
 	<delete id="delete" >
 		delete from xxl_job_log
-		WHERE job_id = #{jobId}
+		WHERE job_id = #{jobIdDel}
 	</delete>
 
-    <!--<select id="triggerCountByDay" resultType="java.util.Map" >
-		SELECT
-			DATE_FORMAT(trigger_time,'%Y-%m-%d') triggerDay,
-			COUNT(handle_code) triggerDayCount,
-			SUM(CASE WHEN (trigger_code in (0, 200) and handle_code = 0) then 1 else 0 end) as triggerDayCountRunning,
-			SUM(CASE WHEN handle_code = 200 then 1 else 0 end) as triggerDayCountSuc
-		FROM xxl_job_log
-		WHERE trigger_time BETWEEN #{from} and #{to}
-		GROUP BY triggerDay
-		ORDER BY triggerDay
+	<!--<select id="triggerCountByDay" resultType="java.util.Map" >
+        SELECT
+            DATE_FORMAT(trigger_time,'%Y-%m-%d') triggerDay,
+            COUNT(handle_code) triggerDayCount,
+            SUM(CASE WHEN (trigger_code in (0, 200) and handle_code = 0) then 1 else 0 end) as triggerDayCountRunning,
+            SUM(CASE WHEN handle_code = 200 then 1 else 0 end) as triggerDayCountSuc
+        FROM xxl_job_log
+        WHERE trigger_time BETWEEN #{from} and #{to}
+        GROUP BY triggerDay
+        ORDER BY triggerDay
     </select>-->
 
-    <select id="findLogReport" resultType="java.util.Map" >
+	<select id="findLogReport" resultType="java.util.Map" >
 		SELECT
 			COUNT(handle_code) triggerDayCount,
 			SUM(CASE WHEN (trigger_code in (0, 200) and handle_code = 0) then 1 else 0 end) as triggerDayCountRunning,
 			SUM(CASE WHEN handle_code = 200 then 1 else 0 end) as triggerDayCountSuc
 		FROM xxl_job_log
 		WHERE trigger_time BETWEEN #{from} and #{to}
-    </select>
+	</select>
 
 	<select id="findClearLogIds" resultType="long" >
 		SELECT pk_id FROM xxl_job_log
@@ -201,8 +201,8 @@
 			<if test="jobGroup gt 0">
 				AND job_group = #{jobGroup}
 			</if>
-			<if test="jobId gt 0">
-				AND job_id = #{jobId}
+			<if test="jobIdClear gt 0">
+				AND job_id = #{jobIdClear}
 			</if>
 			<if test="clearBeforeTime != null">
 				AND trigger_time <![CDATA[ <= ]]> #{clearBeforeTime}
@@ -226,7 +226,7 @@
 			</if>
 		</trim>
 		order by pk_id asc
-		LIMIT #{pagesize}
+		LIMIT #{pageSizeClear}
 	</select>
 
 	<delete id="clearLog" >
@@ -241,12 +241,12 @@
 		SELECT pk_id FROM `xxl_job_log`
 		WHERE !(
 			(trigger_code in (0, 200) and handle_code = 0)
-			OR
+		   OR
 			(handle_code = 200)
-		)
-		AND `alarm_status` = 0
+			)
+		  AND `alarm_status` = 0
 		ORDER BY pk_id ASC
-		LIMIT #{pagesize}
+			LIMIT #{pageSizeFail}
 	</select>
 
 	<update id="updateAlarmStatus" >
@@ -261,12 +261,12 @@
 			t.pk_id
 		FROM
 			xxl_job_log t
-			LEFT JOIN xxl_job_registry t2 ON t.executor_address = t2.registry_value
+				LEFT JOIN xxl_job_registry t2 ON t.executor_address = t2.registry_value
 		WHERE
 			t.trigger_code = 200
-				AND t.handle_code = 0
-				AND t.trigger_time <![CDATA[ <= ]]> #{losedTime}
-				AND t2.pk_id IS NULL;
+		  AND t.handle_code = 0
+		  AND t.trigger_time <![CDATA[ <= ]]> #{losedTime}
+		  AND t2.pk_id IS NULL;
 	</select>
 	<!--
 	SELECT t.id
@@ -280,22 +280,22 @@
 		)
 	-->
 
-<!--	<select id="loadList"  resultMap="XxlJobLog">
-		SELECT <include refid="Base_Column_List" />
-		FROM xxl_job_log AS t
-		WHERE t.job_id IN
-		<foreach item="item" collection="ids" open="(" separator="," close=")" index="index">
-			#{item}
-		</foreach>
-		order by t.trigger_time desc
-	</select>-->
+	<!--	<select id="loadList"  resultMap="XxlJobLog">
+            SELECT <include refid="Base_Column_List" />
+            FROM xxl_job_log AS t
+            WHERE t.job_id IN
+            <foreach item="item" collection="ids" open="(" separator="," close=")" index="index">
+                #{item}
+            </foreach>
+            order by t.trigger_time desc
+        </select>-->
 
-<!--	<select id="loadByJobIdGroup"  resultMap="XxlJobLog">
-		SELECT <include refid="Base_Column_List" />
-		FROM xxl_job_log AS t
-		WHERE t.job_id_group = #{jobIdGroup}
-		order by t.trigger_time desc
-	</select>-->
+	<!--	<select id="loadByJobIdGroup"  resultMap="XxlJobLog">
+            SELECT <include refid="Base_Column_List" />
+            FROM xxl_job_log AS t
+            WHERE t.job_id_group = #{jobIdGroup}
+            order by t.trigger_time desc
+        </select>-->
 
 	<delete id="deleteByJourneyId" >
 		delete from xxl_job_log
@@ -312,28 +312,28 @@
 			<if test="journeyId != null and journeyId != ''">
 				AND t.journey_id = #{journeyId}
 			</if>
-			<if test="triggerTimeStart != null">
-				AND t.trigger_time <![CDATA[ >= ]]> #{triggerTimeStart}
+			<if test="triggerTimeStartRecList != null">
+				AND t.trigger_time <![CDATA[ >= ]]> #{triggerTimeStartRecList}
 			</if>
-			<if test="triggerTimeEnd != null">
-				AND t.trigger_time <![CDATA[ <= ]]> #{triggerTimeEnd}
+			<if test="triggerTimeEndRecList != null">
+				AND t.trigger_time <![CDATA[ <= ]]> #{triggerTimeEndRecList}
 			</if>
-			<if test="logStatus == 1" >
+			<if test="logStatusRecList == 1" >
 				AND t.handle_code = 200
 			</if>
-			<if test="logStatus == 2" >
+			<if test="logStatusRecList == 2" >
 				AND (
 				t.trigger_code NOT IN (0, 200) OR
 				t.handle_code NOT IN (0, 200)
 				)
 			</if>
-			<if test="logStatus == 3" >
+			<if test="logStatusRecList == 3" >
 				AND t.trigger_code = 200
 				AND t.handle_code = 0
 			</if>
 		</trim>
 		ORDER BY t.trigger_time DESC
-		LIMIT #{offset}, #{pagesize}
+		LIMIT #{offsetRecList}, #{pageSizeRecList}
 	</select>
 
 	<select id="recsPageListCount" resultType="int">
@@ -346,22 +346,22 @@
 			<if test="journeyId != null and journeyId != ''">
 				AND t.journey_id = #{journeyId}
 			</if>
-			<if test="triggerTimeStart != null">
-				AND t.trigger_time <![CDATA[ >= ]]> #{triggerTimeStart}
+			<if test="triggerTimeStartRecCount != null">
+				AND t.trigger_time <![CDATA[ >= ]]> #{triggerTimeStartRecCount}
 			</if>
-			<if test="triggerTimeEnd != null">
-				AND t.trigger_time <![CDATA[ <= ]]> #{triggerTimeEnd}
+			<if test="triggerTimeEndRecCount != null">
+				AND t.trigger_time <![CDATA[ <= ]]> #{triggerTimeEndRecCount}
 			</if>
-			<if test="logStatus == 1" >
+			<if test="logStatusRecCount == 1" >
 				AND t.handle_code = 200
 			</if>
-			<if test="logStatus == 2" >
+			<if test="logStatusRecCount == 2" >
 				AND (
 				t.trigger_code NOT IN (0, 200) OR
 				t.handle_code NOT IN (0, 200)
 				)
 			</if>
-			<if test="logStatus == 3" >
+			<if test="logStatusRecCount == 3" >
 				AND t.trigger_code = 200
 				AND t.handle_code = 0
 			</if>

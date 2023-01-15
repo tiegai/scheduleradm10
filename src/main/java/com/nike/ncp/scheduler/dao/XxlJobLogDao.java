@@ -15,9 +15,21 @@ import java.util.Map;
 public interface XxlJobLogDao {
 
     // exist jobId not use jobGroup, not exist use jobGroup
-    List<XxlJobLog> pageList(@Param("offset") int offset, @Param("pagesize") int pagesize, @Param("jobGroup") int jobGroup, @Param("jobId") int jobId, @Param("triggerTimeStart") Date triggerTimeStart, @Param("triggerTimeEnd") Date triggerTimeEnd, @Param("logStatus") int logStatus);
+    List<XxlJobLog> pageList(@Param("offsetList") int offset,
+                             @Param("pageSizeList") int pageSize,
+                             @Param("jobGroup") int jobGroup,
+                             @Param("jobIdList") int jobId,
+                             @Param("triggerTimeStartList") Date triggerTimeStart,
+                             @Param("triggerTimeEndList") Date triggerTimeEnd,
+                             @Param("logStatusList") int logStatus);
 
-    int pageListCount(@Param("offset") int offset, @Param("pagesize") int pagesize, @Param("jobGroup") int jobGroup, @Param("jobId") int jobId, @Param("triggerTimeStart") Date triggerTimeStart, @Param("triggerTimeEnd") Date triggerTimeEnd, @Param("logStatus") int logStatus);
+    int pageListCount(@Param("offsetCount") int offset,
+                      @Param("pageSizeCount") int pageSize,
+                      @Param("jobGroup") int jobGroup,
+                      @Param("jobIdCount") int jobId,
+                      @Param("triggerTimeStartCount") Date triggerTimeStart,
+                      @Param("triggerTimeEndCount") Date triggerTimeEnd,
+                      @Param("logStatusCount") int logStatus);
 
     XxlJobLog load(@Param("id") long id);
 
@@ -27,28 +39,43 @@ public interface XxlJobLogDao {
 
     int updateHandleInfo(XxlJobLog xxlJobLog);
 
-    int delete(@Param("jobId") int jobId);
+    int delete(@Param("jobIdDel") int jobId);
 
-    Map<String, Object> findLogReport(@Param("from") Date from, @Param("to") Date to);
+    Map<String, Object> findLogReport(@Param("from") Date from,
+                                      @Param("to") Date to);
 
-    List<Long> findClearLogIds(@Param("jobGroup") int jobGroup, @Param("jobId") int jobId, @Param("clearBeforeTime") Date clearBeforeTime, @Param("clearBeforeNum") int clearBeforeNum, @Param("pagesize") int pagesize);
+    List<Long> findClearLogIds(@Param("jobGroup") int jobGroup,
+                               @Param("jobIdClear") int jobId,
+                               @Param("clearBeforeTime") Date clearBeforeTime,
+                               @Param("clearBeforeNum") int clearBeforeNum,
+                               @Param("pageSizeClear") int pageSize);
 
     int clearLog(@Param("logIds") List<Long> logIds);
 
-    List<Long> findFailJobLogIds(@Param("pagesize") int pagesize);
+    List<Long> findFailJobLogIds(@Param("pageSizeFail") int pageSize);
 
-    int updateAlarmStatus(@Param("logId") long logId, @Param("oldAlarmStatus") int oldAlarmStatus, @Param("newAlarmStatus") int newAlarmStatus);
+    int updateAlarmStatus(@Param("logId") long logId,
+                          @Param("oldAlarmStatus") int oldAlarmStatus,
+                          @Param("newAlarmStatus") int newAlarmStatus);
 
     List<Long> findLostJobIds(@Param("losedTime") Date losedTime);
 
     int deleteByJourneyId(@Param("journeyId") String journeyId);
 
-    List<XxlJobLog> recsPageList(@Param("offset") int offset, @Param("pagesize") int pagesize,
+    List<XxlJobLog> recsPageList(@Param("offsetRecList") int offset,
+                                 @Param("pageSizeRecList") int pageSize,
                                  //@Param("jobGroup") int jobGroup,
-                                 @Param("journeyId") String journeyId, @Param("triggerTimeStart") Date triggerTimeStart, @Param("triggerTimeEnd") Date triggerTimeEnd, @Param("logStatus") int logStatus);
+                                 @Param("journeyId") String journeyId,
+                                 @Param("triggerTimeStartRecList") Date triggerTimeStart,
+                                 @Param("triggerTimeEndRecList") Date triggerTimeEnd,
+                                 @Param("logStatusRecList") int logStatus);
 
-    int recsPageListCount(@Param("offset") int offset, @Param("pagesize") int pagesize,
+    int recsPageListCount(@Param("offsetRecCount") int offset,
+                          @Param("pageSizeRecCount") int pageSize,
                           //@Param("jobGroup") int jobGroup,
-                          @Param("journeyId") String journeyId, @Param("triggerTimeStart") Date triggerTimeStart, @Param("triggerTimeEnd") Date triggerTimeEnd, @Param("logStatus") int logStatus);
+                          @Param("journeyId") String journeyId,
+                          @Param("triggerTimeStartRecCount") Date triggerTimeStart,
+                          @Param("triggerTimeEndRecCount") Date triggerTimeEnd,
+                          @Param("logStatusRecCount") int logStatus);
 
 }

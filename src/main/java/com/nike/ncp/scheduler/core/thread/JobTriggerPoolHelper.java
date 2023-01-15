@@ -25,8 +25,8 @@ public class JobTriggerPoolHelper {
     // ---------------------- trigger pool ----------------------
 
     // fast/slow thread pool
-    private ThreadPoolExecutor fastTriggerPool = null;
-    private ThreadPoolExecutor slowTriggerPool = null;
+    private transient ThreadPoolExecutor fastTriggerPool = null;
+    private transient ThreadPoolExecutor slowTriggerPool = null;
 
     public void start() {
         fastTriggerPool = new ThreadPoolExecutor(10, XxlJobAdminConfig.getAdminConfig().getTriggerPoolFastMax(), 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(1000), new ThreadFactory() {
@@ -54,13 +54,14 @@ public class JobTriggerPoolHelper {
 
 
     // job timeout count
-    private volatile long minTim = System.currentTimeMillis() / 60000;     // ms > min
-    private volatile ConcurrentMap<Integer, AtomicInteger> jobTimeoutCountMap = new ConcurrentHashMap<>();
+    private transient volatile long minTim = System.currentTimeMillis() / 60000;     // ms > min
+    private transient volatile ConcurrentMap<Integer, AtomicInteger> jobTimeoutCountMap = new ConcurrentHashMap<>();
 
 
     /**
      * add trigger
      */
+    @SuppressWarnings("all")
     public void addTrigger(final int jobId, final TriggerTypeEnum triggerType, final int failRetryCount, final String executorShardingParam, final String executorParam, final String addressList) {
 
         // choose thread pool

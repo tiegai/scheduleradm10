@@ -43,6 +43,7 @@ public final class XxlJobTrigger {
      *          null: use executor addressList
      *          not null: cover
      */
+    @SuppressWarnings("all")
     public static void trigger(int jobId,
                                TriggerTypeEnum triggerType,
                                int failRetryCount,
@@ -74,8 +75,8 @@ public final class XxlJobTrigger {
             String[] shardingArr = executorShardingParam.split("/");
             if (shardingArr.length == 2 && isNumeric(shardingArr[0]) && isNumeric(shardingArr[1])) {
                 shardingParam = new int[2];
-                shardingParam[0] = Integer.valueOf(shardingArr[0]);
-                shardingParam[1] = Integer.valueOf(shardingArr[1]);
+                shardingParam[0] = Integer.parseInt(shardingArr[0]);
+                shardingParam[1] = Integer.parseInt(shardingArr[1]);
             }
         }
         if (ExecutorRouteStrategyEnum.SHARDING_BROADCAST == ExecutorRouteStrategyEnum.match(jobInfo.getExecutorRouteStrategy(), null)
@@ -95,7 +96,8 @@ public final class XxlJobTrigger {
 
     private static boolean isNumeric(String str) {
         try {
-            int result = Integer.valueOf(str);
+            //int result = Integer.valueOf(str);
+            Integer.valueOf(str);
             return true;
         } catch (NumberFormatException e) {
             return false;
@@ -110,6 +112,7 @@ public final class XxlJobTrigger {
      * @param index                     sharding index
      * @param total                     sharding index
      */
+    @SuppressWarnings("all")
     private static void processTrigger(XxlJobGroup group, XxlJobInfo jobInfo, int finalFailRetryCount, TriggerTypeEnum triggerType, int index, int total) {
 
         // param
@@ -210,6 +213,7 @@ public final class XxlJobTrigger {
      * @param address
      * @return
      */
+    @SuppressWarnings("all")
     static ReturnT<String> runExecutor(TriggerParam triggerParam, String address) {
         ReturnT<String> runResult = null;
         try {

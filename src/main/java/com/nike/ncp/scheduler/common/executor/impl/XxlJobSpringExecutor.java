@@ -75,6 +75,7 @@ public class XxlJobSpringExecutor extends XxlJobExecutor implements ApplicationC
         }
     }*/
 
+    @SuppressWarnings("all")
     private void initJobHandlerMethodRepository(ApplicationContext applicationContextJob) {
         if (applicationContextJob == null) {
             return;

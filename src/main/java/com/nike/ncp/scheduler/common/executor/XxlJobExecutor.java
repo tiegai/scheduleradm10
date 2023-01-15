@@ -23,17 +23,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class XxlJobExecutor {
-    private static final Logger LOGGGER = LoggerFactory.getLogger(XxlJobExecutor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XxlJobExecutor.class);
 
     // ---------------------- param ----------------------
-    private String adminAddresses;
-    private String accessToken;
-    private String appname;
-    private String address;
-    private String ip;
-    private int port;
-    private String logPath;
-    private int logRetentionDays;
+    private transient String adminAddresses;
+    private transient String accessToken;
+    private transient String appname;
+    private transient String address;
+    private transient String ip;
+    private transient int port;
+    private transient String logPath;
+    private transient int logRetentionDays;
 
     public void setAdminAddresses(String adminAddresses) {
         this.adminAddresses = adminAddresses;
@@ -101,7 +101,7 @@ public class XxlJobExecutor {
                     try {
                         oldJobThread.join();
                     } catch (InterruptedException e) {
-                        LOGGGER.error(">>>>>>>>>>> xxl-job, JobThread destroy(join) error, jobId:{}", item.getKey(), e);
+                        LOGGER.error(">>>>>>>>>>> xxl-job, JobThread destroy(join) error, jobId:{}", item.getKey(), e);
                     }
                 }
             }
@@ -143,7 +143,7 @@ public class XxlJobExecutor {
     }
 
     // ---------------------- executor-server (rpc provider) ----------------------
-    private EmbedServer embedServer = null;
+    private transient EmbedServer embedServer = null;
 
     private void initEmbedServer(String addressEmb, String ipEmb, int portEmb, String appNameEmb, String accessTokenEmb) throws Exception {
 
@@ -159,7 +159,7 @@ public class XxlJobExecutor {
 
         // accessToken
         if (accessTokenEmb == null || accessTokenEmb.trim().length() == 0) {
-            LOGGGER.warn(">>>>>>>>>>> xxl-job accessToken is empty. To ensure system security, please set the accessToken.");
+            LOGGER.warn(">>>>>>>>>>> xxl-job accessToken is empty. To ensure system security, please set the accessToken.");
         }
 
         // start
@@ -173,7 +173,7 @@ public class XxlJobExecutor {
             try {
                 embedServer.stop();
             } catch (Exception e) {
-                LOGGGER.error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
         }
     }
@@ -187,10 +187,11 @@ public class XxlJobExecutor {
     }
 
     public static IJobHandler registJobHandler(String name, IJobHandler jobHandler) {
-        LOGGGER.info(">>>>>>>>>>> xxl-job register jobhandler success, name:{}, jobHandler:{}", name, jobHandler);
+        LOGGER.info(">>>>>>>>>>> xxl-job register jobhandler success, name:{}, jobHandler:{}", name, jobHandler);
         return jobHandlerRepository.put(name, jobHandler);
     }
 
+    @SuppressWarnings("all")
     protected void registJobHandler(XxlJob xxlJob, Object bean, Method executeMethod) {
         if (xxlJob == null) {
             return;
@@ -252,7 +253,7 @@ public class XxlJobExecutor {
     public static JobThread registJobThread(int jobId, IJobHandler handler, String removeOldReason) {
         JobThread newJobThread = new JobThread(jobId, handler);
         newJobThread.start();
-        LOGGGER.info(">>>>>>>>>>> xxl-job regist JobThread success, jobId:{}, handler:{}", new Object[]{jobId, handler});
+        LOGGER.info(">>>>>>>>>>> xxl-job regist JobThread success, jobId:{}, handler:{}", new Object[]{jobId, handler});
 
         JobThread oldJobThread = jobThreadRepository.put(jobId, newJobThread);    // putIfAbsent | oh my god, map's put method return the old value!!!
         if (oldJobThread != null) {

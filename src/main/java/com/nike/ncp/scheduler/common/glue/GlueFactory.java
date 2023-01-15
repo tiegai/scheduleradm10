@@ -15,17 +15,20 @@ import java.util.concurrent.ConcurrentMap;
 public class GlueFactory {
 
 
-    private static GlueFactory glueFactory = new GlueFactory();
+    private static GlueFactory glueFact = new GlueFactory();
 
     public static GlueFactory getInstance() {
-        return glueFactory;
+        return glueFact;
     }
 
+    private static final int TYPE_0 = 0;
+    private static final int TYPE_1 = 1;
+
     public static void refreshInstance(int type) {
-        if (type == 0) {
-            glueFactory = new GlueFactory();
-        } else if (type == 1) {
-            glueFactory = new SpringGlueFactory();
+        if (type == TYPE_0) {
+            glueFact = new GlueFactory();
+        } else if (type == TYPE_1) {
+            glueFact = new SpringGlueFactory();
         }
     }
 
@@ -33,8 +36,8 @@ public class GlueFactory {
     /**
      * groovy class loader
      */
-    private GroovyClassLoader groovyClassLoader = new GroovyClassLoader();
-    private ConcurrentMap<String, Class<?>> classCache = new ConcurrentHashMap<>();
+    private transient GroovyClassLoader groovyClassLoader = new GroovyClassLoader();
+    private transient ConcurrentMap<String, Class<?>> classCache = new ConcurrentHashMap<>();
 
     /**
      * load new instance, prototype

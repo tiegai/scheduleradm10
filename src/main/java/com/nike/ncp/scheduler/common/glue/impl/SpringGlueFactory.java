@@ -13,7 +13,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 public class SpringGlueFactory extends GlueFactory {
-    private static Logger logger = LoggerFactory.getLogger(SpringGlueFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpringGlueFactory.class);
 
 
     /**
@@ -22,6 +22,7 @@ public class SpringGlueFactory extends GlueFactory {
      * @param instance
      */
     @Override
+    @SuppressWarnings("all")
     public void injectService(Object instance) {
         if (instance == null) {
             return;
@@ -67,9 +68,9 @@ public class SpringGlueFactory extends GlueFactory {
                 try {
                     field.set(instance, fieldBean);
                 } catch (IllegalArgumentException e) {
-                    logger.error(e.getMessage(), e);
+                    LOGGER.error(e.getMessage(), e);
                 } catch (IllegalAccessException e) {
-                    logger.error(e.getMessage(), e);
+                    LOGGER.error(e.getMessage(), e);
                 }
             }
         }

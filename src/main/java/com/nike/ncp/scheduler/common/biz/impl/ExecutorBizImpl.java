@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Date;
 
 public class ExecutorBizImpl implements ExecutorBiz {
-    private static Logger logger = LoggerFactory.getLogger(ExecutorBizImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExecutorBizImpl.class);
 
     @Override
     public ReturnT<String> beat() {
@@ -30,6 +30,7 @@ public class ExecutorBizImpl implements ExecutorBiz {
     }
 
     @Override
+    @SuppressWarnings("all")
     public ReturnT<String> idleBeat(IdleBeatParam idleBeatParam) {
 
         // isRunningOrHasQueue
@@ -46,6 +47,7 @@ public class ExecutorBizImpl implements ExecutorBiz {
     }
 
     @Override
+    @SuppressWarnings("all")
     public ReturnT<String> run(TriggerParam triggerParam) {
         // load old：jobHandler + jobThread
         JobThread jobThread = XxlJobExecutor.loadJobThread(triggerParam.getJobId());
@@ -93,7 +95,7 @@ public class ExecutorBizImpl implements ExecutorBiz {
                     IJobHandler originJobHandler = GlueFactory.getInstance().loadNewInstance(triggerParam.getGlueSource());
                     jobHandler = new GlueJobHandler(originJobHandler, triggerParam.getGlueUpdatetime());
                 } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
+                    LOGGER.error(e.getMessage(), e);
                     return new ReturnT<String>(ReturnT.FAIL_CODE, e.getMessage());
                 }
             }

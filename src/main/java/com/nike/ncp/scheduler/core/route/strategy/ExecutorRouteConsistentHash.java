@@ -25,6 +25,7 @@ public class ExecutorRouteConsistentHash extends ExecutorRouter {
      * @param key
      * @return
      */
+    @SuppressWarnings("all")
     private static long hash(String key) {
 
         // md5 byte

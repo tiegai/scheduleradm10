@@ -22,7 +22,7 @@ import java.util.concurrent.RejectedExecutionHandler;
  * job lose-monitor instance
  */
 public class JobCompleteHelper {
-    private static Logger logger = LoggerFactory.getLogger(JobCompleteHelper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobCompleteHelper.class);
     private static JobCompleteHelper instance = new JobCompleteHelper();
 
     public static JobCompleteHelper getInstance() {
@@ -31,9 +31,9 @@ public class JobCompleteHelper {
 
     // ---------------------- monitor ----------------------
 
-    private ThreadPoolExecutor callbackThreadPool = null;
-    private Thread monitorThread;
-    private volatile boolean toStop = false;
+    private transient ThreadPoolExecutor callbackThreadPool = null;
+    private transient Thread monitorThread;
+    private transient volatile boolean toStopFLag = false;
 
     public void start() {
 
@@ -47,7 +47,7 @@ public class JobCompleteHelper {
             @Override
             public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
                 r.run();
-                logger.warn(">>>>>>>>>>> xxl-job, callback too fast, match threadpool rejected handler(run now).");
+                LOGGER.warn(">>>>>>>>>>> xxl-job, callback too fast, match threadpool rejected handler(run now).");
             }
         });
 
@@ -62,13 +62,13 @@ public class JobCompleteHelper {
                 try {
                     TimeUnit.MILLISECONDS.sleep(50);
                 } catch (InterruptedException e) {
-                    if (!toStop) {
-                        logger.error(e.getMessage(), e);
+                    if (!toStopFLag) {
+                        LOGGER.error(e.getMessage(), e);
                     }
                 }
 
                 // monitor
-                while (!toStop) {
+                while (!toStopFLag) {
                     try {
                         // 任务结果丢失处理：调度记录停留在 "运行中" 状态超过10min，且对应执行器心跳注册失败不在线，则将本地调度主动标记失败；
                         Date losedTime = DateUtil.addMinutes(new Date(), -10);
@@ -89,22 +89,22 @@ public class JobCompleteHelper {
 
                         }
                     } catch (Exception e) {
-                        if (!toStop) {
-                            logger.error(">>>>>>>>>>> xxl-job, job fail monitor thread error:{}", e);
+                        if (!toStopFLag) {
+                            LOGGER.error(">>>>>>>>>>> xxl-job, job fail monitor thread error:{}", e);
                         }
                     }
 
                     try {
                         TimeUnit.SECONDS.sleep(60);
                     } catch (Exception e) {
-                        if (!toStop) {
-                            logger.error(e.getMessage(), e);
+                        if (!toStopFLag) {
+                            LOGGER.error(e.getMessage(), e);
                         }
                     }
 
                 }
 
-                logger.info(">>>>>>>>>>> xxl-job, JobLosedMonitorHelper stop");
+                LOGGER.info(">>>>>>>>>>> xxl-job, JobLosedMonitorHelper stop");
 
             }
         });
@@ -114,7 +114,7 @@ public class JobCompleteHelper {
     }
 
     public void toStop() {
-        toStop = true;
+        toStopFLag = true;
 
         // stop registryOrRemoveThreadPool
         callbackThreadPool.shutdownNow();
@@ -124,7 +124,7 @@ public class JobCompleteHelper {
         try {
             monitorThread.join();
         } catch (InterruptedException e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
     }
 
@@ -138,7 +138,7 @@ public class JobCompleteHelper {
             public void run() {
                 for (HandleCallbackParam handleCallbackParam : callbackParamList) {
                     ReturnT<String> callbackResult = callback(handleCallbackParam);
-                    logger.debug(">>>>>>>>> JobApiController.callback {}, handleCallbackParam={}, callbackResult={}", (callbackResult.getCode() == ReturnT.SUCCESS_CODE ? "success" : "fail"), handleCallbackParam, callbackResult);
+                    LOGGER.debug(">>>>>>>>> JobApiController.callback {}, handleCallbackParam={}, callbackResult={}", (callbackResult.getCode() == ReturnT.SUCCESS_CODE ? "success" : "fail"), handleCallbackParam, callbackResult);
                 }
             }
         });

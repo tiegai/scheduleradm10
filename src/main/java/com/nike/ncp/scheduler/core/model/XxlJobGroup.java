@@ -15,7 +15,7 @@ public class XxlJobGroup {
     private Date updateTime;
 
     // registry list
-    private List<String> registryList;  // 执行器地址列表(系统注册)
+    private transient List<String> registryList;  // 执行器地址列表(系统注册)
     public List<String> getRegistryList() {
         if (addressList != null && addressList.trim().length() > 0) {
             registryList = new ArrayList<String>(Arrays.asList(addressList.split(",")));

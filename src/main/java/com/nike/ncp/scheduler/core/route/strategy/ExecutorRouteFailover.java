@@ -13,6 +13,7 @@ import java.util.List;
 public class ExecutorRouteFailover extends ExecutorRouter {
 
     @Override
+    @SuppressWarnings("all")
     public ReturnT<String> route(TriggerParam triggerParam, List<String> addressList) {
 
         StringBuffer beatResultSB = new StringBuffer();

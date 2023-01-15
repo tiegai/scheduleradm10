@@ -33,12 +33,13 @@ public class JobScheduleHelper {
 
     public static final long PRE_READ_MS = 5000;    // pre read
 
-    private Thread scheduleThread;
-    private Thread ringThread;
-    private volatile boolean scheduleThreadToStop = false;
-    private volatile boolean ringThreadToStop = false;
+    private transient Thread scheduleThread;
+    private transient Thread ringThread;
+    private transient volatile boolean scheduleThreadToStop = false;
+    private transient volatile boolean ringThreadToStop = false;
     private static volatile Map<Integer, List<Integer>> ringData = new ConcurrentHashMap<>();
 
+    @SuppressWarnings("all")
     public void start() {
 
         // schedule thread
@@ -298,6 +299,7 @@ public class JobScheduleHelper {
         LOGGER.debug(">>>>>>>>>>> xxl-job, schedule push time-ring : " + ringSecond + " = " + Arrays.asList(ringItemData));
     }
 
+    @SuppressWarnings("all")
     public void toStop() {
 
         // 1、stop schedule

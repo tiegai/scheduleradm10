@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * job monitor instance
  */
 public class JobFailMonitorHelper {
-    private static Logger logger = LoggerFactory.getLogger(JobFailMonitorHelper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobFailMonitorHelper.class);
     private static JobFailMonitorHelper instance = new JobFailMonitorHelper();
 
     public static JobFailMonitorHelper getInstance() {
@@ -23,9 +23,12 @@ public class JobFailMonitorHelper {
     }
 
     // ---------------------- monitor ----------------------
-    private Thread monitorThread;
-    private volatile boolean toStop = false;
+    private transient Thread monitorThread;
+    private transient volatile boolean toStopFLag = false;
 
+    private static final int LOCK_RET_ONE = 1;
+
+    @SuppressWarnings("all")
     public void start() {
         monitorThread = new Thread(new Runnable() {
 
@@ -33,7 +36,7 @@ public class JobFailMonitorHelper {
             public void run() {
 
                 // monitor
-                while (!toStop) {
+                while (!toStopFLag) {
                     try {
 
                         List<Long> failLogIds = XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().findFailJobLogIds(1000);
@@ -42,7 +45,7 @@ public class JobFailMonitorHelper {
 
                                 // lock log
                                 int lockRet = XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().updateAlarmStatus(failLogId, 0, -1);
-                                if (lockRet < 1) {
+                                if (lockRet < LOCK_RET_ONE) {
                                     continue;
                                 }
                                 XxlJobLog log = XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().load(failLogId);
@@ -70,22 +73,22 @@ public class JobFailMonitorHelper {
                         }
 
                     } catch (Exception e) {
-                        if (!toStop) {
-                            logger.error(">>>>>>>>>>> xxl-job, job fail monitor thread error:{}", e);
+                        if (!toStopFLag) {
+                            LOGGER.error(">>>>>>>>>>> xxl-job, job fail monitor thread error:{}", e);
                         }
                     }
 
                     try {
                         TimeUnit.SECONDS.sleep(10);
                     } catch (Exception e) {
-                        if (!toStop) {
-                            logger.error(e.getMessage(), e);
+                        if (!toStopFLag) {
+                            LOGGER.error(e.getMessage(), e);
                         }
                     }
 
                 }
 
-                logger.info(">>>>>>>>>>> xxl-job, job fail monitor thread stop");
+                LOGGER.info(">>>>>>>>>>> xxl-job, job fail monitor thread stop");
 
             }
         });
@@ -95,13 +98,13 @@ public class JobFailMonitorHelper {
     }
 
     public void toStop() {
-        toStop = true;
+        toStopFLag = true;
         // interrupt and wait
         monitorThread.interrupt();
         try {
             monitorThread.join();
         } catch (InterruptedException e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
     }
 

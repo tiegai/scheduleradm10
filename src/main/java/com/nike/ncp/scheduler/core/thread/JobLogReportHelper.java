@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * job log report helper
  */
 public class JobLogReportHelper {
-    private static Logger logger = LoggerFactory.getLogger(JobLogReportHelper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobLogReportHelper.class);
 
     private static JobLogReportHelper instance = new JobLogReportHelper();
     public static JobLogReportHelper getInstance() {
@@ -23,8 +23,10 @@ public class JobLogReportHelper {
     }
 
 
-    private Thread logrThread;
-    private volatile boolean toStop = false;
+    private transient Thread logrThread;
+    private transient volatile boolean toStopFLag = false;
+
+    @SuppressWarnings("all")
     public void start() {
         logrThread = new Thread(new Runnable() {
 
@@ -35,7 +37,7 @@ public class JobLogReportHelper {
                 long lastCleanLogTime = 0;
 
 
-                while (!toStop) {
+                while (!toStopFLag) {
 
                     // 1、log-report refresh: refresh log report in 3 days
                     try {
@@ -86,8 +88,8 @@ public class JobLogReportHelper {
                         }
 
                     } catch (Exception e) {
-                        if (!toStop) {
-                            logger.error(">>>>>>>>>>> xxl-job, job log report thread error:{}", e);
+                        if (!toStopFLag) {
+                            LOGGER.error(">>>>>>>>>>> xxl-job, job log report thread error:{}", e);
                         }
                     }
 
@@ -120,14 +122,14 @@ public class JobLogReportHelper {
                     try {
                         TimeUnit.MINUTES.sleep(1);
                     } catch (Exception e) {
-                        if (!toStop) {
-                            logger.error(e.getMessage(), e);
+                        if (!toStopFLag) {
+                            LOGGER.error(e.getMessage(), e);
                         }
                     }
 
                 }
 
-                logger.info(">>>>>>>>>>> xxl-job, job log report thread stop");
+                LOGGER.info(">>>>>>>>>>> xxl-job, job log report thread stop");
 
             }
         });
@@ -137,13 +139,13 @@ public class JobLogReportHelper {
     }
 
     public void toStop() {
-        toStop = true;
+        toStopFLag = true;
         // interrupt and wait
         logrThread.interrupt();
         try {
             logrThread.join();
         } catch (InterruptedException e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
     }
 

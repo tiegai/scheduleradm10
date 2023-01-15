@@ -49,9 +49,11 @@ public class XxlJobUser {
         this.permission = permission;
     }
 
+    private static final int ROLE_V_ONE = 1;
+
     // plugin
     public boolean validPermission(int jobGroup) {
-        if (this.role == 1) {
+        if (this.role == ROLE_V_ONE) {
             return true;
         } else {
             if (StringUtils.hasText(this.permission)) {

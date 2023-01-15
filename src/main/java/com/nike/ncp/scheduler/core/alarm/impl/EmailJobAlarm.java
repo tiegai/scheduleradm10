@@ -23,7 +23,7 @@ import java.util.Set;
  */
 @Component
 public class EmailJobAlarm implements JobAlarm {
-    private static Logger logger = LoggerFactory.getLogger(EmailJobAlarm.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmailJobAlarm.class);
 
     /**
      * fail alarm
@@ -31,6 +31,7 @@ public class EmailJobAlarm implements JobAlarm {
      * @param jobLog
      */
     @Override
+    @SuppressWarnings("all")
     public boolean doAlarm(XxlJobInfo info, XxlJobLog jobLog) {
         boolean alarmResult = true;
 
@@ -67,7 +68,7 @@ public class EmailJobAlarm implements JobAlarm {
 
                     XxlJobAdminConfig.getAdminConfig().getMailSender().send(mimeMessage);
                 } catch (Exception e) {
-                    logger.error(">>>>>>>>>>> xxl-job, job fail alarm email send error, JobLogId:{}", jobLog.getId(), e);
+                    LOGGER.error(">>>>>>>>>>> xxl-job, job fail alarm email send error, JobLogId:{}", jobLog.getId(), e);
 
                     alarmResult = false;
                 }
@@ -83,6 +84,7 @@ public class EmailJobAlarm implements JobAlarm {
      *
      * @return
      */
+    @SuppressWarnings("all")
     private static String loadEmailJobAlarmTemplate() {
         String mailBodyTemplate = "<h5>" + I18nUtil.getString("jobconf_monitor_detail") + "：</span>" + "<table border=\"1\" cellpadding=\"3\" style=\"border-collapse:collapse; width:80%;\" >\n" + "   <thead style=\"font-weight: bold;color: #ffffff;background-color: #ff8c00;\" >" + "      <tr>\n" + "         <td width=\"20%\" >" + I18nUtil.getString("jobinfo_field_jobgroup") + "</td>\n" + "         <td width=\"10%\" >" + I18nUtil.getString("jobinfo_field_id") + "</td>\n" + "         <td width=\"20%\" >" + I18nUtil.getString("jobinfo_field_jobdesc") + "</td>\n" + "         <td width=\"10%\" >" + I18nUtil.getString("jobconf_monitor_alarm_title") + "</td>\n" + "         <td width=\"40%\" >" + I18nUtil.getString("jobconf_monitor_alarm_content") + "</td>\n" + "      </tr>\n" + "   </thead>\n" + "   <tbody>\n" + "      <tr>\n" + "         <td>{0}</td>\n" + "         <td>{1}</td>\n" + "         <td>{2}</td>\n" + "         <td>" + I18nUtil.getString("jobconf_monitor_alarm_type") + "</td>\n" + "         <td>{3}</td>\n" + "      </tr>\n" + "   </tbody>\n" + "</table>";
 

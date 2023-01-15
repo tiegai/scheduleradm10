@@ -10,9 +10,9 @@ import javax.annotation.Resource;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     @Resource
-    private PermissionInterceptor permissionInterceptor;
+    private transient PermissionInterceptor permissionInterceptor;
     @Resource
-    private CookieInterceptor cookieInterceptor;
+    private transient CookieInterceptor cookieInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

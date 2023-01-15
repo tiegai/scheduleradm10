@@ -37,14 +37,14 @@ import java.util.Map;
 @Controller
 @RequestMapping("/joblog")
 public class JobLogController {
-    private static Logger logger = LoggerFactory.getLogger(JobLogController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobLogController.class);
 
     @Resource
-    private XxlJobGroupDao xxlJobGroupDao;
+    private transient XxlJobGroupDao xxlJobGroupDao;
     @Resource
-    private XxlJobInfoDao xxlJobInfoDao;
+    private transient XxlJobInfoDao xxlJobInfoDao;
     @Resource
-    private XxlJobLogDao xxlJobLogDao;
+    private transient XxlJobLogDao xxlJobLogDao;
 
     @RequestMapping
     public String index(HttpServletRequest request, Model model, @RequestParam(required = false, defaultValue = "0") Integer jobId) {
@@ -85,6 +85,7 @@ public class JobLogController {
 
     @RequestMapping("/pageList")
     @ResponseBody
+    @SuppressWarnings("all")
     public Map<String, Object> pageList(HttpServletRequest request,
                                         @RequestParam(required = false, defaultValue = "0") int start,
                                         @RequestParam(required = false, defaultValue = "10") int length,
@@ -117,6 +118,7 @@ public class JobLogController {
     }
 
     @RequestMapping("/logDetailPage")
+    @SuppressWarnings("all")
     public String logDetailPage(int id, Model model) {
 
         // base check
@@ -151,13 +153,14 @@ public class JobLogController {
 
             return logResult;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             return new ReturnT<LogResult>(ReturnT.FAIL_CODE, e.getMessage());
         }
     }
 
     @RequestMapping("/logKill")
     @ResponseBody
+    @SuppressWarnings("all")
     public ReturnT<String> logKill(int id) {
         // base check
         XxlJobLog log = xxlJobLogDao.load(id);
@@ -175,7 +178,7 @@ public class JobLogController {
             ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(log.getExecutorAddress());
             runResult = executorBiz.kill(new KillParam(jobInfo.getId()));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             runResult = new ReturnT<String>(500, e.getMessage());
         }
 
@@ -192,6 +195,7 @@ public class JobLogController {
 
     @RequestMapping("/clearLog")
     @ResponseBody
+    @SuppressWarnings("all")
     public ReturnT<String> clearLog(int jobGroup, int jobId, int type) {
 
         Date clearBeforeTime = null;

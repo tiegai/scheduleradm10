@@ -32,7 +32,7 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
 
     // ---------------------- XxlJobScheduler ----------------------
 
-    private XxlJobScheduler xxlJobScheduler;
+    private transient XxlJobScheduler xxlJobScheduler;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -52,41 +52,47 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
 
     // conf
     @Value("${xxl.job.i18n}")
-    private String i18n;
+    private transient String i18n;
 
     @Value("${xxl.job.accessToken}")
-    private String accessToken;
+    private transient String accessToken;
 
     @Value("${spring.mail.from}")
-    private String emailFrom;
+    private transient String emailFrom;
 
     @Value("${xxl.job.triggerpool.fast.max}")
-    private int triggerPoolFastMax;
+    private transient int triggerPoolFastMax;
 
     @Value("${xxl.job.triggerpool.slow.max}")
-    private int triggerPoolSlowMax;
+    private transient int triggerPoolSlowMax;
 
     @Value("${xxl.job.logretentiondays}")
-    private int logretentiondays;
+    private transient int logretentiondays;
 
     // dao, service
 
     @Resource
-    private XxlJobLogDao xxlJobLogDao;
+    private transient XxlJobLogDao xxlJobLogDao;
     @Resource
-    private XxlJobInfoDao xxlJobInfoDao;
+    private transient XxlJobInfoDao xxlJobInfoDao;
     @Resource
-    private XxlJobRegistryDao xxlJobRegistryDao;
+    private transient XxlJobRegistryDao xxlJobRegistryDao;
     @Resource
-    private XxlJobGroupDao xxlJobGroupDao;
+    private transient XxlJobGroupDao xxlJobGroupDao;
     @Resource
-    private XxlJobLogReportDao xxlJobLogReportDao;
+    private transient XxlJobLogReportDao xxlJobLogReportDao;
     @Resource
-    private JavaMailSender mailSender;
+    private transient JavaMailSender mailSender;
     @Resource
-    private DataSource dataSource;
+    private transient DataSource dataSource;
     @Resource
-    private JobAlarmer jobAlarmer;
+    private transient JobAlarmer jobAlarmer;
+
+    private static final int TRIGGER_POOL_FAST_MAX_V = 200;
+
+    private static final int TRIGGER_POOL_SLOW_MAX_V = 100;
+
+    private static final int LOG_RETENTION_DAYS_V = 7;
 
 
     public String getI18n() {
@@ -105,21 +111,21 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
     }
 
     public int getTriggerPoolFastMax() {
-        if (triggerPoolFastMax < 200) {
+        if (triggerPoolFastMax < TRIGGER_POOL_FAST_MAX_V) {
             return 200;
         }
         return triggerPoolFastMax;
     }
 
     public int getTriggerPoolSlowMax() {
-        if (triggerPoolSlowMax < 100) {
+        if (triggerPoolSlowMax < TRIGGER_POOL_SLOW_MAX_V) {
             return 100;
         }
         return triggerPoolSlowMax;
     }
 
     public int getLogretentiondays() {
-        if (logretentiondays < 7) {
+        if (logretentiondays < LOG_RETENTION_DAYS_V) {
             return -1;  // Limit greater than or equal to 7, otherwise close
         }
         return logretentiondays;

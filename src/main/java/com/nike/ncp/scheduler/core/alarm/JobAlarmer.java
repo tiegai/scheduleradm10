@@ -16,10 +16,10 @@ import java.util.Map;
 
 @Component
 public class JobAlarmer implements ApplicationContextAware, InitializingBean {
-    private static Logger logger = LoggerFactory.getLogger(JobAlarmer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobAlarmer.class);
 
-    private ApplicationContext applicationContext;
-    private List<JobAlarm> jobAlarmList;
+    private transient ApplicationContext applicationContext;
+    private transient List<JobAlarm> jobAlarmList;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -41,6 +41,7 @@ public class JobAlarmer implements ApplicationContextAware, InitializingBean {
      * @param jobLog
      * @return
      */
+    @SuppressWarnings("all")
     public boolean alarm(XxlJobInfo info, XxlJobLog jobLog) {
 
         boolean result = false;
@@ -51,7 +52,7 @@ public class JobAlarmer implements ApplicationContextAware, InitializingBean {
                 try {
                     resultItem = alarm.doAlarm(info, jobLog);
                 } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
+                    LOGGER.error(e.getMessage(), e);
                 }
                 if (!resultItem) {
                     result = false;

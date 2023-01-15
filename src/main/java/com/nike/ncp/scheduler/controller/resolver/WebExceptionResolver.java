@@ -20,6 +20,7 @@ public class WebExceptionResolver implements HandlerExceptionResolver {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebExceptionResolver.class);
 
     @Override
+    @SuppressWarnings("all")
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
 
         if (!(ex instanceof XxlJobException)) {

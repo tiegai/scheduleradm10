@@ -45,7 +45,7 @@ public class SchedulerController {
     public static final String FILTER_TIME = "filterTime";
 
     @Resource
-    private SchedulerService schedulerService;
+    private transient SchedulerService schedulerService;
 
     @PostMapping("/jobs")
     @PermissionLimit(limit = false)

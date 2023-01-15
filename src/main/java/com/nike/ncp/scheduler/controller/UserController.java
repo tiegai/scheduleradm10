@@ -27,9 +27,13 @@ import java.util.Map;
 public class UserController {
 
     @Resource
-    private XxlJobUserDao xxlJobUserDao;
+    private transient XxlJobUserDao xxlJobUserDao;
     @Resource
-    private XxlJobGroupDao xxlJobGroupDao;
+    private transient XxlJobGroupDao xxlJobGroupDao;
+
+    private static final String LENGTH_LIMIT = "system_length_limit";
+
+    private static final String LENGTH_LIMIT_NUM = "[4-20]";
 
     @RequestMapping
     public String index(Model model) {
@@ -74,7 +78,7 @@ public class UserController {
         }
         xxlJobUser.setUsername(xxlJobUser.getUsername().trim());
         if (!(xxlJobUser.getUsername().length() >= 4 && xxlJobUser.getUsername().length() <= 20)) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("system_lengh_limit") + "[4-20]");
+            return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString(LENGTH_LIMIT) + LENGTH_LIMIT_NUM);
         }
         // valid password
         if (!StringUtils.hasText(xxlJobUser.getPassword())) {
@@ -82,7 +86,7 @@ public class UserController {
         }
         xxlJobUser.setPassword(xxlJobUser.getPassword().trim());
         if (!(xxlJobUser.getPassword().length() >= 4 && xxlJobUser.getPassword().length() <= 20)) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("system_lengh_limit") + "[4-20]");
+            return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString(LENGTH_LIMIT) + LENGTH_LIMIT_NUM);
         }
         // md5 password
         xxlJobUser.setPassword(DigestUtils.md5DigestAsHex(xxlJobUser.getPassword().getBytes()));
@@ -112,7 +116,7 @@ public class UserController {
         if (StringUtils.hasText(xxlJobUser.getPassword())) {
             xxlJobUser.setPassword(xxlJobUser.getPassword().trim());
             if (!(xxlJobUser.getPassword().length() >= 4 && xxlJobUser.getPassword().length() <= 20)) {
-                return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("system_lengh_limit") + "[4-20]");
+                return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString(LENGTH_LIMIT) + LENGTH_LIMIT_NUM);
             }
             // md5 password
             xxlJobUser.setPassword(DigestUtils.md5DigestAsHex(xxlJobUser.getPassword().getBytes()));
@@ -149,7 +153,7 @@ public class UserController {
         }
         password = password.trim();
         if (!(password.length() >= 4 && password.length() <= 20)) {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("system_lengh_limit") + "[4-20]");
+            return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString(LENGTH_LIMIT) + LENGTH_LIMIT_NUM);
         }
 
         // md5 password

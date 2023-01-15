@@ -19,9 +19,10 @@ import javax.servlet.http.HttpServletResponse;
 public class PermissionInterceptor implements AsyncHandlerInterceptor {
 
     @Resource
-    private LoginService loginService;
+    private transient LoginService loginService;
 
     @Override
+    @SuppressWarnings("all")
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         if (!(handler instanceof HandlerMethod)) {

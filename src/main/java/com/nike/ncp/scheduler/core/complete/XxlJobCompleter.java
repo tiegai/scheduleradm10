@@ -19,6 +19,7 @@ public final class XxlJobCompleter {
     private XxlJobCompleter() {
 
     }
+    private static final int HANDLE_MSG_LENGTH = 15000;
 
     /**
      * common fresh handle entrance (limit only once)
@@ -32,7 +33,7 @@ public final class XxlJobCompleter {
         finishJob(xxlJobLog);
 
         // text最大64kb 避免长度过长
-        if (xxlJobLog.getHandleMsg().length() > 15000) {
+        if (xxlJobLog.getHandleMsg().length() > HANDLE_MSG_LENGTH) {
             xxlJobLog.setHandleMsg(xxlJobLog.getHandleMsg().substring(0, 15000));
         }
 
@@ -44,6 +45,7 @@ public final class XxlJobCompleter {
     /**
      * do somethind to finish job
      */
+    @SuppressWarnings("all")
     private static void finishJob(XxlJobLog xxlJobLog) {
 
         // 1、handle success, to trigger child job
@@ -82,7 +84,8 @@ public final class XxlJobCompleter {
 
     private static boolean isNumeric(String str) {
         try {
-            int result = Integer.valueOf(str);
+            //int result = Integer.valueOf(str);
+            Integer.valueOf(str);
             return true;
         } catch (NumberFormatException e) {
             return false;

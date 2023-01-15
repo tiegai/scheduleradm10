@@ -33,7 +33,7 @@ public class TriggerCallbackThread {
     /**
      * job results callback queue
      */
-    private LinkedBlockingQueue<HandleCallbackParam> callBackQueue = new LinkedBlockingQueue<HandleCallbackParam>();
+    private transient LinkedBlockingQueue<HandleCallbackParam> callBackQueue = new LinkedBlockingQueue<HandleCallbackParam>();
 
     public static void pushCallBack(HandleCallbackParam callback) {
         getInstance().callBackQueue.add(callback);
@@ -43,10 +43,11 @@ public class TriggerCallbackThread {
     /**
      * callback thread
      */
-    private Thread triggerCallbackThread;
-    private Thread triggerRetryCallbackThread;
-    private volatile boolean toStop = false;
+    private transient Thread triggerCallbackExeThread;
+    private transient Thread triggerRetryCallbackThread;
+    private transient volatile boolean toStopFlag = false;
 
+    @SuppressWarnings("all")
     public void start() {
 
         // valid
@@ -56,13 +57,13 @@ public class TriggerCallbackThread {
         }
 
         // callback
-        triggerCallbackThread = new Thread(new Runnable() {
+        triggerCallbackExeThread = new Thread(new Runnable() {
 
             @Override
             public void run() {
 
                 // normal callback
-                while (!toStop) {
+                while (!toStopFlag) {
                     try {
                         HandleCallbackParam callback = getInstance().callBackQueue.take();
                         if (callback != null) {
@@ -78,7 +79,7 @@ public class TriggerCallbackThread {
                             }
                         }
                     } catch (Exception e) {
-                        if (!toStop) {
+                        if (!toStopFlag) {
                             LOGGER.error(e.getMessage(), e);
                         }
                     }
@@ -92,7 +93,7 @@ public class TriggerCallbackThread {
                         doCallback(callbackParamList);
                     }
                 } catch (Exception e) {
-                    if (!toStop) {
+                    if (!toStopFlag) {
                         LOGGER.error(e.getMessage(), e);
                     }
                 }
@@ -100,20 +101,20 @@ public class TriggerCallbackThread {
 
             }
         });
-        triggerCallbackThread.setDaemon(true);
-        triggerCallbackThread.setName("xxl-job, executor TriggerCallbackThread");
-        triggerCallbackThread.start();
+        triggerCallbackExeThread.setDaemon(true);
+        triggerCallbackExeThread.setName("xxl-job, executor TriggerCallbackThread");
+        triggerCallbackExeThread.start();
 
 
         // retry
         triggerRetryCallbackThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (!toStop) {
+                while (!toStopFlag) {
                     try {
                         retryFailCallbackFile();
                     } catch (Exception e) {
-                        if (!toStop) {
+                        if (!toStopFlag) {
                             LOGGER.error(e.getMessage(), e);
                         }
 
@@ -121,7 +122,7 @@ public class TriggerCallbackThread {
                     try {
                         TimeUnit.SECONDS.sleep(RegistryConfig.BEAT_TIMEOUT);
                     } catch (InterruptedException e) {
-                        if (!toStop) {
+                        if (!toStopFlag) {
                             LOGGER.error(e.getMessage(), e);
                         }
                     }
@@ -135,12 +136,12 @@ public class TriggerCallbackThread {
     }
 
     public void toStop() {
-        toStop = true;
+        toStopFlag = true;
         // stop callback, interrupt and wait
-        if (triggerCallbackThread != null) {    // support empty admin address
-            triggerCallbackThread.interrupt();
+        if (triggerCallbackExeThread != null) {    // support empty admin address
+            triggerCallbackExeThread.interrupt();
             try {
-                triggerCallbackThread.join();
+                triggerCallbackExeThread.join();
             } catch (InterruptedException e) {
                 LOGGER.error(e.getMessage(), e);
             }
@@ -163,6 +164,7 @@ public class TriggerCallbackThread {
      *
      * @param callbackParamList
      */
+    @SuppressWarnings("all")
     private void doCallback(List<HandleCallbackParam> callbackParamList) {
         boolean callbackRet = false;
         // callback, will retry if error

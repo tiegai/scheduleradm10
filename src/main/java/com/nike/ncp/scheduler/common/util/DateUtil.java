@@ -25,6 +25,7 @@ public final class DateUtil {
 
     private static final ThreadLocal<Map<String, DateFormat>> DATE_FORMAT_THREAD_LOCAL = new ThreadLocal<Map<String, DateFormat>>();
 
+    @SuppressWarnings("all")
     private static DateFormat getDateFormat(String pattern) {
         if (pattern == null || pattern.trim().length() == 0) {
             throw new IllegalArgumentException("pattern cannot be empty.");

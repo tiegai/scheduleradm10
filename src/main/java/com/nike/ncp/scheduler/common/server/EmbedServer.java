@@ -48,9 +48,10 @@ import java.util.concurrent.RejectedExecutionHandler;
 public class EmbedServer {
     private static final Logger LOGGER_EMB = LoggerFactory.getLogger(EmbedServer.class);
 
-    private ExecutorBiz executorBiz;
-    private Thread thread;
+    private transient ExecutorBiz executorBiz;
+    private transient Thread thread;
 
+    @SuppressWarnings("all")
     public void start(final String address, final int port, final String appname, final String accessToken) {
         executorBiz = new ExecutorBizImpl();
         thread = new Thread(new Runnable() {
@@ -129,6 +130,7 @@ public class EmbedServer {
     /**
      * netty_http
      */
+    @SuppressWarnings("all")
     public static class EmbedHttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
         private static final Logger LOGGER_EMB_HTTP = LoggerFactory.getLogger(EmbedHttpServerHandler.class);
 

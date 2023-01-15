@@ -30,16 +30,16 @@ import java.util.concurrent.TimeoutException;
 public class JobThread extends Thread {
     private static final Logger LOGGER = LoggerFactory.getLogger(JobThread.class);
 
-    private int jobId;
-    private IJobHandler handler;
-    private LinkedBlockingQueue<TriggerParam> triggerQueue;
-    private Set<Long> triggerLogIdSet;        // avoid repeat trigger for the same TRIGGER_LOG_ID
+    private transient int jobId;
+    private transient IJobHandler handler;
+    private transient LinkedBlockingQueue<TriggerParam> triggerQueue;
+    private transient Set<Long> triggerLogIdSet;        // avoid repeat trigger for the same TRIGGER_LOG_ID
 
-    private volatile boolean toStop = false;
-    private String stopReason;
+    private transient volatile boolean toStopFlag = false;
+    private transient String stopReason;
 
-    private boolean running = false;    // if running job
-    private int idleTimes = 0;            // idel times
+    private transient boolean running = false;    // if running job
+    private transient int idleTimes = 0;            // idel times
 
 
     public JobThread(int jobId, IJobHandler handler) {
@@ -85,7 +85,7 @@ public class JobThread extends Thread {
          * 在阻塞出抛出InterruptedException异常,但是并不会终止运行的线程本身；
          * 所以需要注意，此处彻底销毁本线程，需要通过共享变量方式；
          */
-        this.toStop = true;
+        this.toStopFlag = true;
         this.stopReason = stopReas;
     }
 
@@ -99,6 +99,7 @@ public class JobThread extends Thread {
     }
 
     @Override
+    @SuppressWarnings("all")
     public void run() {
 
         // init
@@ -109,7 +110,7 @@ public class JobThread extends Thread {
         }
 
         // execute
-        while (!toStop) {
+        while (!toStopFlag) {
             running = false;
             idleTimes++;
 
@@ -184,7 +185,7 @@ public class JobThread extends Thread {
                     }
                 }
             } catch (Throwable e) {
-                if (toStop) {
+                if (toStopFlag) {
                     XxlJobHelper.log("<br>----------- JobThread toStop, stopReason:" + stopReason);
                 }
 
@@ -199,7 +200,7 @@ public class JobThread extends Thread {
             } finally {
                 if (triggerParam != null) {
                     // callback handler info
-                    if (!toStop) {
+                    if (!toStopFlag) {
                         // commonm
                         TriggerCallbackThread.pushCallBack(new HandleCallbackParam(triggerParam.getLogId(), triggerParam.getLogDateTime(), XxlJobContext.getXxlJobContext().getHandleCode(), XxlJobContext.getXxlJobContext().getHandleMsg()));
                     } else {

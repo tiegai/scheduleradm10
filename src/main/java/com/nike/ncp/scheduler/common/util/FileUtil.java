@@ -49,7 +49,7 @@ public final class FileUtil {
         }
     }
 
-
+    @SuppressWarnings("all")
     public static void writeFileContent(File file, byte[] data) {
 
         // file
@@ -77,6 +77,7 @@ public final class FileUtil {
 
     }
 
+    @SuppressWarnings("all")
     public static byte[] readFileContent(File file) {
         Long filelength = file.length();
         byte[] filecontent = new byte[filelength.intValue()];

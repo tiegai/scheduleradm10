@@ -173,7 +173,7 @@ Parameters:
 
   SplunkFormat:
     Type: String
-    Default: 'inline'
+    Default: 'raw'
 
   UseJsonFileLogDriver:
     Type: String
@@ -536,4 +536,3 @@ Outputs:
   EcsService:
     Description: ARN of the deployed ECS Service
     Value: !Ref Service
-

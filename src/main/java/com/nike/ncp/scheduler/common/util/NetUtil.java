@@ -10,7 +10,7 @@ import java.net.ServerSocket;
  * net util
  */
 public final class NetUtil {
-    private static Logger logger = LoggerFactory.getLogger(NetUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NetUtil.class);
     private NetUtil() {
 
     }
@@ -47,6 +47,7 @@ public final class NetUtil {
      * @param port
      * @return
      */
+    @SuppressWarnings("all")
     public static boolean isPortUsed(int port) {
         boolean used = false;
         ServerSocket serverSocket = null;
@@ -54,14 +55,14 @@ public final class NetUtil {
             serverSocket = new ServerSocket(port);
             used = false;
         } catch (IOException e) {
-            logger.info(">>>>>>>>>>> xxl-job, port[{}] is in use.", port);
+            LOGGER.info(">>>>>>>>>>> xxl-job, port[{}] is in use.", port);
             used = true;
         } finally {
             if (serverSocket != null) {
                 try {
                     serverSocket.close();
                 } catch (IOException e) {
-                    logger.info("");
+                    LOGGER.info("");
                 }
             }
         }

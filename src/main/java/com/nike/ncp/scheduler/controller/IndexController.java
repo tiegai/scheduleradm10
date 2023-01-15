@@ -28,9 +28,9 @@ import java.util.Map;
 public class IndexController {
 
     @Resource
-    private XxlJobService xxlJobService;
+    private transient XxlJobService xxlJobService;
     @Resource
-    private LoginService loginService;
+    private transient LoginService loginService;
 
 
     @RequestMapping("/")
@@ -77,6 +77,7 @@ public class IndexController {
     }
 
     @InitBinder
+    @SuppressWarnings("all")
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateFormat.setLenient(false);

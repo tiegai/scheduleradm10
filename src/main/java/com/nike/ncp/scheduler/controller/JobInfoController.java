@@ -40,12 +40,12 @@ import java.util.Date;
 @Controller
 @RequestMapping("/jobinfo")
 public class JobInfoController {
-    private static Logger logger = LoggerFactory.getLogger(JobInfoController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobInfoController.class);
 
     @Resource
-    private XxlJobGroupDao xxlJobGroupDao;
+    private transient XxlJobGroupDao xxlJobGroupDao;
     @Resource
-    private XxlJobService xxlJobService;
+    private transient XxlJobService xxlJobService;
 
     @RequestMapping
     public String index(HttpServletRequest request, Model model, @RequestParam(required = false, defaultValue = "-1") int jobGroup) {
@@ -72,6 +72,7 @@ public class JobInfoController {
         return "jobinfo/jobinfo.index";
     }
 
+    @SuppressWarnings("all")
     public static List<XxlJobGroup> filterJobGroupByRole(HttpServletRequest request, List<XxlJobGroup> jobGroupListAll) {
         List<XxlJobGroup> jobGroupList = new ArrayList<>();
         if (jobGroupListAll != null && jobGroupListAll.size() > 0) {
@@ -152,6 +153,7 @@ public class JobInfoController {
 
     @RequestMapping("/nextTriggerTime")
     @ResponseBody
+    @SuppressWarnings("all")
     public ReturnT<List<String>> nextTriggerTime(String scheduleType, String scheduleConf) {
 
         XxlJobInfo paramXxlJobInfo = new XxlJobInfo();
@@ -170,7 +172,7 @@ public class JobInfoController {
                 }
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             return new ReturnT<List<String>>(ReturnT.FAIL_CODE, (I18nUtil.getString("schedule_type") + I18nUtil.getString("system_unvalid")) + e.getMessage());
         }
         return new ReturnT<List<String>>(result);

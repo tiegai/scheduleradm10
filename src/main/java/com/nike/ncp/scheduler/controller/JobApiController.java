@@ -23,7 +23,9 @@ import java.util.List;
 public class JobApiController {
 
     @Resource
-    private AdminBiz adminBiz;
+    private transient AdminBiz adminBiz;
+
+    private static final String POST = "POST";
 
     /**
      * api
@@ -37,7 +39,7 @@ public class JobApiController {
     public ReturnT<String> api(HttpServletRequest request, @PathVariable("uri") String uri, @RequestBody(required = false) String data) {
 
         // valid
-        if (!"POST".equalsIgnoreCase(request.getMethod())) {
+        if (!POST.equalsIgnoreCase(request.getMethod())) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "invalid request, HttpMethod not support.");
         }
         if (uri == null || uri.trim().length() == 0) {

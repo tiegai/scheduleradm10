@@ -30,6 +30,7 @@ public final class IpUtil {
 
     // ---------------------- valid ----------------------
 
+    @SuppressWarnings("all")
     private static InetAddress toValidAddress(InetAddress address) {
         if (address instanceof Inet6Address) {
             Inet6Address v6Address = (Inet6Address) address;
@@ -93,7 +94,7 @@ public final class IpUtil {
 
     // ---------------------- find ip ----------------------
 
-
+    @SuppressWarnings("all")
     private static InetAddress getLocalAddress0() {
         InetAddress localAddress = null;
         try {

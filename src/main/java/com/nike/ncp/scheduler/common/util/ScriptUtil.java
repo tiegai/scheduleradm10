@@ -28,6 +28,7 @@ public final class ScriptUtil {
      * @param content
      * @throws IOException
      */
+    @SuppressWarnings("all")
     public static void markScriptFile(String scriptFileName, String content) throws IOException {
         // make file,   filePath/gluesource/666-123456789.py
         FileOutputStream fileOutputStream = null;
@@ -54,6 +55,7 @@ public final class ScriptUtil {
      * @return
      * @throws IOException
      */
+    @SuppressWarnings("all")
     public static int execToFile(String command, String scriptFile, String logFile, String... params) throws IOException {
 
         FileOutputStream fileOutputStream = null;
@@ -140,6 +142,7 @@ public final class ScriptUtil {
      * @return
      * @throws IOException
      */
+    @SuppressWarnings("all")
     private static long copy(InputStream inputStream, OutputStream outputStream, byte[] buffer) throws IOException {
         try {
             long total = 0;

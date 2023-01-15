@@ -25,6 +25,7 @@ public final class JdkSerializeTool {
      * @param object
      * @return
      */
+    @SuppressWarnings("all")
     public static byte[] serialize(Object object) {
         ObjectOutputStream oos = null;
         ByteArrayOutputStream baos = null;
@@ -55,6 +56,7 @@ public final class JdkSerializeTool {
      * @param bytes
      * @return
      */
+    @SuppressWarnings("all")
     public static <T> Object deserialize(byte[] bytes, Class<T> clazz) {
         ByteArrayInputStream bais = null;
         try {

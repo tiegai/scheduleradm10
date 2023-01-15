@@ -25,11 +25,12 @@ import java.util.List;
 public class JobCodeController {
 
     @Resource
-    private XxlJobInfoDao xxlJobInfoDao;
+    private transient XxlJobInfoDao xxlJobInfoDao;
     @Resource
-    private XxlJobLogGlueDao xxlJobLogGlueDao;
+    private transient XxlJobLogGlueDao xxlJobLogGlueDao;
 
     @RequestMapping
+    @SuppressWarnings("all")
     public String index(HttpServletRequest request, Model model, int jobId) {
         XxlJobInfo jobInfo = xxlJobInfoDao.loadById(jobId);
         List<XxlJobLogGlue> jobLogGlues = xxlJobLogGlueDao.findByJobId(jobId);

@@ -13,8 +13,12 @@ import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
 
-public class XxlJobCompleter {
-    private static Logger logger = LoggerFactory.getLogger(XxlJobCompleter.class);
+public final class XxlJobCompleter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(XxlJobCompleter.class);
+
+    private XxlJobCompleter() {
+
+    }
 
     /**
      * common fresh handle entrance (limit only once)
@@ -58,17 +62,9 @@ public class XxlJobCompleter {
                         ReturnT<String> triggerChildResult = ReturnT.SUCCESS;
 
                         // add msg
-                        triggerChildMsg += MessageFormat.format(I18nUtil.getString("jobconf_callback_child_msg1"),
-                                (i + 1),
-                                childJobIds.length,
-                                childJobIds[i],
-                                (triggerChildResult.getCode() == ReturnT.SUCCESS_CODE ? I18nUtil.getString("system_success") : I18nUtil.getString("system_fail")),
-                                triggerChildResult.getMsg());
+                        triggerChildMsg += MessageFormat.format(I18nUtil.getString("jobconf_callback_child_msg1"), (i + 1), childJobIds.length, childJobIds[i], (triggerChildResult.getCode() == ReturnT.SUCCESS_CODE ? I18nUtil.getString("system_success") : I18nUtil.getString("system_fail")), triggerChildResult.getMsg());
                     } else {
-                        triggerChildMsg += MessageFormat.format(I18nUtil.getString("jobconf_callback_child_msg2"),
-                                (i + 1),
-                                childJobIds.length,
-                                childJobIds[i]);
+                        triggerChildMsg += MessageFormat.format(I18nUtil.getString("jobconf_callback_child_msg2"), (i + 1), childJobIds.length, childJobIds[i]);
                     }
                 }
 

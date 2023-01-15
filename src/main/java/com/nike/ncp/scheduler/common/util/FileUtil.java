@@ -11,8 +11,12 @@ import java.io.IOException;
 /**
  * file tool
  */
-public class FileUtil {
-    private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
+public final class FileUtil {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileUtil.class);
+
+    private FileUtil() {
+
+    }
 
 
     /**
@@ -60,13 +64,13 @@ public class FileUtil {
             fos.write(data);
             fos.flush();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         } finally {
             if (fos != null) {
                 try {
                     fos.close();
                 } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
+                    LOGGER.error(e.getMessage(), e);
                 }
             }
         }
@@ -85,14 +89,14 @@ public class FileUtil {
 
             return filecontent;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             return null;
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
+                    LOGGER.error(e.getMessage(), e);
                 }
             }
         }

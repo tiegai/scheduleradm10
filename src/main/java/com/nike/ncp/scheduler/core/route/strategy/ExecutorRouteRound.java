@@ -14,13 +14,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ExecutorRouteRound extends ExecutorRouter {
 
     private static ConcurrentMap<Integer, AtomicInteger> routeCountEachJob = new ConcurrentHashMap<>();
-    private static long CACHE_VALID_TIME = 0;
+    private static long cacheValidTime = 0;
 
     private static int count(int jobId) {
         // cache clear
-        if (System.currentTimeMillis() > CACHE_VALID_TIME) {
+        if (System.currentTimeMillis() > cacheValidTime) {
             routeCountEachJob.clear();
-            CACHE_VALID_TIME = System.currentTimeMillis() + 1000 * 60 * 60 * 24;
+            cacheValidTime = System.currentTimeMillis() + 1000 * 60 * 60 * 24;
         }
 
         AtomicInteger count = routeCountEachJob.get(jobId);

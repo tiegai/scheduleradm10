@@ -20,10 +20,9 @@ import java.util.Map;
 
 /**
  * xxl-job executor (for spring)
- *
  */
 public class XxlJobSpringExecutor extends XxlJobExecutor implements ApplicationContextAware, SmartInitializingSingleton, DisposableBean {
-    private static final Logger logger = LoggerFactory.getLogger(XxlJobSpringExecutor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XxlJobSpringExecutor.class);
 
 
     // start
@@ -76,22 +75,22 @@ public class XxlJobSpringExecutor extends XxlJobExecutor implements ApplicationC
         }
     }*/
 
-    private void initJobHandlerMethodRepository(ApplicationContext applicationContext) {
-        if (applicationContext == null) {
+    private void initJobHandlerMethodRepository(ApplicationContext applicationContextJob) {
+        if (applicationContextJob == null) {
             return;
         }
         // init job handler from method
-        String[] beanDefinitionNames = applicationContext.getBeanNamesForType(Object.class, false, true);
+        String[] beanDefinitionNames = applicationContextJob.getBeanNamesForType(Object.class, false, true);
         for (String beanDefinitionName : beanDefinitionNames) {
 
             // get bean
             Object bean = null;
-            Lazy onBean = applicationContext.findAnnotationOnBean(beanDefinitionName, Lazy.class);
-            if (onBean!=null){
-                logger.debug("xxl-job annotation scan, skip @Lazy Bean:{}", beanDefinitionName);
+            Lazy onBean = applicationContextJob.findAnnotationOnBean(beanDefinitionName, Lazy.class);
+            if (onBean != null) {
+                LOGGER.debug("xxl-job annotation scan, skip @Lazy Bean:{}", beanDefinitionName);
                 continue;
-            }else {
-                bean = applicationContext.getBean(beanDefinitionName);
+            } else {
+                bean = applicationContextJob.getBean(beanDefinitionName);
             }
 
             // filter method
@@ -105,9 +104,9 @@ public class XxlJobSpringExecutor extends XxlJobExecutor implements ApplicationC
                             }
                         });
             } catch (Throwable ex) {
-                logger.error("xxl-job method-jobhandler resolve error for bean[" + beanDefinitionName + "].", ex);
+                LOGGER.error("xxl-job method-jobhandler resolve error for bean[" + beanDefinitionName + "].", ex);
             }
-            if (annotatedMethods==null || annotatedMethods.isEmpty()) {
+            if (annotatedMethods == null || annotatedMethods.isEmpty()) {
                 continue;
             }
 

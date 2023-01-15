@@ -9,7 +9,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class CronUtil {
+public final class CronUtil {
+
+    private CronUtil() {
+
+    }
 
     public static String cronNextStart(String cronStr, Date startDate) {
         String dateString = null;

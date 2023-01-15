@@ -11,34 +11,36 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * date util
- */
-public class DateUtil {
+public final class DateUtil {
+
+    private DateUtil() {
+
+    }
 
     // ---------------------- format parse ----------------------
-    private static Logger logger = LoggerFactory.getLogger(DateUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DateUtil.class);
 
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-    private static final ThreadLocal<Map<String, DateFormat>> dateFormatThreadLocal = new ThreadLocal<Map<String, DateFormat>>();
+    private static final ThreadLocal<Map<String, DateFormat>> DATE_FORMAT_THREAD_LOCAL = new ThreadLocal<Map<String, DateFormat>>();
+
     private static DateFormat getDateFormat(String pattern) {
-        if (pattern==null || pattern.trim().length()==0) {
+        if (pattern == null || pattern.trim().length() == 0) {
             throw new IllegalArgumentException("pattern cannot be empty.");
         }
 
-        Map<String, DateFormat> dateFormatMap = dateFormatThreadLocal.get();
-        if(dateFormatMap!=null && dateFormatMap.containsKey(pattern)){
+        Map<String, DateFormat> dateFormatMap = DATE_FORMAT_THREAD_LOCAL.get();
+        if (dateFormatMap != null && dateFormatMap.containsKey(pattern)) {
             return dateFormatMap.get(pattern);
         }
 
-        synchronized (dateFormatThreadLocal) {
+        synchronized (DATE_FORMAT_THREAD_LOCAL) {
             if (dateFormatMap == null) {
                 dateFormatMap = new HashMap<String, DateFormat>();
             }
             dateFormatMap.put(pattern, new SimpleDateFormat(pattern));
-            dateFormatThreadLocal.set(dateFormatMap);
+            DATE_FORMAT_THREAD_LOCAL.set(dateFormatMap);
         }
 
         return dateFormatMap.get(pattern);
@@ -85,7 +87,7 @@ public class DateUtil {
      * @return
      * @throws ParseException
      */
-    public static Date parseDate(String dateString){
+    public static Date parseDate(String dateString) {
         return parse(dateString, DATE_FORMAT);
     }
 
@@ -113,7 +115,7 @@ public class DateUtil {
             Date date = getDateFormat(pattern).parse(dateString);
             return date;
         } catch (Exception e) {
-            logger.warn("parse date error, dateString = {}, pattern={}; errorMsg = {}", dateString, pattern, e.getMessage());
+            LOGGER.warn("parse date error, dateString = {}, pattern={}; errorMsg = {}", dateString, pattern, e.getMessage());
             return null;
         }
     }
@@ -150,5 +152,4 @@ public class DateUtil {
         c.add(calendarField, amount);
         return c.getTime();
     }
-
 }

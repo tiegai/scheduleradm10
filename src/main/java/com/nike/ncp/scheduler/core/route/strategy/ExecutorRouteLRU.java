@@ -18,14 +18,14 @@ import java.util.concurrent.ConcurrentMap;
 public class ExecutorRouteLRU extends ExecutorRouter {
 
     private static ConcurrentMap<Integer, LinkedHashMap<String, String>> jobLRUMap = new ConcurrentHashMap<Integer, LinkedHashMap<String, String>>();
-    private static long CACHE_VALID_TIME = 0;
+    private static long cacheValidTime = 0;
 
     public String route(int jobId, List<String> addressList) {
 
         // cache clear
-        if (System.currentTimeMillis() > CACHE_VALID_TIME) {
+        if (System.currentTimeMillis() > cacheValidTime) {
             jobLRUMap.clear();
-            CACHE_VALID_TIME = System.currentTimeMillis() + 1000 * 60 * 60 * 24;
+            cacheValidTime = System.currentTimeMillis() + 1000 * 60 * 60 * 24;
         }
 
         // init lru

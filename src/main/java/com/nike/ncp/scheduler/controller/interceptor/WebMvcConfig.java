@@ -6,9 +6,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.annotation.Resource;
 
-/**
- * web mvc config
- */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
@@ -22,5 +19,4 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(permissionInterceptor).addPathPatterns("/**");
         registry.addInterceptor(cookieInterceptor).addPathPatterns("/**");
     }
-
 }

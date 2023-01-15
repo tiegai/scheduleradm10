@@ -3,11 +3,18 @@ package com.nike.ncp.scheduler.common.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
 
 
-public class JdkSerializeTool {
-    private static Logger logger = LoggerFactory.getLogger(JdkSerializeTool.class);
+public final class JdkSerializeTool {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JdkSerializeTool.class);
+
+    private JdkSerializeTool() {
+
+    }
 
 
     // ------------------------ serialize and unserialize ------------------------
@@ -29,13 +36,13 @@ public class JdkSerializeTool {
             byte[] bytes = baos.toByteArray();
             return bytes;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         } finally {
             try {
                 oos.close();
                 baos.close();
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
             }
         }
         return null;
@@ -48,7 +55,7 @@ public class JdkSerializeTool {
      * @param bytes
      * @return
      */
-    public static  <T> Object deserialize(byte[] bytes, Class<T> clazz) {
+    public static <T> Object deserialize(byte[] bytes, Class<T> clazz) {
         ByteArrayInputStream bais = null;
         try {
             // 反序列化
@@ -56,12 +63,12 @@ public class JdkSerializeTool {
             ObjectInputStream ois = new ObjectInputStream(bais);
             return ois.readObject();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         } finally {
             try {
                 bais.close();
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
             }
         }
         return null;

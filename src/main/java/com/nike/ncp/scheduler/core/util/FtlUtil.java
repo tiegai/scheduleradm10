@@ -10,8 +10,12 @@ import org.slf4j.LoggerFactory;
 /**
  * ftl util
  */
-public class FtlUtil {
-    private static Logger logger = LoggerFactory.getLogger(FtlUtil.class);
+public final class FtlUtil {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FtlUtil.class);
+
+    private FtlUtil() {
+
+    }
 
     private static BeansWrapper wrapper = new BeansWrapperBuilder(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS).build();     //BeansWrapper.getDefaultInstance();
 
@@ -21,7 +25,7 @@ public class FtlUtil {
             TemplateHashModel fileStatics = (TemplateHashModel) staticModels.get(packageName);
             return fileStatics;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
         return null;
     }

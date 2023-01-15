@@ -6,15 +6,20 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * local cache tool
  */
-public class LocalCacheUtil {
+public final class LocalCacheUtil {
+
+    private LocalCacheUtil() {
+
+    }
 
     private static ConcurrentMap<String, LocalCacheData> cacheRepository = new ConcurrentHashMap<String, LocalCacheData>();   // 类型建议用抽象父类，兼容性更好；
+
     private static class LocalCacheData {
         private String key;
         private Object val;
         private long timeoutTime;
 
-        public LocalCacheData() {
+        LocalCacheData() {
         }
 
         LocalCacheData(String key, Object val, long timeoutTime) {
@@ -118,7 +123,7 @@ public class LocalCacheUtil {
      */
     public static boolean cleanTimeoutCache() {
         if (!cacheRepository.keySet().isEmpty()) {
-            for (String key: cacheRepository.keySet()) {
+            for (String key : cacheRepository.keySet()) {
                 LocalCacheData localCacheData = cacheRepository.get(key);
                 if (localCacheData != null && System.currentTimeMillis() >= localCacheData.getTimeoutTime()) {
                     cacheRepository.remove(key);

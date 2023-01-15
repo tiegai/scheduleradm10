@@ -9,11 +9,16 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 
-public class GsonTool {
+public final class GsonTool {
+
+    private GsonTool() {
+
+    }
 
     private static Gson gson = null;
+
     static {
-            gson= new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
     }
 
     /**
@@ -49,23 +54,30 @@ public class GsonTool {
         Type type = new ParameterizedType4ReturnT(classOfT, new Class[]{argClassOfT});
         return gson.fromJson(json, type);
     }
+
     public static class ParameterizedType4ReturnT implements ParameterizedType {
         private final Class raw;
         private final Type[] args;
+
         public ParameterizedType4ReturnT(Class raw, Type[] args) {
             this.raw = raw;
             this.args = args != null ? args : new Type[0];
         }
+
         @Override
         public Type[] getActualTypeArguments() {
             return args;
         }
+
         @Override
         public Type getRawType() {
             return raw;
         }
+
         @Override
-        public Type getOwnerType() {return null;}
+        public Type getOwnerType() {
+            return null;
+        }
     }
 
     /**

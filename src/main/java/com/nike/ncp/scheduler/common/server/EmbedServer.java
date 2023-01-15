@@ -1,29 +1,52 @@
 package com.nike.ncp.scheduler.common.server;
 
-import com.nike.ncp.scheduler.common.util.GsonTool;
+import com.nike.ncp.scheduler.common.biz.model.IdleBeatParam;
+import com.nike.ncp.scheduler.common.biz.model.KillParam;
+import com.nike.ncp.scheduler.common.biz.model.ReturnT;
+import com.nike.ncp.scheduler.common.biz.model.TriggerParam;
+import com.nike.ncp.scheduler.common.biz.model.LogParam;
 import com.nike.ncp.scheduler.common.util.XxlJobRemotingUtil;
 import com.nike.ncp.scheduler.common.biz.ExecutorBiz;
 import com.nike.ncp.scheduler.common.biz.impl.ExecutorBizImpl;
 import com.nike.ncp.scheduler.common.thread.ExecutorRegistryThread;
 import com.nike.ncp.scheduler.common.util.ThrowableUtil;
-import com.nike.ncp.scheduler.common.biz.model.*;
+import com.nike.ncp.scheduler.common.util.GsonTool;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.*;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.RejectedExecutionHandler;
 
 public class EmbedServer {
-    private static final Logger logger = LoggerFactory.getLogger(EmbedServer.class);
+    private static final Logger LOGGER_EMB = LoggerFactory.getLogger(EmbedServer.class);
 
     private ExecutorBiz executorBiz;
     private Thread thread;
@@ -36,45 +59,33 @@ public class EmbedServer {
                 // param
                 EventLoopGroup bossGroup = new NioEventLoopGroup();
                 EventLoopGroup workerGroup = new NioEventLoopGroup();
-                ThreadPoolExecutor bizThreadPool = new ThreadPoolExecutor(
-                        0,
-                        200,
-                        60L,
-                        TimeUnit.SECONDS,
-                        new LinkedBlockingQueue<Runnable>(2000),
-                        new ThreadFactory() {
-                            @Override
-                            public Thread newThread(Runnable r) {
-                                return new Thread(r, "xxl-job, EmbedServer bizThreadPool-" + r.hashCode());
-                            }
-                        },
-                        new RejectedExecutionHandler() {
-                            @Override
-                            public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-                                throw new RuntimeException("xxl-job, EmbedServer bizThreadPool is EXHAUSTED!");
-                            }
-                        });
+                ThreadPoolExecutor bizThreadPool = new ThreadPoolExecutor(0, 200, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(2000), new ThreadFactory() {
+                    @Override
+                    public Thread newThread(Runnable r) {
+                        return new Thread(r, "xxl-job, EmbedServer bizThreadPool-" + r.hashCode());
+                    }
+                }, new RejectedExecutionHandler() {
+                    @Override
+                    public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+                        throw new RuntimeException("xxl-job, EmbedServer bizThreadPool is EXHAUSTED!");
+                    }
+                });
                 try {
                     // start server
                     ServerBootstrap bootstrap = new ServerBootstrap();
-                    bootstrap.group(bossGroup, workerGroup)
-                            .channel(NioServerSocketChannel.class)
-                            .childHandler(new ChannelInitializer<SocketChannel>() {
-                                @Override
-                                public void initChannel(SocketChannel channel) throws Exception {
-                                    channel.pipeline()
-                                            .addLast(new IdleStateHandler(0, 0, 30 * 3, TimeUnit.SECONDS))  // beat 3N, close if idle
-                                            .addLast(new HttpServerCodec())
-                                            .addLast(new HttpObjectAggregator(5 * 1024 * 1024))  // merge request & reponse to FULL
-                                            .addLast(new EmbedHttpServerHandler(executorBiz, accessToken, bizThreadPool));
-                                }
-                            })
-                            .childOption(ChannelOption.SO_KEEPALIVE, true);
+                    bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        public void initChannel(SocketChannel channel) throws Exception {
+                            channel.pipeline().addLast(new IdleStateHandler(0, 0, 30 * 3, TimeUnit.SECONDS))  // beat 3N, close if idle
+                                    .addLast(new HttpServerCodec()).addLast(new HttpObjectAggregator(5 * 1024 * 1024))  // merge request & reponse to FULL
+                                    .addLast(new EmbedHttpServerHandler(executorBiz, accessToken, bizThreadPool));
+                        }
+                    }).childOption(ChannelOption.SO_KEEPALIVE, true);
 
                     // bind
                     ChannelFuture future = bootstrap.bind(port).sync();
 
-                    logger.info(">>>>>>>>>>> xxl-job remoting server start success, nettype = {}, port = {}", EmbedServer.class, port);
+                    LOGGER_EMB.info(">>>>>>>>>>> xxl-job remoting server start success, nettype = {}, port = {}", EmbedServer.class, port);
 
                     // start registry
                     startRegistry(appname, address);
@@ -83,16 +94,16 @@ public class EmbedServer {
                     future.channel().closeFuture().sync();
 
                 } catch (InterruptedException e) {
-                    logger.info(">>>>>>>>>>> xxl-job remoting server stop.");
+                    LOGGER_EMB.info(">>>>>>>>>>> xxl-job remoting server stop.");
                 } catch (Exception e) {
-                    logger.error(">>>>>>>>>>> xxl-job remoting server error.", e);
+                    LOGGER_EMB.error(">>>>>>>>>>> xxl-job remoting server error.", e);
                 } finally {
                     // stop
                     try {
                         workerGroup.shutdownGracefully();
                         bossGroup.shutdownGracefully();
                     } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
+                        LOGGER_EMB.error(e.getMessage(), e);
                     }
                 }
             }
@@ -109,7 +120,7 @@ public class EmbedServer {
 
         // stop registry
         stopRegistry();
-        logger.info(">>>>>>>>>>> xxl-job remoting server destroy success.");
+        LOGGER_EMB.info(">>>>>>>>>>> xxl-job remoting server destroy success.");
     }
 
 
@@ -119,7 +130,7 @@ public class EmbedServer {
      * netty_http
      */
     public static class EmbedHttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
-        private static final Logger logger = LoggerFactory.getLogger(EmbedHttpServerHandler.class);
+        private static final Logger LOGGER_EMB_HTTP = LoggerFactory.getLogger(EmbedHttpServerHandler.class);
 
         private ExecutorBiz executorBiz;
         private String accessToken;
@@ -165,9 +176,7 @@ public class EmbedServer {
             if (uri == null || uri.trim().length() == 0) {
                 return new ReturnT<String>(ReturnT.FAIL_CODE, "invalid request, uri-mapping empty.");
             }
-            if (accessToken != null
-                    && accessToken.trim().length() > 0
-                    && !accessToken.equals(accessTokenReq)) {
+            if (accessToken != null && accessToken.trim().length() > 0 && !accessToken.equals(accessTokenReq)) {
                 return new ReturnT<String>(ReturnT.FAIL_CODE, "The access token is wrong.");
             }
 
@@ -192,7 +201,7 @@ public class EmbedServer {
                         return new ReturnT<String>(ReturnT.FAIL_CODE, "invalid request, uri-mapping(" + uri + ") not found.");
                 }
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                LOGGER_EMB_HTTP.error(e.getMessage(), e);
                 return new ReturnT<String>(ReturnT.FAIL_CODE, "request error:" + ThrowableUtil.toString(e));
             }
         }
@@ -218,7 +227,7 @@ public class EmbedServer {
 
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-            logger.error(">>>>>>>>>>> xxl-job provider netty_http server caught exception", cause);
+            LOGGER_EMB_HTTP.error(">>>>>>>>>>> xxl-job provider netty_http server caught exception", cause);
             ctx.close();
         }
 
@@ -226,7 +235,7 @@ public class EmbedServer {
         public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
             if (evt instanceof IdleStateEvent) {
                 ctx.channel().close();      // beat 3N, close if idle
-                logger.debug(">>>>>>>>>>> xxl-job provider netty_http server close an idle channel.");
+                LOGGER_EMB_HTTP.debug(">>>>>>>>>>> xxl-job provider netty_http server close an idle channel.");
             } else {
                 super.userEventTriggered(ctx, evt);
             }

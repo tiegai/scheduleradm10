@@ -12,50 +12,39 @@ import java.util.List;
  */
 @Mapper
 public interface XxlJobInfoDao {
-	List<XxlJobInfo> pageList(@Param("offset") int offset,
-                                     @Param("pagesize") int pagesize,
-                                     @Param("jobGroup") int jobGroup,
-                                     @Param("triggerStatus") int triggerStatus,
-                                     @Param("jobDesc") String jobDesc,
-                                     @Param("executorHandler") String executorHandler,
-                                     @Param("author") String author);
-	int pageListCount(@Param("offset") int offset,
-							 @Param("pagesize") int pagesize,
-							 @Param("jobGroup") int jobGroup,
-							 @Param("triggerStatus") int triggerStatus,
-							 @Param("jobDesc") String jobDesc,
-							 @Param("executorHandler") String executorHandler,
-							 @Param("author") String author);
-	
-	int save(XxlJobInfo info);
+    List<XxlJobInfo> pageList(@Param("offset") int offset, @Param("pagesize") int pagesize, @Param("jobGroup") int jobGroup, @Param("triggerStatus") int triggerStatus, @Param("jobDesc") String jobDesc, @Param("executorHandler") String executorHandler, @Param("author") String author);
 
-	XxlJobInfo loadById(@Param("id") int id);
-	
-	int update(XxlJobInfo xxlJobInfo);
-	
-	int delete(@Param("id") long id);
+    int pageListCount(@Param("offset") int offset, @Param("pagesize") int pagesize, @Param("jobGroup") int jobGroup, @Param("triggerStatus") int triggerStatus, @Param("jobDesc") String jobDesc, @Param("executorHandler") String executorHandler, @Param("author") String author);
 
-	List<XxlJobInfo> getJobsByGroup(@Param("jobGroup") int jobGroup);
+    int save(XxlJobInfo info);
 
-	int findAllCount();
+    XxlJobInfo loadById(@Param("id") int id);
 
-	List<XxlJobInfo> scheduleJobQuery(@Param("maxNextTime") long maxNextTime, @Param("pagesize") int pagesize );
+    int update(XxlJobInfo xxlJobInfo);
 
-	int scheduleUpdate(XxlJobInfo xxlJobInfo);
+    int delete(@Param("id") long id);
 
-	int autoStartJobs();
+    List<XxlJobInfo> getJobsByGroup(@Param("jobGroup") int jobGroup);
 
-	int autoStopJobs();
+    int findAllCount();
 
-	int manualStartJobs(@Param("journeyId") String journeyId);
+    List<XxlJobInfo> scheduleJobQuery(@Param("maxNextTime") long maxNextTime, @Param("pagesize") int pagesize);
 
-	int manualStopJobs(@Param("journeyId") String journeyId);
+    int scheduleUpdate(XxlJobInfo xxlJobInfo);
 
-	List<String> getCronByJourneyId(@Param("journeyId") String journeyId);
+    int autoStartJobs();
 
-	int deleteByJourneyId(@Param("journeyId") String journeyId);
+    int autoStopJobs();
 
-	List<XxlJobInfo> getJobsByJourneyId(@Param("journeyId") String journeyId);
+    int manualStartJobs(@Param("journeyId") String journeyId);
 
-	/*int deleteByIdsAndIdGroup(@Param("ids") List<Integer> ids,@Param("idGroup") int idGroup);*/
+    int manualStopJobs(@Param("journeyId") String journeyId);
+
+    List<String> getCronByJourneyId(@Param("journeyId") String journeyId);
+
+    int deleteByJourneyId(@Param("journeyId") String journeyId);
+
+    List<XxlJobInfo> getJobsByJourneyId(@Param("journeyId") String journeyId);
+
+    /*int deleteByIdsAndIdGroup(@Param("ids") List<Integer> ids,@Param("idGroup") int idGroup);*/
 }

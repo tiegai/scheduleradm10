@@ -5,7 +5,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class UtcLocalDateUtil {
+public final class UtcLocalDateUtil {
+
+    private UtcLocalDateUtil() {
+
+    }
 
     public static String utcStrToLocalStr(String dateStr) {
         SimpleDateFormat sdfUtc = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");

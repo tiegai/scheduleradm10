@@ -10,13 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *  1、内嵌编译器如"PythonInterpreter"无法引用扩展包，因此推荐使用java调用控制台进程方式"Runtime.getRuntime().exec()"来运行脚本(shell或python)；
- *  2、因为通过java调用控制台进程方式实现，需要保证目标机器PATH路径正确配置对应编译器；
- *  3、暂时脚本执行日志只能在脚本执行结束后一次性获取，无法保证实时性；因此为确保日志实时性，可改为将脚本打印的日志存储在指定的日志文件上；
- *  4、python 异常输出优先级高于标准输出，体现在Log文件中，因此推荐通过logging方式打日志保持和异常信息一致；否则用prinf日志顺序会错乱
- *
+ * 1、内嵌编译器如"PythonInterpreter"无法引用扩展包，因此推荐使用java调用控制台进程方式"Runtime.getRuntime().exec()"来运行脚本(shell或python)；
+ * 2、因为通过java调用控制台进程方式实现，需要保证目标机器PATH路径正确配置对应编译器；
+ * 3、暂时脚本执行日志只能在脚本执行结束后一次性获取，无法保证实时性；因此为确保日志实时性，可改为将脚本打印的日志存储在指定的日志文件上；
+ * 4、python 异常输出优先级高于标准输出，体现在Log文件中，因此推荐通过logging方式打日志保持和异常信息一致；否则用prinf日志顺序会错乱
  */
-public class ScriptUtil {
+public final class ScriptUtil {
+
+    private ScriptUtil() {
+
+    }
 
     /**
      * make script file
@@ -34,8 +37,8 @@ public class ScriptUtil {
             fileOutputStream.close();
         } catch (Exception e) {
             throw e;
-        }finally{
-            if(fileOutputStream != null){
+        } finally {
+            if (fileOutputStream != null) {
                 fileOutputStream.close();
             }
         }
@@ -64,8 +67,8 @@ public class ScriptUtil {
             List<String> cmdarray = new ArrayList<>();
             cmdarray.add(command);
             cmdarray.add(scriptFile);
-            if (params!=null && params.length>0) {
-                for (String param:params) {
+            if (params != null && params.length > 0) {
+                for (String param : params) {
                     cmdarray.add(param);
                 }
             }
@@ -140,7 +143,7 @@ public class ScriptUtil {
     private static long copy(InputStream inputStream, OutputStream outputStream, byte[] buffer) throws IOException {
         try {
             long total = 0;
-            for (;;) {
+            for (; ;) {
                 int res = inputStream.read(buffer);
                 if (res == -1) {
                     break;
@@ -171,14 +174,6 @@ public class ScriptUtil {
      * 缺点：
      *      标准输出和错误输出优先级固定，可能和脚本中顺序不一致
      *      Java无法实时获取
-     *
-     *      <!-- commons-exec -->
-     * 		<dependency>
-     * 			<groupId>org.apache.commons</groupId>
-     * 			<artifactId>commons-exec</artifactId>
-     * 			<version>${commons-exec.version}</version>
-     * 		</dependency>
-     *
      * @param command
      * @param scriptFile
      * @param logFile

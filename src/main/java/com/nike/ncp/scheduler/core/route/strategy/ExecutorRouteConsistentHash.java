@@ -18,7 +18,7 @@ import java.util.TreeMap;
  */
 public class ExecutorRouteConsistentHash extends ExecutorRouter {
 
-    private static int VIRTUAL_NODE_NUM = 100;
+    private static int virtualNodeNum = 100;
 
     /**
      * get hash code on 2^32 ring (md5散列的方式计算hash值)
@@ -61,7 +61,7 @@ public class ExecutorRouteConsistentHash extends ExecutorRouter {
         // -----------J1------------------
         TreeMap<Long, String> addressRing = new TreeMap<Long, String>();
         for (String address: addressList) {
-            for (int i = 0; i < VIRTUAL_NODE_NUM; i++) {
+            for (int i = 0; i < virtualNodeNum; i++) {
                 long addressHash = hash("SHARD-" + address + "-NODE-" + i);
                 addressRing.put(addressHash, address);
             }

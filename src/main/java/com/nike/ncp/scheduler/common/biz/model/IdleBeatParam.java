@@ -2,12 +2,12 @@ package com.nike.ncp.scheduler.common.biz.model;
 
 import java.io.Serializable;
 
-
 public class IdleBeatParam implements Serializable {
     private static final long serialVersionUID = 42L;
 
     public IdleBeatParam() {
     }
+
     public IdleBeatParam(int jobId) {
         this.jobId = jobId;
     }
@@ -22,5 +22,4 @@ public class IdleBeatParam implements Serializable {
     public void setJobId(int jobId) {
         this.jobId = jobId;
     }
-
 }

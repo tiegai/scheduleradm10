@@ -18,9 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 
-
-public class XxlJobScheduler  {
-    private static final Logger logger = LoggerFactory.getLogger(XxlJobScheduler.class);
+public class XxlJobScheduler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(XxlJobScheduler.class);
 
 
     public void init() throws Exception {
@@ -45,10 +44,10 @@ public class XxlJobScheduler  {
         // start-schedule  ( depend on JobTriggerPoolHelper )
         JobScheduleHelper.getInstance().start();
 
-        logger.info(">>>>>>>>> init xxl-job admin success.");
+        LOGGER.info(">>>>>>>>> init xxl-job admin success.");
     }
 
-    
+
     public void destroy() throws Exception {
 
         // stop-schedule
@@ -74,13 +73,14 @@ public class XxlJobScheduler  {
     // ---------------------- I18n ----------------------
 
     private void initI18n() {
-        for (ExecutorBlockStrategyEnum item:ExecutorBlockStrategyEnum.values()) {
+        for (ExecutorBlockStrategyEnum item : ExecutorBlockStrategyEnum.values()) {
             item.setTitle(I18nUtil.getString("jobconf_block_".concat(item.name())));
         }
     }
 
     // ---------------------- executor-client ----------------------
     private static ConcurrentMap<String, ExecutorBiz> executorBizRepository = new ConcurrentHashMap<String, ExecutorBiz>();
+
     public static ExecutorBiz getExecutorBiz(String address) throws Exception {
         // valid
         if (address == null || address.trim().length() == 0) {

@@ -6,7 +6,6 @@ import com.nike.ncp.scheduler.common.biz.model.RegistryParam;
 import com.nike.ncp.scheduler.common.biz.model.ReturnT;
 import com.nike.ncp.scheduler.common.util.GsonTool;
 import com.nike.ncp.scheduler.common.util.XxlJobRemotingUtil;
-import com.nike.ncp.scheduler.controller.annotation.PermissionLimit;
 import com.nike.ncp.scheduler.core.conf.XxlJobAdminConfig;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,19 +34,16 @@ public class JobApiController {
      */
     @RequestMapping("/{uri}")
     @ResponseBody
-    @PermissionLimit(limit=false)
     public ReturnT<String> api(HttpServletRequest request, @PathVariable("uri") String uri, @RequestBody(required = false) String data) {
 
         // valid
         if (!"POST".equalsIgnoreCase(request.getMethod())) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "invalid request, HttpMethod not support.");
         }
-        if (uri==null || uri.trim().length()==0) {
+        if (uri == null || uri.trim().length() == 0) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "invalid request, uri-mapping empty.");
         }
-        if (XxlJobAdminConfig.getAdminConfig().getAccessToken()!=null
-                && XxlJobAdminConfig.getAdminConfig().getAccessToken().trim().length()>0
-                && !XxlJobAdminConfig.getAdminConfig().getAccessToken().equals(request.getHeader(XxlJobRemotingUtil.XXL_JOB_ACCESS_TOKEN))) {
+        if (XxlJobAdminConfig.getAdminConfig().getAccessToken() != null && XxlJobAdminConfig.getAdminConfig().getAccessToken().trim().length() > 0 && !XxlJobAdminConfig.getAdminConfig().getAccessToken().equals(request.getHeader(XxlJobRemotingUtil.XXL_JOB_ACCESS_TOKEN))) {
             return new ReturnT<String>(ReturnT.FAIL_CODE, "The access token is wrong.");
         }
 
@@ -62,7 +58,7 @@ public class JobApiController {
             RegistryParam registryParam = GsonTool.fromJson(data, RegistryParam.class);
             return adminBiz.registryRemove(registryParam);
         } else {
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "invalid request, uri-mapping("+ uri +") not found.");
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "invalid request, uri-mapping(" + uri + ") not found.");
         }
 
     }

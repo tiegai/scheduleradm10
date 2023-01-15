@@ -1,14 +1,20 @@
 package com.nike.ncp.scheduler.common.biz.client;
 
-import com.nike.ncp.scheduler.common.biz.ExecutorBiz;
-import com.nike.ncp.scheduler.common.biz.model.*;
+import com.nike.ncp.scheduler.common.biz.model.IdleBeatParam;
+import com.nike.ncp.scheduler.common.biz.model.KillParam;
+import com.nike.ncp.scheduler.common.biz.model.ReturnT;
+import com.nike.ncp.scheduler.common.biz.model.TriggerParam;
+import com.nike.ncp.scheduler.common.biz.model.LogResult;
+import com.nike.ncp.scheduler.common.biz.model.LogParam;
 import com.nike.ncp.scheduler.common.util.XxlJobRemotingUtil;
+import com.nike.ncp.scheduler.common.biz.ExecutorBiz;
 
 
 public class ExecutorBizClient implements ExecutorBiz {
 
     public ExecutorBizClient() {
     }
+
     public ExecutorBizClient(String addressUrl, String accessToken) {
         this.addressUrl = addressUrl;
         this.accessToken = accessToken;
@@ -19,19 +25,19 @@ public class ExecutorBizClient implements ExecutorBiz {
         }
     }
 
-    private String addressUrl ;
+    private String addressUrl;
     private String accessToken;
     private int timeout = 3;
 
 
     @Override
     public ReturnT<String> beat() {
-        return XxlJobRemotingUtil.postBody(addressUrl+"beat", accessToken, timeout, "", String.class);
+        return XxlJobRemotingUtil.postBody(addressUrl + "beat", accessToken, timeout, "", String.class);
     }
 
     @Override
-    public ReturnT<String> idleBeat(IdleBeatParam idleBeatParam){
-        return XxlJobRemotingUtil.postBody(addressUrl+"idleBeat", accessToken, timeout, idleBeatParam, String.class);
+    public ReturnT<String> idleBeat(IdleBeatParam idleBeatParam) {
+        return XxlJobRemotingUtil.postBody(addressUrl + "idleBeat", accessToken, timeout, idleBeatParam, String.class);
     }
 
     @Override

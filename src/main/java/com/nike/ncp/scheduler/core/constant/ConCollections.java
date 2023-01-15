@@ -1,6 +1,10 @@
 package com.nike.ncp.scheduler.core.constant;
 
-public class ConCollections {
+public final class ConCollections {
+
+    private ConCollections() {
+
+    }
 
     public static final String PERIODIC_ONCE = "ONCE";
     public static final String PERIODIC_DAILY = "DAILY";

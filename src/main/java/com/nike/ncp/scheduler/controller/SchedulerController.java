@@ -9,7 +9,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +30,7 @@ import java.net.URISyntaxException;
 @RequestMapping("/v1/scheduler")
 public class SchedulerController {
 
-    private static Logger logger = LoggerFactory.getLogger(SchedulerController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchedulerController.class);
 
     public static final String JOURNEY_ID = "journeyId";
 
@@ -41,17 +50,16 @@ public class SchedulerController {
     @PostMapping("/jobs")
     @PermissionLimit(limit = false)
     public ResponseEntity<JourneyNextStart> createJob(HttpServletRequest request,
-                                                 @RequestBody JourneyInfo journeyInfo) throws URISyntaxException {
+                                                      @RequestBody JourneyInfo journeyInfo) throws URISyntaxException {
         JourneyNextStart journeyNextStart = schedulerService.addJobs(journeyInfo);
-        return ResponseEntity.created(new URI(request.getRequestURI() + "/"))
-                .body(journeyNextStart);
+        return ResponseEntity.created(new URI(request.getRequestURI() + "/")).body(journeyNextStart);
     }
 
     @PutMapping("/jobs/{journeyId}")
     @PermissionLimit(limit = false)
     public ResponseEntity<JourneyNextStart> modifyJob(@PathVariable(JOURNEY_ID) String journeyId,
-                                                 @RequestBody JourneyInfo journeyInfo) {
-        JourneyNextStart journeyNextStart = schedulerService.modifyJob(journeyId,journeyInfo);
+                                                      @RequestBody JourneyInfo journeyInfo) {
+        JourneyNextStart journeyNextStart = schedulerService.modifyJob(journeyId, journeyInfo);
         return ResponseEntity.ok().body(journeyNextStart);
     }
 
@@ -64,7 +72,7 @@ public class SchedulerController {
 
     @GetMapping("/autoStop")
     @PermissionLimit(limit = false)
-    public ResponseEntity<Void>  autoStopJobs() {
+    public ResponseEntity<Void> autoStopJobs() {
         schedulerService.autoStopJobs();
         return ResponseEntity.ok().build();
     }
@@ -78,7 +86,7 @@ public class SchedulerController {
 
     @PatchMapping("/jobs/{journeyId}/stop")
     @PermissionLimit(limit = false)
-    public ResponseEntity<Void>  manualStopJobs(@PathVariable(JOURNEY_ID) String journeyId) {
+    public ResponseEntity<Void> manualStopJobs(@PathVariable(JOURNEY_ID) String journeyId) {
         schedulerService.manualStopJobs(journeyId);
         return ResponseEntity.ok().build();
     }
@@ -97,7 +105,7 @@ public class SchedulerController {
                                                          @RequestParam(name = SIZE, defaultValue = DEFAULT_PAGE_SIZE) int size,
                                                          @RequestParam(name = STATUS, required = false) int status,
                                                          @RequestParam(name = FILTER_TIME, required = false) String filterTime) {
-        JourneyLogRes journeyLogRes = schedulerService.queryJobExeRecs(journeyId,page,size,status,filterTime);
+        JourneyLogRes journeyLogRes = schedulerService.queryJobExeRecs(journeyId, page, size, status, filterTime);
         return ResponseEntity.ok().body(journeyLogRes);
     }
 

@@ -23,14 +23,14 @@ import java.util.Comparator;
 public class ExecutorRouteLFU extends ExecutorRouter {
 
     private static ConcurrentMap<Integer, HashMap<String, Integer>> jobLfuMap = new ConcurrentHashMap<Integer, HashMap<String, Integer>>();
-    private static long CACHE_VALID_TIME = 0;
+    private static long cacheValidTime = 0;
 
     public String route(int jobId, List<String> addressList) {
 
         // cache clear
-        if (System.currentTimeMillis() > CACHE_VALID_TIME) {
+        if (System.currentTimeMillis() > cacheValidTime) {
             jobLfuMap.clear();
-            CACHE_VALID_TIME = System.currentTimeMillis() + 1000 * 60 * 60 * 24;
+            cacheValidTime = System.currentTimeMillis() + 1000 * 60 * 60 * 24;
         }
 
         // lfu item init

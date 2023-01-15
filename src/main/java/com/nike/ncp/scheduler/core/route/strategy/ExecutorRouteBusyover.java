@@ -1,10 +1,10 @@
 package com.nike.ncp.scheduler.core.route.strategy;
 
+import com.nike.ncp.scheduler.common.biz.model.IdleBeatParam;
 import com.nike.ncp.scheduler.core.route.ExecutorRouter;
 import com.nike.ncp.scheduler.core.scheduler.XxlJobScheduler;
 import com.nike.ncp.scheduler.core.util.I18nUtil;
 import com.nike.ncp.scheduler.common.biz.ExecutorBiz;
-import com.nike.ncp.scheduler.common.biz.model.IdleBeatParam;
 import com.nike.ncp.scheduler.common.biz.model.ReturnT;
 import com.nike.ncp.scheduler.common.biz.model.TriggerParam;
 
@@ -23,7 +23,7 @@ public class ExecutorRouteBusyover extends ExecutorRouter {
                 ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(address);
                 idleBeatResult = executorBiz.idleBeat(new IdleBeatParam(triggerParam.getJobId()));
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
                 idleBeatResult = new ReturnT<String>(ReturnT.FAIL_CODE, "" + e);
             }
             idleBeatResultSB.append((idleBeatResultSB.length() > 0) ? "<br><br>" : "")

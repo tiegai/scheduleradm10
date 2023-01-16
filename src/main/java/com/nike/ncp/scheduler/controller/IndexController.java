@@ -17,6 +17,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -60,7 +61,7 @@ public class IndexController {
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnT<String> loginDo(HttpServletRequest request, HttpServletResponse response, String userName, String password, String ifRemember) {
+    public ReturnT<String> loginDo(HttpServletRequest request, HttpServletResponse response, String userName, String password, String ifRemember) throws UnsupportedEncodingException {
         boolean ifRem = (ifRemember != null && ifRemember.trim().length() > 0 && "on".equals(ifRemember)) ? true : false;
         return loginService.login(request, response, userName, password, ifRem);
     }

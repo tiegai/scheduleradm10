@@ -96,7 +96,7 @@ public class XxlJobServiceImpl implements XxlJobService {
                 return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("schedule_type")));
             }
             try {
-                int fixSecond = Integer.valueOf(jobInfo.getScheduleConf());
+                int fixSecond = Integer.parseInt(jobInfo.getScheduleConf());
                 if (fixSecond < 1) {
                     return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("schedule_type") + I18nUtil.getString("system_unvalid")));
                 }
@@ -201,7 +201,7 @@ public class XxlJobServiceImpl implements XxlJobService {
                 return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("schedule_type") + I18nUtil.getString("system_unvalid")));
             }
             try {
-                int fixSecond = Integer.valueOf(jobInfo.getScheduleConf());
+                int fixSecond = Integer.parseInt(jobInfo.getScheduleConf());
                 if (fixSecond < 1) {
                     return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("schedule_type") + I18nUtil.getString("system_unvalid")));
                 }

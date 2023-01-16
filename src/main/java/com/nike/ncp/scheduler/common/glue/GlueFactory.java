@@ -3,8 +3,11 @@ package com.nike.ncp.scheduler.common.glue;
 import com.nike.ncp.scheduler.common.glue.impl.SpringGlueFactory;
 import com.nike.ncp.scheduler.common.handler.IJobHandler;
 import groovy.lang.GroovyClassLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -14,7 +17,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class GlueFactory {
 
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlueFactory.class);
     private static GlueFactory glueFact = new GlueFactory();
 
     public static GlueFactory getInstance() {
@@ -68,16 +71,17 @@ public class GlueFactory {
     private Class<?> getCodeSourceClass(String codeSource) {
         try {
             // md5
-            byte[] md5 = MessageDigest.getInstance("MD5").digest(codeSource.getBytes());
+            byte[] md5 = MessageDigest.getInstance("MD5").digest(codeSource.getBytes(Charset.forName("UTF-8")));
             String md5Str = new BigInteger(1, md5).toString(16);
 
             Class<?> clazz = classCache.get(md5Str);
             if (clazz == null) {
                 clazz = groovyClassLoader.parseClass(codeSource);
-                classCache.putIfAbsent(md5Str, clazz);
+                clazz = classCache.putIfAbsent(md5Str, clazz);
             }
             return clazz;
         } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
             return groovyClassLoader.parseClass(codeSource);
         }
     }

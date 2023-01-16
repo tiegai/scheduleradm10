@@ -47,14 +47,22 @@ public final class XxlJobFileAppender {
         // mk base dir
         File logPathDir = new File(logBasePath);
         if (!logPathDir.exists()) {
-            logPathDir.mkdirs();
+            try {
+                logPathDir.mkdirs();
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
         logBasePath = logPathDir.getPath();
 
         // mk glue dir
         File glueBaseDir = new File(logPathDir, "gluesource");
         if (!glueBaseDir.exists()) {
-            glueBaseDir.mkdirs();
+            try {
+                glueBaseDir.mkdirs();
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
         glueSrcPath = glueBaseDir.getPath();
     }
@@ -81,7 +89,11 @@ public final class XxlJobFileAppender {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");    // avoid concurrent problem, can not be static
         File logFilePath = new File(getLogPath(), sdf.format(triggerDate));
         if (!logFilePath.exists()) {
-            logFilePath.mkdir();
+            try {
+                logFilePath.mkdir();
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
 
         // filePath/yyyy-MM-dd/9999.log

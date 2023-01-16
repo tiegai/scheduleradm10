@@ -233,28 +233,44 @@ public class TriggerCallbackThread {
             return;
         }
         if (callbackLogPath.isFile()) {
-            callbackLogPath.delete();
+            try {
+                callbackLogPath.delete();
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
-        if (!(callbackLogPath.isDirectory() && callbackLogPath.list() != null && callbackLogPath.list().length > 0)) {
+        String[] callbackLogPathList = callbackLogPath.list();
+        if (!(callbackLogPath.isDirectory() && callbackLogPathList != null && callbackLogPathList.length > 0)) {
             return;
         }
 
         // load and clear file, retry
-        for (File callbaclLogFile : callbackLogPath.listFiles()) {
-            byte[] callbackParamListBytes = FileUtil.readFileContent(callbaclLogFile);
+        File[] callbackLogPathFile = callbackLogPath.listFiles();
+        if (callbackLogPathFile != null && callbackLogPathFile.length > 0) {
+            for (File callBackLogFile : callbackLogPathFile) {
+                byte[] callbackParamListBytes = FileUtil.readFileContent(callBackLogFile);
 
-            // avoid empty file
-            if (callbackParamListBytes == null || callbackParamListBytes.length < 1) {
-                callbaclLogFile.delete();
-                continue;
+                // avoid empty file
+                if (callbackParamListBytes == null || callbackParamListBytes.length < 1) {
+                    try {
+                        callBackLogFile.delete();
+                    } catch (Exception e) {
+                        LOGGER.error(e.getMessage(), e);
+                    }
+                    continue;
+                }
+
+                List<HandleCallbackParam> callbackParamList = (List<HandleCallbackParam>) JdkSerializeTool.deserialize(callbackParamListBytes, List.class);
+
+                try {
+                    callBackLogFile.delete();
+                } catch (Exception e) {
+                    LOGGER.error(e.getMessage(), e);
+                }
+                doCallback(callbackParamList);
             }
 
-            List<HandleCallbackParam> callbackParamList = (List<HandleCallbackParam>) JdkSerializeTool.deserialize(callbackParamListBytes, List.class);
-
-            callbaclLogFile.delete();
-            doCallback(callbackParamList);
         }
-
     }
 
 }

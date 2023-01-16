@@ -57,7 +57,7 @@ public final class XxlJobCompleter {
 
                 String[] childJobIds = xxlJobInfo.getChildJobId().split(",");
                 for (int i = 0; i < childJobIds.length; i++) {
-                    int childJobId = (childJobIds[i] != null && childJobIds[i].trim().length() > 0 && isNumeric(childJobIds[i])) ? Integer.valueOf(childJobIds[i]) : -1;
+                    int childJobId = (childJobIds[i] != null && childJobIds[i].trim().length() > 0 && isNumeric(childJobIds[i])) ? Integer.parseInt(childJobIds[i]) : -1;
                     if (childJobId > 0) {
 
                         JobTriggerPoolHelper.trigger(childJobId, TriggerTypeEnum.PARENT, -1, null, null, null);

@@ -12,7 +12,9 @@ import org.springframework.util.DigestUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 
 
 @Configuration
@@ -24,9 +26,9 @@ public class LoginService {
     private transient XxlJobUserDao xxlJobUserDao;
 
 
-    private String makeToken(XxlJobUser xxlJobUser) {
+    private String makeToken(XxlJobUser xxlJobUser) throws UnsupportedEncodingException {
         String tokenJson = JacksonUtil.writeValueAsString(xxlJobUser);
-        String tokenHex = new BigInteger(tokenJson.getBytes()).toString(16);
+        String tokenHex = new BigInteger(tokenJson.getBytes("UTF-8")).toString(16);
         return tokenHex;
     }
 
@@ -34,14 +36,14 @@ public class LoginService {
     private XxlJobUser parseToken(String tokenHex) {
         XxlJobUser xxlJobUser = null;
         if (tokenHex != null) {
-            String tokenJson = new String(new BigInteger(tokenHex, 16).toByteArray());      // username_password(md5)
+            String tokenJson = new String(new BigInteger(tokenHex, 16).toByteArray(), Charset.forName("utf-8"));      // username_password(md5)
             xxlJobUser = JacksonUtil.readValue(tokenJson, XxlJobUser.class);
         }
         return xxlJobUser;
     }
 
 
-    public ReturnT<String> login(HttpServletRequest request, HttpServletResponse response, String username, String password, boolean ifRemember) {
+    public ReturnT<String> login(HttpServletRequest request, HttpServletResponse response, String username, String password, boolean ifRemember) throws UnsupportedEncodingException {
 
         // param
         if (username == null || username.trim().length() == 0 || password == null || password.trim().length() == 0) {
@@ -53,7 +55,7 @@ public class LoginService {
         if (xxlJobUser == null) {
             return new ReturnT<String>(500, I18nUtil.getString("login_param_unvalid"));
         }
-        String passwordMd5 = DigestUtils.md5DigestAsHex(password.getBytes());
+        String passwordMd5 = DigestUtils.md5DigestAsHex(password.getBytes("UTF-8"));
         if (!passwordMd5.equals(xxlJobUser.getPassword())) {
             return new ReturnT<String>(500, I18nUtil.getString("login_param_unvalid"));
         }

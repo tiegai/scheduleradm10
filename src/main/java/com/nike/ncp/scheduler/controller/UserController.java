@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +71,7 @@ public class UserController {
 
     @RequestMapping("/add")
     @ResponseBody
-    public ReturnT<String> add(XxlJobUser xxlJobUser) {
+    public ReturnT<String> add(XxlJobUser xxlJobUser) throws UnsupportedEncodingException {
 
         // valid username
         if (!StringUtils.hasText(xxlJobUser.getUsername())) {
@@ -89,7 +90,7 @@ public class UserController {
             return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString(LENGTH_LIMIT) + LENGTH_LIMIT_NUM);
         }
         // md5 password
-        xxlJobUser.setPassword(DigestUtils.md5DigestAsHex(xxlJobUser.getPassword().getBytes()));
+        xxlJobUser.setPassword(DigestUtils.md5DigestAsHex(xxlJobUser.getPassword().getBytes("UTF-8")));
 
         // check repeat
         XxlJobUser existUser = xxlJobUserDao.loadByUserName(xxlJobUser.getUsername());
@@ -104,7 +105,7 @@ public class UserController {
 
     @RequestMapping("/update")
     @ResponseBody
-    public ReturnT<String> update(HttpServletRequest request, XxlJobUser xxlJobUser) {
+    public ReturnT<String> update(HttpServletRequest request, XxlJobUser xxlJobUser) throws UnsupportedEncodingException {
 
         // avoid opt login seft
         XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
@@ -119,7 +120,7 @@ public class UserController {
                 return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString(LENGTH_LIMIT) + LENGTH_LIMIT_NUM);
             }
             // md5 password
-            xxlJobUser.setPassword(DigestUtils.md5DigestAsHex(xxlJobUser.getPassword().getBytes()));
+            xxlJobUser.setPassword(DigestUtils.md5DigestAsHex(xxlJobUser.getPassword().getBytes("UTF-8")));
         } else {
             xxlJobUser.setPassword(null);
         }
@@ -145,7 +146,7 @@ public class UserController {
 
     @RequestMapping("/updatePwd")
     @ResponseBody
-    public ReturnT<String> updatePwd(HttpServletRequest request, String password) {
+    public ReturnT<String> updatePwd(HttpServletRequest request, String password) throws UnsupportedEncodingException {
 
         // valid password
         if (password == null || password.trim().length() == 0) {
@@ -157,7 +158,7 @@ public class UserController {
         }
 
         // md5 password
-        String md5Password = DigestUtils.md5DigestAsHex(password.getBytes());
+        String md5Password = DigestUtils.md5DigestAsHex(password.getBytes("UTF-8"));
 
         // update pwd
         XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);

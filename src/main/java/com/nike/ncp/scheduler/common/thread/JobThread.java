@@ -105,7 +105,7 @@ public class JobThread extends Thread {
         // init
         try {
             handler.init();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
 
@@ -184,7 +184,7 @@ public class JobThread extends Thread {
                         }
                     }
                 }
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 if (toStopFlag) {
                     XxlJobHelper.log("<br>----------- JobThread toStop, stopReason:" + stopReason);
                 }
@@ -223,7 +223,7 @@ public class JobThread extends Thread {
         // destroy
         try {
             handler.destroy();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
 

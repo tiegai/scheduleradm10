@@ -45,7 +45,11 @@ public final class FileUtil {
         // file
         File file = new File(fileName);
         if (file.exists()) {
-            file.delete();
+            try {
+                file.delete();
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
     }
 
@@ -54,7 +58,11 @@ public final class FileUtil {
 
         // file
         if (!file.exists()) {
-            file.getParentFile().mkdirs();
+            try {
+                file.getParentFile().mkdirs();
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
 
         // append file content

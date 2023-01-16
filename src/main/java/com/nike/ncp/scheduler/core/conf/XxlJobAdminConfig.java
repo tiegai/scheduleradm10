@@ -29,6 +29,10 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
         return adminConfig;
     }
 
+    private void setAdminConfig(XxlJobAdminConfig value) {
+        adminConfig = value;
+    }
+
 
     // ---------------------- XxlJobScheduler ----------------------
 
@@ -36,7 +40,8 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        adminConfig = this;
+        setAdminConfig(this);
+        //adminConfig = this;
 
         xxlJobScheduler = new XxlJobScheduler();
         xxlJobScheduler.init();

@@ -322,8 +322,15 @@ public class JobScheduleHelper {
         // if has ring data
         boolean hasRingData = false;
         if (!ringData.isEmpty()) {
-            for (int second : ringData.keySet()) {
+            /*for (int second : ringData.keySet()) {
                 List<Integer> tmpData = ringData.get(second);
+                if (tmpData != null && tmpData.size() > 0) {
+                    hasRingData = true;
+                    break;
+                }
+            }*/
+            for (Map.Entry<Integer, List<Integer>> entity : ringData.entrySet()) {
+                List<Integer> tmpData = entity.getValue();
                 if (tmpData != null && tmpData.size() > 0) {
                     hasRingData = true;
                     break;

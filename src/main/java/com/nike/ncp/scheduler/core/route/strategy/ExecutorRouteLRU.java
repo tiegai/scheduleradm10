@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentMap;
 public class ExecutorRouteLRU extends ExecutorRouter {
 
     private static ConcurrentMap<Integer, LinkedHashMap<String, String>> jobLRUMap = new ConcurrentHashMap<Integer, LinkedHashMap<String, String>>();
-    private static long cacheValidTime = 0;
+    private transient long cacheValidTime = 0;
 
     public String route(int jobId, List<String> addressList) {
 
@@ -37,7 +37,7 @@ public class ExecutorRouteLRU extends ExecutorRouter {
              *      b、removeEldestEntry：新增元素时将会调用，返回true时会删除最老元素；可封装LinkedHashMap并重写该方法，比如定义最大容量，超出是返回true即可实现固定长度的LRU算法；
              */
             lruItem = new LinkedHashMap<String, String>(16, 0.75f, true);
-            jobLRUMap.putIfAbsent(jobId, lruItem);
+            lruItem = jobLRUMap.putIfAbsent(jobId, lruItem);
         }
 
         // put new

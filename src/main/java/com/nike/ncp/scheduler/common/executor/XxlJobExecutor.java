@@ -122,7 +122,7 @@ public class XxlJobExecutor {
     // ---------------------- admin-client (rpc invoker) ----------------------
     private static List<AdminBiz> adminBizList;
 
-    private void initAdminBizList(String adminAddressesBiz, String accessTokenBiz) throws Exception {
+    private synchronized void initAdminBizList(String adminAddressesBiz, String accessTokenBiz) throws Exception {
         if (adminAddressesBiz != null && adminAddressesBiz.trim().length() > 0) {
             for (String addressBiz : adminAddressesBiz.trim().split(",")) {
                 if (addressBiz != null && addressBiz.trim().length() > 0) {

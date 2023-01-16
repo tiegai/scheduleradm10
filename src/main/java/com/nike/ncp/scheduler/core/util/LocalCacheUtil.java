@@ -1,5 +1,6 @@
 package com.nike.ncp.scheduler.core.util;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -122,11 +123,19 @@ public final class LocalCacheUtil {
      * @return
      */
     public static boolean cleanTimeoutCache() {
-        if (!cacheRepository.keySet().isEmpty()) {
+        /*if (!cacheRepository.keySet().isEmpty()) {
             for (String key : cacheRepository.keySet()) {
                 LocalCacheData localCacheData = cacheRepository.get(key);
                 if (localCacheData != null && System.currentTimeMillis() >= localCacheData.getTimeoutTime()) {
                     cacheRepository.remove(key);
+                }
+            }
+        }*/
+        if (!cacheRepository.entrySet().isEmpty()) {
+            for (Map.Entry<String, LocalCacheData> entry : cacheRepository.entrySet()) {
+                LocalCacheData localCacheData = entry.getValue();
+                if (localCacheData != null && System.currentTimeMillis() >= localCacheData.getTimeoutTime()) {
+                    cacheRepository.remove(entry.getKey());
                 }
             }
         }

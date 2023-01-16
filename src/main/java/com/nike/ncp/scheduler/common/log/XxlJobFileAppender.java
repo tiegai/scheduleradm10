@@ -214,14 +214,14 @@ public final class XxlJobFileAppender {
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new InputStreamReader(new FileInputStream(logFile), "utf-8"));
-            if (reader != null) {
+            //if (reader != null) {
                 StringBuilder sb = new StringBuilder();
                 String line = null;
                 while ((line = reader.readLine()) != null) {
                     sb.append(line).append("\n");
                 }
                 return sb.toString();
-            }
+            //}
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         } finally {

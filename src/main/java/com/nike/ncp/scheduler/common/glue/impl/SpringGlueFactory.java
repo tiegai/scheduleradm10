@@ -44,10 +44,12 @@ public class SpringGlueFactory extends GlueFactory {
             if (AnnotationUtils.getAnnotation(field, Resource.class) != null) {
                 try {
                     Resource resource = AnnotationUtils.getAnnotation(field, Resource.class);
-                    if (resource.name() != null && resource.name().length() > 0) {
-                        fieldBean = XxlJobSpringExecutor.getApplicationContext().getBean(resource.name());
-                    } else {
-                        fieldBean = XxlJobSpringExecutor.getApplicationContext().getBean(field.getName());
+                    if (resource != null) {
+                        if (resource.name() != null && resource.name().length() > 0) {
+                            fieldBean = XxlJobSpringExecutor.getApplicationContext().getBean(resource.name());
+                        } else {
+                            fieldBean = XxlJobSpringExecutor.getApplicationContext().getBean(field.getName());
+                        }
                     }
                 } catch (Exception e) {
                 }

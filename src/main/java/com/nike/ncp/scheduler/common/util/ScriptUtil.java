@@ -158,11 +158,15 @@ public final class ScriptUtil {
                     }
                 }
             }
-            outputStream.flush();
+            if (outputStream != null) {
+                outputStream.flush();
+            }
             //out = null;
             inputStream.close();
             inputStream = null;
             return total;
+        } catch (Exception e) {
+            throw e;
         } finally {
             if (inputStream != null) {
                 inputStream.close();

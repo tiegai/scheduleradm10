@@ -7,10 +7,8 @@ import com.nike.ncp.scheduler.core.thread.JobRegistryHelper;
 import com.nike.ncp.scheduler.core.thread.JobTriggerPoolHelper;
 import com.nike.ncp.scheduler.core.thread.JobLogReportHelper;
 import com.nike.ncp.scheduler.core.thread.JobScheduleHelper;
-import com.nike.ncp.scheduler.core.util.I18nUtil;
 import com.nike.ncp.scheduler.common.biz.ExecutorBiz;
 import com.nike.ncp.scheduler.common.biz.client.ExecutorBizClient;
-import com.nike.ncp.scheduler.common.enums.ExecutorBlockStrategyEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +22,7 @@ public class XxlJobScheduler {
 
     public void init() throws Exception {
         // init i18n
-        initI18n();
+        //initI18n();
 
         // admin trigger pool start
         JobTriggerPoolHelper.toStart();
@@ -72,11 +70,11 @@ public class XxlJobScheduler {
 
     // ---------------------- I18n ----------------------
 
-    private void initI18n() {
+    /*private void initI18n() {
         for (ExecutorBlockStrategyEnum item : ExecutorBlockStrategyEnum.values()) {
             item.setTitle(I18nUtil.getString("jobconf_block_".concat(item.name())));
         }
-    }
+    }*/
 
     // ---------------------- executor-client ----------------------
     private static ConcurrentMap<String, ExecutorBiz> executorBizRepository = new ConcurrentHashMap<String, ExecutorBiz>();

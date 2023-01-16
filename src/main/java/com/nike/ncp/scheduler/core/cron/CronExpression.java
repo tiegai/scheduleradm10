@@ -204,8 +204,8 @@ public final class CronExpression implements Serializable, Cloneable {
     protected static final int NO_SPEC_INT = 98; // '?'
     protected static final Integer ALL_SPEC = ALL_SPEC_INT;
     protected static final Integer NO_SPEC = NO_SPEC_INT;
-    protected static final Map<String, Integer> MONTH_MAP = new HashMap<String, Integer>(20);
-    protected static final Map<String, Integer> DAY_MAP = new HashMap<String, Integer>(60);
+    private static final Map<String, Integer> MONTH_MAP = new HashMap<String, Integer>(20);
+    private static final Map<String, Integer> DAY_MAP = new HashMap<String, Integer>(60);
 
     private static final int DIFFERENCE = 1000;
 

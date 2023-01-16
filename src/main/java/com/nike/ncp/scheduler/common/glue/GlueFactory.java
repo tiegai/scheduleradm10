@@ -35,13 +35,6 @@ public class GlueFactory {
         }
     }
 
-
-    /**
-     * groovy class loader
-     */
-    private transient GroovyClassLoader groovyClassLoader = new GroovyClassLoader();
-    private transient ConcurrentMap<String, Class<?>> classCache = new ConcurrentHashMap<>();
-
     /**
      * load new instance, prototype
      *
@@ -68,7 +61,15 @@ public class GlueFactory {
         throw new IllegalArgumentException(">>>>>>>>>>> xxl-glue, loadNewInstance error, instance is null");
     }
 
+    /**
+     * groovy class loader
+     */
+/*    private transient GroovyClassLoader groovyClassLoader = new GroovyClassLoader();
+    private transient ConcurrentMap<String, Class<?>> classCache = new ConcurrentHashMap<>();*/
+    @SuppressWarnings("all")
     private Class<?> getCodeSourceClass(String codeSource) {
+        GroovyClassLoader groovyClassLoader = new GroovyClassLoader();
+        ConcurrentMap<String, Class<?>> classCache = new ConcurrentHashMap<>();
         try {
             // md5
             byte[] md5 = MessageDigest.getInstance("MD5").digest(codeSource.getBytes(Charset.forName("UTF-8")));

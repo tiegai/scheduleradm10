@@ -1,5 +1,6 @@
 package com.nike.ncp.scheduler.controller;
 
+import com.nike.ncp.scheduler.controller.annotation.PermissionLimit;
 import com.nike.ncp.scheduler.dao.XxlJobGroupDao;
 import com.nike.ncp.scheduler.core.model.XxlJobGroup;
 import com.nike.ncp.scheduler.core.model.XxlJobUser;
@@ -37,6 +38,7 @@ public class UserController {
     private static final String LENGTH_LIMIT_NUM = "[4-20]";
 
     @RequestMapping
+    @PermissionLimit(adminuser = true)
     public String index(Model model) {
 
         // 执行器列表
@@ -48,6 +50,7 @@ public class UserController {
 
     @RequestMapping("/pageList")
     @ResponseBody
+    @PermissionLimit(adminuser = true)
     public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int start, @RequestParam(required = false, defaultValue = "10") int length, String username, int role) {
 
         // page list
@@ -71,6 +74,7 @@ public class UserController {
 
     @RequestMapping("/add")
     @ResponseBody
+    @PermissionLimit(adminuser = true)
     public ReturnT<String> add(XxlJobUser xxlJobUser) throws UnsupportedEncodingException {
 
         // valid username
@@ -105,6 +109,7 @@ public class UserController {
 
     @RequestMapping("/update")
     @ResponseBody
+    @PermissionLimit(adminuser = true)
     public ReturnT<String> update(HttpServletRequest request, XxlJobUser xxlJobUser) throws UnsupportedEncodingException {
 
         // avoid opt login seft
@@ -132,6 +137,7 @@ public class UserController {
 
     @RequestMapping("/remove")
     @ResponseBody
+    @PermissionLimit(adminuser = true)
     public ReturnT<String> remove(HttpServletRequest request, int id) {
 
         // avoid opt login seft

@@ -1,5 +1,6 @@
 package com.nike.ncp.scheduler.controller;
 
+import com.nike.ncp.scheduler.controller.annotation.PermissionLimit;
 import com.nike.ncp.scheduler.service.LoginService;
 import com.nike.ncp.scheduler.service.XxlJobService;
 import com.nike.ncp.scheduler.common.biz.model.ReturnT;
@@ -51,6 +52,7 @@ public class IndexController {
     }
 
     @RequestMapping("/toLogin")
+    @PermissionLimit(limit=false)
     public ModelAndView toLogin(HttpServletRequest request, HttpServletResponse response, ModelAndView modelAndView) {
         if (loginService.ifLogin(request, response) != null) {
             modelAndView.setView(new RedirectView("/", true, false));
@@ -61,6 +63,7 @@ public class IndexController {
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
     @ResponseBody
+    @PermissionLimit(limit=false)
     public ReturnT<String> loginDo(HttpServletRequest request, HttpServletResponse response, String userName, String password, String ifRemember) throws UnsupportedEncodingException {
         boolean ifRem = (ifRemember != null && ifRemember.trim().length() > 0 && "on".equals(ifRemember)) ? true : false;
         return loginService.login(request, response, userName, password, ifRem);
@@ -68,6 +71,7 @@ public class IndexController {
 
     @RequestMapping(value = "logout", method = RequestMethod.POST)
     @ResponseBody
+    @PermissionLimit(limit=false)
     public ReturnT<String> logout(HttpServletRequest request, HttpServletResponse response) {
         return loginService.logout(request, response);
     }

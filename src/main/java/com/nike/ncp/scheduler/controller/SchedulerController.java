@@ -25,9 +25,13 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 @Slf4j
 @RestController
 @RequestMapping("/v1/scheduler")
+@Api(value = "scheduler admin api", tags = "scheduler admin")
 public class SchedulerController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SchedulerController.class);
@@ -47,6 +51,7 @@ public class SchedulerController {
     @Resource
     private transient SchedulerService schedulerService;
 
+    @ApiOperation("Create Job")
     @PostMapping("/jobs")
     @PermissionLimit(limit = false)
     public ResponseEntity<JourneyNextStart> createJob(HttpServletRequest request,
@@ -55,6 +60,7 @@ public class SchedulerController {
         return ResponseEntity.created(new URI(request.getRequestURI() + "/")).body(journeyNextStart);
     }
 
+    @ApiOperation("Modify Job")
     @PutMapping("/jobs/{journeyId}")
     @PermissionLimit(limit = false)
     public ResponseEntity<JourneyNextStart> modifyJob(@PathVariable(JOURNEY_ID) String journeyId,
@@ -77,6 +83,7 @@ public class SchedulerController {
         return ResponseEntity.ok().build();
     }
 
+    @ApiOperation("Manual Start Job")
     @PatchMapping("/jobs/{journeyId}/start")
     @PermissionLimit(limit = false)
     public ResponseEntity<Void> manualStartJobs(@PathVariable(JOURNEY_ID) String journeyId) {
@@ -84,6 +91,7 @@ public class SchedulerController {
         return ResponseEntity.ok().build();
     }
 
+    @ApiOperation("Manual Stop Job")
     @PatchMapping("/jobs/{journeyId}/stop")
     @PermissionLimit(limit = false)
     public ResponseEntity<Void> manualStopJobs(@PathVariable(JOURNEY_ID) String journeyId) {
@@ -91,6 +99,7 @@ public class SchedulerController {
         return ResponseEntity.ok().build();
     }
 
+    @ApiOperation("Delete Job")
     @DeleteMapping("/jobs/{journeyId}")
     @PermissionLimit(limit = false)
     public ResponseEntity<Void> deleteJobs(@PathVariable(JOURNEY_ID) String journeyId) {
@@ -98,6 +107,7 @@ public class SchedulerController {
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation("Query Job Executor Records")
     @GetMapping("/jobs/{journeyId}/recs")
     @PermissionLimit(limit = false)
     public ResponseEntity<JourneyLogRes> queryJobExeRecs(@PathVariable(JOURNEY_ID) String journeyId,
@@ -109,6 +119,7 @@ public class SchedulerController {
         return ResponseEntity.ok().body(journeyLogRes);
     }
 
+    @ApiOperation("Query Job Next Start")
     @GetMapping("/jobs/{journeyId}/nextStart")
     @PermissionLimit(limit = false)
     public ResponseEntity<JourneyNextStart> queryJobNextStart(@PathVariable(JOURNEY_ID) String journeyId) {

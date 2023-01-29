@@ -117,6 +117,9 @@ dependencies {
 	implementation 'org.springframework:spring-context-support:5.3.24'
 	// https://mvnrepository.com/artifact/com.sun.mail/jakarta.mail
 	implementation 'com.sun.mail:jakarta.mail:1.6.7'
+	// https://mvnrepository.com/artifact/io.swagger/swagger-annotations
+	implementation group: 'io.swagger', name: 'swagger-annotations', version: '1.6.9'
+
 
 
 	// Spring dependencies

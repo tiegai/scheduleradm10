@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 @EnableSwagger2WebMvc
 @Getter
 public class SwaggerConfiguration implements WebMvcConfigurer {
-
     @Value("${info.app.name}")
     private String appName;
     @Value("${info.app.version}")
@@ -77,7 +76,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
                 mappings.addAll(copy);
             }
 
-            @SuppressWarnings("unchecked")
+            @SuppressWarnings("all")
             private List<RequestMappingInfoHandlerMapping> getHandlerMappings(Object bean) {
                 try {
                     Field field = ReflectionUtils.findField(bean.getClass(), "handlerMappings");

@@ -31,8 +31,11 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SchedulerServiceImpl.class);
 
-    @Value("${ncp.engine.url}")
-    private transient String engineUrl;
+    @Value("${ncp.engine.url.begin}")
+    private transient String engineUrlBegin;
+
+    @Value("${ncp.engine.url.end}")
+    private transient String engineUrlEnd;
 
 
     @Value("${ncp.scheduler.executor.job.group}")
@@ -73,7 +76,8 @@ public class SchedulerServiceImpl implements SchedulerService {
         jobInfo.setMisfireStrategy(ConCollections.MISFIRE_STRATEGY);
         jobInfo.setExecutorBlockStrategy(ConCollections.EXECUTOR_BLOCK_STRATEGY);
         jobInfo.setExecutorHandler(ConCollections.EXECUTOR_HANDLER);
-        jobInfo.setExecutorParam(engineUrl + ConCollections.ENGINE_URL_PARAMS + journeyId);
+        //jobInfo.setExecutorParam(engineUrl + ConCollections.ENGINE_URL_PARAMS + journeyId);
+        jobInfo.setExecutorParam(engineUrlBegin + journeyId + engineUrlEnd);
         String[] times = null;
         List<Date> timesList = new ArrayList<>();
         //once

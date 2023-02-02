@@ -266,15 +266,19 @@
 		WHERE date_add(NOW(),interval 8 hour) >= journey_end_time and trigger_status = 1
 	</update>
 
-	<update id="manualStartJobs" parameterType="java.lang.String">
+	<update id="manualStartJobs" parameterType="java.util.HashMap">
 		UPDATE xxl_job_info
-		SET trigger_status = 1 and author = #{manualUserId}
+		SET
+		    trigger_status = 1,
+		 	author = #{manualUserId}
 		WHERE journey_id = #{manualStartJourneyId}
 	</update>
 
-	<update id="manualStopJobs" parameterType="java.lang.String">
+	<update id="manualStopJobs" parameterType="java.util.HashMap">
 		UPDATE xxl_job_info
-		SET trigger_status = 2 and author = #{manualUserId}
+		SET
+		    trigger_status = 2,
+		    author = #{manualUserId}
 		WHERE journey_id = #{manualStopJourneyId}
 	</update>
 

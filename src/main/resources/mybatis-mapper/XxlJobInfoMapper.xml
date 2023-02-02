@@ -268,13 +268,13 @@
 
 	<update id="manualStartJobs" parameterType="java.lang.String">
 		UPDATE xxl_job_info
-		SET trigger_status = 1
+		SET trigger_status = 1 and author = #{manualUserId}
 		WHERE journey_id = #{manualStartJourneyId}
 	</update>
 
 	<update id="manualStopJobs" parameterType="java.lang.String">
 		UPDATE xxl_job_info
-		SET trigger_status = 2
+		SET trigger_status = 2 and author = #{manualUserId}
 		WHERE journey_id = #{manualStopJourneyId}
 	</update>
 

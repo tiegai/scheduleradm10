@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +28,9 @@ import java.net.URISyntaxException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
+import static com.nike.ncp.scheduler.core.model.UserHeader.USER_ID;
+import static com.nike.ncp.scheduler.core.model.UserHeader.USER_NAME;
 
 @Slf4j
 @RestController
@@ -83,21 +87,41 @@ public class SchedulerController {
         return ResponseEntity.ok().build();
     }
 
-    @ApiOperation("Manual Start Job")
+    @ApiOperation("Suspend Job")
+    @PatchMapping("/jobs/{journeyId}/suspension")
+    public ResponseEntity<Void> suspendJourney(@PathVariable(JOURNEY_ID) String journeyId,
+                                               @RequestHeader(USER_ID) String userId,
+                                               @RequestHeader(USER_NAME) String userName) {
+//        journeyService.suspendJourney(journeyId, UserHeader.builder().userId(userId).userName(userName).build());
+        schedulerService.manualStopJobs(journeyId, userId, userName);
+        return ResponseEntity.ok().build();
+    }
+
+    @ApiOperation("Resume Job")
+    @DeleteMapping("/jobs/{journeyId}/suspension")
+    public ResponseEntity<Void> resumeJourney(@PathVariable(JOURNEY_ID) String journeyId,
+                                              @RequestHeader(USER_ID) String userId,
+                                              @RequestHeader(USER_NAME) String userName) {
+//        journeyService.resumeJourney(journeyId, UserHeader.builder().userId(userId).userName(userName).build());
+        schedulerService.manualStartJobs(journeyId, userId, userName);
+        return ResponseEntity.noContent().build();
+    }
+
+    /*@ApiOperation("Manual Start Job")
     @PatchMapping("/jobs/{journeyId}/start")
     @PermissionLimit(limit = false)
     public ResponseEntity<Void> manualStartJobs(@PathVariable(JOURNEY_ID) String journeyId) {
         schedulerService.manualStartJobs(journeyId);
         return ResponseEntity.ok().build();
-    }
+    }*/
 
-    @ApiOperation("Manual Stop Job")
+    /*@ApiOperation("Manual Stop Job")
     @PatchMapping("/jobs/{journeyId}/stop")
     @PermissionLimit(limit = false)
     public ResponseEntity<Void> manualStopJobs(@PathVariable(JOURNEY_ID) String journeyId) {
         schedulerService.manualStopJobs(journeyId);
         return ResponseEntity.ok().build();
-    }
+    }*/
 
     @ApiOperation("Delete Job")
     @DeleteMapping("/jobs/{journeyId}")

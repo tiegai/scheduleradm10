@@ -52,6 +52,8 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     private static final int SIZE_ONE = 1;
 
+    private static final int TRIGGER_STATUS_RUN = 1;
+
     @Override
     @Transactional
     @SuppressWarnings("all")
@@ -67,8 +69,8 @@ public class SchedulerServiceImpl implements SchedulerService {
         jobInfo.setGlueUpdatetime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(journeyInfo.getModifiedTime())));
         String beginStr = journeyInfo.getPeriodicBegin();
         String endStr = journeyInfo.getPeriodicEnd();
-        jobInfo.setJourneyStartTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(beginStr)));
-        jobInfo.setJourneyEndTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(endStr)));
+        /*jobInfo.setJourneyStartTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(beginStr)));
+        jobInfo.setJourneyEndTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(endStr)));*/
         jobInfo.setAuthor(ConCollections.AUTHOR);
         jobInfo.setScheduleType(ConCollections.SCHEDULE_TYPE);
         jobInfo.setGlueType(ConCollections.GLUE_TYPE);
@@ -83,12 +85,12 @@ public class SchedulerServiceImpl implements SchedulerService {
         //once
         if (journeyInfo.getPeriodicType().equals(ConCollections.PERIODIC_ONCE)) {
             if (journeyInfo.getNextStartTime() == null) {
-                throw ApiExceptions.invalidRequest();
+                throw ApiExceptions.invalidRequest().with(9003, "nextStartTime is null");
             }
         } else { // not once
             times = journeyInfo.getPeriodicTimes().split(",");
             if (times.length < 1) {
-                throw ApiExceptions.invalidRequest();
+                throw ApiExceptions.invalidRequest().with(9002, "periodicTimes is error");
             }
             for (int i = 0; i < times.length; i++) {
                 timesList.add(UtcLocalDateUtil.strToTime(times[i] + ":00"));
@@ -104,14 +106,19 @@ public class SchedulerServiceImpl implements SchedulerService {
             Integer second = Integer.parseInt(nextStart.split("\\s+")[1].split(":")[2]);
             //0 40 17 2 12 ? 2022-2022
             jobInfo.setScheduleConf(second + " " + minute + " " + hour + " " + day + " " + month + " " + "?" + " " + year + "-" + year);
+            jobInfo.setTriggerStatus(TRIGGER_STATUS_RUN);
             xxlJobInfoDao.save(jobInfo);
         } else if (journeyInfo.getPeriodicType().equals(ConCollections.PERIODIC_DAILY)) {
+            jobInfo.setJourneyStartTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(beginStr)));
+            jobInfo.setJourneyEndTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(endStr)));
             for (int i = 0; i < times.length; i++) {
                 String[] timesStr = times[i].split(":");
                 jobInfo.setScheduleConf(Integer.parseInt("0") + " " + Integer.parseInt(timesStr[1]) + " " + Integer.parseInt(timesStr[0]) + " " + "* * ?");
                 xxlJobInfoDao.save(jobInfo);
             }
         } else if (journeyInfo.getPeriodicType().equals(ConCollections.PERIODIC_WEEKLY)) {
+            jobInfo.setJourneyStartTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(beginStr)));
+            jobInfo.setJourneyEndTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(endStr)));
             for (int i = 0; i < times.length; i++) {
                 String[] timesStr = times[i].split(":");
                 String week = journeyInfo.getPeriodicValues();
@@ -119,6 +126,8 @@ public class SchedulerServiceImpl implements SchedulerService {
                 xxlJobInfoDao.save(jobInfo);
             }
         } else if (journeyInfo.getPeriodicType().equals(ConCollections.PERIODIC_MONTHLY)) {
+            jobInfo.setJourneyStartTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(beginStr)));
+            jobInfo.setJourneyEndTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(endStr)));
             for (int i = 0; i < times.length; i++) {
                 String[] timesStr = times[i].split(":");
                 String day = journeyInfo.getPeriodicValues();
@@ -133,12 +142,12 @@ public class SchedulerServiceImpl implements SchedulerService {
         List<String> cronList = xxlJobInfoDao.getCronByJourneyId(journeyId);
         if (journeyInfo.getPeriodicType().equals(ConCollections.PERIODIC_ONCE)) {
             if (cronList.size() != 1) {
-                throw ApiExceptions.itemNotFound();
+                throw ApiExceptions.invalidRequest().with(9001, "journeyId is duplicate insertion");
             }
             response.setNextStartTime(journeyInfo.getNextStartTime());
         } else {
             if (cronList.size() != timesList.size()) {
-                throw ApiExceptions.itemNotFound();
+                throw ApiExceptions.invalidRequest().with(9001, "journeyId is duplicate insertion");
             }
             response.setNextStartTime(CronUtil.cronListNextStart(cronList, UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(beginStr))));
         }
@@ -167,13 +176,15 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     @Override
-    public void manualStartJobs(String journeyId) {
-        xxlJobInfoDao.manualStartJobs(journeyId);
+    @Transactional
+    public void manualStartJobs(String journeyId, String userId, String userName) {
+        xxlJobInfoDao.manualStartJobs(journeyId, userId);
     }
 
     @Override
-    public void manualStopJobs(String journeyId) {
-        xxlJobInfoDao.manualStopJobs(journeyId);
+    @Transactional
+    public void manualStopJobs(String journeyId, String userId, String userName) {
+        xxlJobInfoDao.manualStopJobs(journeyId, userId);
     }
 
     @Override
@@ -222,7 +233,7 @@ public class SchedulerServiceImpl implements SchedulerService {
         response.setJourneyId(journeyId);
         List<XxlJobInfo> jobInfoList = xxlJobInfoDao.getJobsByJourneyId(journeyId);
         if (jobInfoList == null || jobInfoList.size() < 1) {
-            throw ApiExceptions.itemNotFound();
+            throw ApiExceptions.internalError();
         }
         Date begin = jobInfoList.get(0).getJourneyStartTime();
         Date end = jobInfoList.get(0).getJourneyEndTime();

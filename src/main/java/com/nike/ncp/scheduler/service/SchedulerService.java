@@ -41,14 +41,14 @@ public interface SchedulerService {
      *
      * @return
      */
-    void manualStartJobs(String journeyId);
+    void manualStartJobs(String journeyId, String userId, String userName);
 
     /**
      * manualStopJobs
      *
      * @return
      */
-    void manualStopJobs(String journeyId);
+    void manualStopJobs(String journeyId, String userId, String userName);
 
     /**
      * add deleteJobList

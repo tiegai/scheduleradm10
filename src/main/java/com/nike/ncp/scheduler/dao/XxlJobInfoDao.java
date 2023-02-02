@@ -48,9 +48,9 @@ public interface XxlJobInfoDao {
 
     int autoStopJobs();
 
-    int manualStartJobs(@Param("manualStartJourneyId") String journeyId);
+    int manualStartJobs(@Param("manualStartJourneyId") String journeyId, @Param("manualUserId") String userId);
 
-    int manualStopJobs(@Param("manualStopJourneyId") String journeyId);
+    int manualStopJobs(@Param("manualStopJourneyId") String journeyId, @Param("manualUserId") String userId);
 
     List<String> getCronByJourneyId(@Param("cronJourneyId") String journeyId);
 

@@ -88,6 +88,7 @@ public class SchedulerController {
 
     @ApiOperation("Suspend Job")
     @PatchMapping("/jobs/{journeyId}/suspension")
+    @PermissionLimit(limit = false)
     public ResponseEntity<Void> suspendJourney(@PathVariable(JOURNEY_ID) String journeyId,
                                                @RequestHeader(USER_ID) String userId,
                                                @RequestHeader(USER_NAME) String userName) {
@@ -98,6 +99,7 @@ public class SchedulerController {
 
     @ApiOperation("Resume Job")
     @DeleteMapping("/jobs/{journeyId}/suspension")
+    @PermissionLimit(limit = false)
     public ResponseEntity<Void> resumeJourney(@PathVariable(JOURNEY_ID) String journeyId,
                                               @RequestHeader(USER_ID) String userId,
                                               @RequestHeader(USER_NAME) String userName) {

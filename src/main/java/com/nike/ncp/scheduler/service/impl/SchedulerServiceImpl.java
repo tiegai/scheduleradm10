@@ -22,6 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,11 +35,20 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SchedulerServiceImpl.class);
 
-    @Value("${ncp.engine.url.begin}")
-    private transient String engineUrlBegin;
+    @Value("${ncp.engine.url.start.begin}")
+    private transient String engineUrlStartBegin;
 
-    @Value("${ncp.engine.url.end}")
-    private transient String engineUrlEnd;
+    @Value("${ncp.engine.url.start.end}")
+    private transient String engineUrlStartEnd;
+
+    @Value("${ncp.engine.url}")
+    private transient String engineUrl;
+
+    @Value("${ncp.engine.suspend}")
+    private transient String suspend;
+
+    @Value("${ncp.engine.resume}")
+    private transient String resume;
 
 
     @Value("${ncp.scheduler.executor.job.group}")
@@ -53,6 +66,8 @@ public class SchedulerServiceImpl implements SchedulerService {
     private static final int SIZE_ONE = 1;
 
     private static final int TRIGGER_STATUS_RUN = 1;
+
+    private static final int STATUS_CODE_SUCCESS = 200;
 
     @Override
     @Transactional
@@ -79,7 +94,7 @@ public class SchedulerServiceImpl implements SchedulerService {
         jobInfo.setExecutorBlockStrategy(ConCollections.EXECUTOR_BLOCK_STRATEGY);
         jobInfo.setExecutorHandler(ConCollections.EXECUTOR_HANDLER);
         //jobInfo.setExecutorParam(engineUrl + ConCollections.ENGINE_URL_PARAMS + journeyId);
-        jobInfo.setExecutorParam(engineUrlBegin + journeyId + engineUrlEnd);
+        jobInfo.setExecutorParam(engineUrlStartBegin + journeyId + engineUrlStartEnd);
         String[] times = null;
         List<Date> timesList = new ArrayList<>();
         //once
@@ -179,12 +194,16 @@ public class SchedulerServiceImpl implements SchedulerService {
     @Transactional
     public void manualStartJobs(String journeyId, String userId, String userName) {
         xxlJobInfoDao.manualStartJobs(journeyId, userId);
+        String url = engineUrl + journeyId + resume;
+        httpHandler(url);
     }
 
     @Override
     @Transactional
     public void manualStopJobs(String journeyId, String userId, String userName) {
         xxlJobInfoDao.manualStopJobs(journeyId, userId);
+        String url = engineUrl + journeyId + suspend;
+        httpHandler(url);
     }
 
     @Override
@@ -253,4 +272,68 @@ public class SchedulerServiceImpl implements SchedulerService {
         }
         return response;
     }
+
+    @SuppressWarnings("all")
+    public void httpHandler(String url) {
+
+        System.out.println("EngineUrl:" + url);
+
+        HttpURLConnection connection = null;
+        BufferedReader bufferedReader = null;
+
+        try {
+            // connection
+            URL realUrl = new URL(url);
+            System.out.println("EngineRealUrl:" + realUrl);
+            connection = (HttpURLConnection) realUrl.openConnection();
+
+            // connection setting
+            connection.setRequestMethod("PUT");
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.setUseCaches(false);
+            connection.setReadTimeout(5 * 1000);
+            connection.setConnectTimeout(3 * 1000);
+            connection.setRequestProperty("connection", "Keep-Alive");
+            connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+            connection.setRequestProperty("Accept-Charset", "application/json;charset=UTF-8");
+
+            // do connection
+            connection.connect();
+
+            // valid StatusCode
+            int statusCode = connection.getResponseCode();
+            if (statusCode != STATUS_CODE_SUCCESS) {
+                throw new RuntimeException("Http Request StatusCode(" + statusCode + ") Invalid.");
+            }
+
+            // result
+            bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+            StringBuilder result = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                result.append(line);
+            }
+            String responseMsg = result.toString();
+
+            LOGGER.info(responseMsg);
+
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        } finally {
+            try {
+                if (bufferedReader != null) {
+                    bufferedReader.close();
+                }
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                LOGGER.info("access engine success");
+            } catch (Exception e2) {
+                LOGGER.error(e2.getMessage(), e2);
+            }
+        }
+
+    }
+
 }

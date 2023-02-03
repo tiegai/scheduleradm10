@@ -147,7 +147,14 @@
 		journey_start_time,
 		journey_end_time
 		) VALUES (
-		#{journeyId},
+		<choose>
+			<when test="journeyId != null and journeyId !=''">
+				#{journeyId},
+			</when>
+			<otherwise>
+				date_format(now(), '%Y-%m-%d-%H-%i-%S'),
+			</otherwise>
+		</choose>
 		#{jobGroup},
 		#{jobDesc},
 		#{addTime},

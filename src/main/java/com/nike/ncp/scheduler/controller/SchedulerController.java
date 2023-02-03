@@ -29,9 +29,6 @@ import java.net.URISyntaxException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-import static com.nike.ncp.scheduler.core.model.UserHeader.USER_ID;
-import static com.nike.ncp.scheduler.core.model.UserHeader.USER_NAME;
-
 @Slf4j
 @RestController
 @RequestMapping("/v1/scheduler")
@@ -41,6 +38,8 @@ public class SchedulerController {
     private static final Logger LOGGER = LoggerFactory.getLogger(SchedulerController.class);
 
     public static final String JOURNEY_ID = "journeyId";
+    public static final String USER_ID = "userId";
+    public static final String USER_NAME = "userName";
 
     public static final String DEFAULT_PAGE_SIZE = "20";
 

@@ -7,9 +7,9 @@
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
 <!--            <pattern>%d{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>-->
-            <pattern>LOG=%-5level %date{ISO8601} [%thread] [app=echo-3, version=1.1.76.73, commitId=123412] [traceId=%X{traceId:-}, runId=${INSTANCE_ID}, ctxId=] [method=%M] %class{36}:%L - %msg%n</pattern>
+            <pattern>LOG=%-5level %date{ISO8601} [%thread] [app=scheduler-admin, version=1.0.0, commitId=123412] [traceId=%X{traceId:-}, runId=${INSTANCE_ID}, ctxId=] [method=%M] %class{36}:%L - %msg%n</pattern>
         </encoder>
-    </appender>
+    </appender>s
 
     <!--<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${log.path}</file>

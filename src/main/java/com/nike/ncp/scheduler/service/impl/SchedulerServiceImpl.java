@@ -194,16 +194,18 @@ public class SchedulerServiceImpl implements SchedulerService {
     @Transactional
     public void manualStartJobs(String journeyId, String userId, String userName) {
         xxlJobInfoDao.manualStartJobs(journeyId, userId);
-        String url = engineUrl + journeyId + "/" + userId + "/" + userName + resume;
-        httpHandler(url);
+        //String url = engineUrl + journeyId + "/" + userId + "/" + userName + resume;
+        String url = engineUrl + journeyId + suspend;
+        httpHandlerForSuspend(url, userId, userName);
     }
 
     @Override
     @Transactional
     public void manualStopJobs(String journeyId, String userId, String userName) {
         xxlJobInfoDao.manualStopJobs(journeyId, userId);
-        String url = engineUrl + journeyId + "/" + userId + "/" + userName + suspend;
-        httpHandler(url);
+        //String url = engineUrl + journeyId + "/" + userId + "/" + userName + suspend;
+        String url = engineUrl + journeyId + suspend;
+        httpHandlerForSuspend(url, userId, userName);
     }
 
     @Override
@@ -274,7 +276,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     @SuppressWarnings("all")
-    public void httpHandler(String url) {
+    public void httpHandlerForSuspend(String url, String userId, String userName) {
 
         System.out.println("EngineUrl:" + url);
 
@@ -297,6 +299,8 @@ public class SchedulerServiceImpl implements SchedulerService {
             connection.setRequestProperty("connection", "Keep-Alive");
             connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
             connection.setRequestProperty("Accept-Charset", "application/json;charset=UTF-8");
+            connection.setRequestProperty("userId", userId);
+            connection.setRequestProperty("userName", userName);
 
             // do connection
             connection.connect();

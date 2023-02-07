@@ -105,7 +105,7 @@ public class SchedulerController {
                                               @RequestHeader(USER_NAME) String userName) {
 //        journeyService.resumeJourney(journeyId, UserHeader.builder().userId(userId).userName(userName).build());
         schedulerService.manualStartJobs(journeyId, userId, userName);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     /*@ApiOperation("Manual Start Job")
@@ -129,7 +129,7 @@ public class SchedulerController {
     @PermissionLimit(limit = false)
     public ResponseEntity<Void> deleteJobs(@PathVariable(JOURNEY_ID) String journeyId) {
         schedulerService.deleteJobs(journeyId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     @ApiOperation("Query Job Executor Records")

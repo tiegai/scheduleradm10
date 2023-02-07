@@ -194,7 +194,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     @Transactional
     public void manualStartJobs(String journeyId, String userId, String userName) {
         xxlJobInfoDao.manualStartJobs(journeyId, userId);
-        String url = engineUrl + journeyId + resume;
+        String url = engineUrl + journeyId + "/" + userId + "/" + userName + resume;
         httpHandler(url);
     }
 
@@ -202,7 +202,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     @Transactional
     public void manualStopJobs(String journeyId, String userId, String userName) {
         xxlJobInfoDao.manualStopJobs(journeyId, userId);
-        String url = engineUrl + journeyId + suspend;
+        String url = engineUrl + journeyId + "/" + userId + "/" + userName + suspend;
         httpHandler(url);
     }
 

@@ -58,8 +58,10 @@ public class SchedulerController {
     @PostMapping("/jobs")
     @PermissionLimit(limit = false)
     public ResponseEntity<JourneyNextStart> createJob(HttpServletRequest request,
-                                                      @RequestBody JourneyInfo journeyInfo) throws URISyntaxException {
-        JourneyNextStart journeyNextStart = schedulerService.addJobs(journeyInfo);
+                                                      @RequestBody JourneyInfo journeyInfo,
+                                                      @RequestHeader(USER_ID) String userId,
+                                                      @RequestHeader(USER_NAME) String userName) throws URISyntaxException {
+        JourneyNextStart journeyNextStart = schedulerService.addJobs(journeyInfo, userId, userName);
         return ResponseEntity.created(new URI(request.getRequestURI() + "/")).body(journeyNextStart);
     }
 
@@ -67,8 +69,10 @@ public class SchedulerController {
     @PutMapping("/jobs/{journeyId}")
     @PermissionLimit(limit = false)
     public ResponseEntity<JourneyNextStart> modifyJob(@PathVariable(JOURNEY_ID) String journeyId,
-                                                      @RequestBody JourneyInfo journeyInfo) {
-        JourneyNextStart journeyNextStart = schedulerService.modifyJob(journeyId, journeyInfo);
+                                                      @RequestBody JourneyInfo journeyInfo,
+                                                      @RequestHeader(USER_ID) String userId,
+                                                      @RequestHeader(USER_NAME) String userName) {
+        JourneyNextStart journeyNextStart = schedulerService.modifyJob(journeyId, journeyInfo, userId, userName);
         return ResponseEntity.ok().body(journeyNextStart);
     }
 
@@ -127,8 +131,10 @@ public class SchedulerController {
     @ApiOperation("Delete Job")
     @DeleteMapping("/jobs/{journeyId}")
     @PermissionLimit(limit = false)
-    public ResponseEntity<Void> deleteJobs(@PathVariable(JOURNEY_ID) String journeyId) {
-        schedulerService.deleteJobs(journeyId);
+    public ResponseEntity<Void> deleteJobs(@PathVariable(JOURNEY_ID) String journeyId,
+                                           @RequestHeader(USER_ID) String userId,
+                                           @RequestHeader(USER_NAME) String userName) {
+        schedulerService.deleteJobs(journeyId, userId, userName);
         return ResponseEntity.ok().build();
     }
 
@@ -147,8 +153,10 @@ public class SchedulerController {
     @ApiOperation("Query Job Next Start")
     @GetMapping("/jobs/{journeyId}/nextStart")
     @PermissionLimit(limit = false)
-    public ResponseEntity<JourneyNextStart> queryJobNextStart(@PathVariable(JOURNEY_ID) String journeyId) {
-        JourneyNextStart journeyNextStartResponse = schedulerService.queryJobNextStart(journeyId);
+    public ResponseEntity<JourneyNextStart> queryJobNextStart(@PathVariable(JOURNEY_ID) String journeyId,
+                                                              @RequestHeader(USER_ID) String userId,
+                                                              @RequestHeader(USER_NAME) String userName) {
+        JourneyNextStart journeyNextStartResponse = schedulerService.queryJobNextStart(journeyId, userId, userName);
         return ResponseEntity.ok().body(journeyNextStartResponse);
     }
 }

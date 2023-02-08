@@ -50,7 +50,6 @@ public class SchedulerServiceImpl implements SchedulerService {
     @Value("${ncp.engine.resume}")
     private transient String resume;
 
-
     @Value("${ncp.scheduler.executor.job.group}")
     private transient Integer jobGroup;
 
@@ -72,10 +71,11 @@ public class SchedulerServiceImpl implements SchedulerService {
     @Override
     @Transactional
     @SuppressWarnings("all")
-    public JourneyNextStart addJobs(JourneyInfo journeyInfo) {
+    public JourneyNextStart addJobs(JourneyInfo journeyInfo, String userId, String userName) {
         // add in db
         XxlJobInfo jobInfo = new XxlJobInfo();
         String journeyId = journeyInfo.getJourneyId();
+        LOGGER.info(journeyId + "begin addJobs by " + userId + "and userName is " + userName);
         jobInfo.setJourneyId(journeyId);
         jobInfo.setJobGroup(jobGroup);
         jobInfo.setJobDesc(journeyInfo.getDescription());
@@ -84,28 +84,25 @@ public class SchedulerServiceImpl implements SchedulerService {
         jobInfo.setGlueUpdatetime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(journeyInfo.getModifiedTime())));
         String beginStr = journeyInfo.getPeriodicBegin();
         String endStr = journeyInfo.getPeriodicEnd();
-        /*jobInfo.setJourneyStartTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(beginStr)));
-        jobInfo.setJourneyEndTime(UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(endStr)));*/
-        jobInfo.setAuthor(ConCollections.AUTHOR);
+        jobInfo.setAuthor(userId);
         jobInfo.setScheduleType(ConCollections.SCHEDULE_TYPE);
         jobInfo.setGlueType(ConCollections.GLUE_TYPE);
         jobInfo.setExecutorRouteStrategy(ConCollections.EXECUTOR_ROUTE_STRATEGY);
         jobInfo.setMisfireStrategy(ConCollections.MISFIRE_STRATEGY);
         jobInfo.setExecutorBlockStrategy(ConCollections.EXECUTOR_BLOCK_STRATEGY);
         jobInfo.setExecutorHandler(ConCollections.EXECUTOR_HANDLER);
-        //jobInfo.setExecutorParam(engineUrl + ConCollections.ENGINE_URL_PARAMS + journeyId);
         jobInfo.setExecutorParam(engineUrlStartBegin + journeyId + engineUrlStartEnd);
         String[] times = null;
         List<Date> timesList = new ArrayList<>();
         //once
         if (journeyInfo.getPeriodicType().equals(ConCollections.PERIODIC_ONCE)) {
             if (journeyInfo.getNextStartTime() == null) {
-                throw ApiExceptions.invalidRequest().with(9003, "nextStartTime is null");
+                throw ApiExceptions.invalidRequest().with(9003, journeyId + "nextStartTime is null");
             }
         } else { // not once
             times = journeyInfo.getPeriodicTimes().split(",");
             if (times.length < 1) {
-                throw ApiExceptions.invalidRequest().with(9002, "periodicTimes is error");
+                throw ApiExceptions.invalidRequest().with(9002, journeyId + "periodicTimes is error");
             }
             for (int i = 0; i < times.length; i++) {
                 timesList.add(UtcLocalDateUtil.strToTime(times[i] + ":00"));
@@ -157,12 +154,12 @@ public class SchedulerServiceImpl implements SchedulerService {
         List<String> cronList = xxlJobInfoDao.getCronByJourneyId(journeyId);
         if (journeyInfo.getPeriodicType().equals(ConCollections.PERIODIC_ONCE)) {
             if (cronList.size() != 1) {
-                throw ApiExceptions.invalidRequest().with(9001, "journeyId is duplicate insertion");
+                throw ApiExceptions.invalidRequest().with(9001, journeyId + "journeyId is duplicate insertion");
             }
             response.setNextStartTime(journeyInfo.getNextStartTime());
         } else {
             if (cronList.size() != timesList.size()) {
-                throw ApiExceptions.invalidRequest().with(9001, "journeyId is duplicate insertion");
+                throw ApiExceptions.invalidRequest().with(9001, journeyId + "journeyId is duplicate insertion");
             }
             response.setNextStartTime(CronUtil.cronListNextStart(cronList, UtcLocalDateUtil.strToDate(UtcLocalDateUtil.utcStrToLocalStr(beginStr))));
         }
@@ -172,10 +169,11 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     @Override
     @Transactional
-    public JourneyNextStart modifyJob(String journeyId, JourneyInfo journeyInfo) {
+    public JourneyNextStart modifyJob(String journeyId, JourneyInfo journeyInfo, String userId, String userName) {
+        LOGGER.info(journeyId + "begin modify by " + userId + "and userName is " + userName);
         xxlJobInfoDao.deleteByJourneyId(journeyId);
         journeyInfo.setJourneyId(journeyId);
-        JourneyNextStart journeyNextStart = addJobs(journeyInfo);
+        JourneyNextStart journeyNextStart = addJobs(journeyInfo, userId, userName);
         return journeyNextStart;
     }
 
@@ -193,24 +191,26 @@ public class SchedulerServiceImpl implements SchedulerService {
     @Override
     @Transactional
     public void manualStartJobs(String journeyId, String userId, String userName) {
+        LOGGER.info(journeyId + "begin manual start by " + userId + "and userName is " + userName);
         xxlJobInfoDao.manualStartJobs(journeyId, userId);
         //String url = engineUrl + journeyId + "/" + userId + "/" + userName + resume;
-        String url = engineUrl + journeyId + suspend;
+        String url = engineUrl + journeyId + resume;
         httpHandlerForSuspend(url, userId, userName);
     }
 
     @Override
     @Transactional
     public void manualStopJobs(String journeyId, String userId, String userName) {
+        LOGGER.info(journeyId + "begin manual stop by " + userId + "and userName is " + userName);
         xxlJobInfoDao.manualStopJobs(journeyId, userId);
-        //String url = engineUrl + journeyId + "/" + userId + "/" + userName + suspend;
         String url = engineUrl + journeyId + suspend;
         httpHandlerForSuspend(url, userId, userName);
     }
 
     @Override
     @Transactional
-    public void deleteJobs(String journeyId) {
+    public void deleteJobs(String journeyId, String userId, String userName) {
+        LOGGER.info(journeyId + "begin delete by " + userId + "and userName is " + userName);
         List<String> cronList = xxlJobInfoDao.getCronByJourneyId(journeyId);
         if (cronList.size() < SIZE_ONE) {
             return;
@@ -249,7 +249,8 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     @Override
-    public JourneyNextStart queryJobNextStart(String journeyId) {
+    public JourneyNextStart queryJobNextStart(String journeyId, String userId, String userName) {
+        LOGGER.info(journeyId + "begin queryJobNextStart by " + userId + "and userName is " + userName);
         JourneyNextStart response = new JourneyNextStart();
         response.setJourneyId(journeyId);
         List<XxlJobInfo> jobInfoList = xxlJobInfoDao.getJobsByJourneyId(journeyId);

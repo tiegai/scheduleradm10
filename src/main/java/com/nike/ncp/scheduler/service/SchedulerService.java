@@ -12,7 +12,7 @@ public interface SchedulerService {
      * @param
      * @return
      */
-    JourneyNextStart addJobs(JourneyInfo journeyInfo);
+    JourneyNextStart addJobs(JourneyInfo journeyInfo, String userId, String userName);
 
     /**
      * add modifyJobList
@@ -20,7 +20,7 @@ public interface SchedulerService {
      * @param
      * @return
      */
-    JourneyNextStart modifyJob(String journeyId, JourneyInfo journeyInfo);
+    JourneyNextStart modifyJob(String journeyId, JourneyInfo journeyInfo, String userId, String userName);
 
     /**
      * autoStartJobs
@@ -56,7 +56,7 @@ public interface SchedulerService {
      * @param
      * @return
      */
-    void deleteJobs(String journeyId);
+    void deleteJobs(String journeyId, String userId, String userName);
 
     /**
      * add queryJobExeRecspageList
@@ -71,6 +71,6 @@ public interface SchedulerService {
      *
      * @return
      */
-    JourneyNextStart queryJobNextStart(String journeyId);
+    JourneyNextStart queryJobNextStart(String journeyId, String userId, String userName);
 
 }

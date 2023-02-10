@@ -15,6 +15,7 @@ import com.nike.ncp.scheduler.core.model.XxlJobLog;
 import com.nike.ncp.scheduler.core.model.JourneyLogPage;
 import com.nike.ncp.scheduler.exception.ApiExceptions;
 import com.nike.ncp.scheduler.service.SchedulerService;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@Setter
 public class SchedulerServiceImpl implements SchedulerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SchedulerServiceImpl.class);
@@ -189,7 +191,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void manualStartJobs(String journeyId, String userId, String userName) {
         LOGGER.info(journeyId + "begin manual start by " + userId + "and userName is " + userName);
         xxlJobInfoDao.manualStartJobs(journeyId, userId);
@@ -199,7 +201,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void manualStopJobs(String journeyId, String userId, String userName) {
         LOGGER.info(journeyId + "begin manual stop by " + userId + "and userName is " + userName);
         xxlJobInfoDao.manualStopJobs(journeyId, userId);
@@ -325,6 +327,7 @@ public class SchedulerServiceImpl implements SchedulerService {
 
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException("connection error");
         } finally {
             try {
                 if (bufferedReader != null) {
@@ -336,6 +339,7 @@ public class SchedulerServiceImpl implements SchedulerService {
                 LOGGER.info("access engine success");
             } catch (Exception e2) {
                 LOGGER.error(e2.getMessage(), e2);
+                throw new RuntimeException("disconnect error");
             }
         }
 

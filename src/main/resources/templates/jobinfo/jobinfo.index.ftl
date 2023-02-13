@@ -79,6 +79,7 @@
 				                <thead>
 					            	<tr>
 					            		<th name="id" >${I18n.jobinfo_field_id}</th>
+                                        <th name="journeyId" >${I18n.jobinfo_journey_id}</th>
 					                	<th name="jobGroup" >${I18n.jobinfo_field_jobgroup}</th>
 					                  	<th name="jobDesc" >${I18n.jobinfo_field_jobdesc}</th>
                                         <th name="scheduleType" >${I18n.schedule_type}</th>

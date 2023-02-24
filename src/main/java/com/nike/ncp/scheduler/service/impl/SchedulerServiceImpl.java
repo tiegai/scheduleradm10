@@ -196,8 +196,9 @@ public class SchedulerServiceImpl implements SchedulerService {
         LOGGER.info(journeyId + "begin manual start by " + userId + "and userName is " + userName);
         xxlJobInfoDao.manualStartJobs(journeyId, userId);
         //String url = engineUrl + journeyId + "/" + userId + "/" + userName + resume;
-        String url = engineUrl + journeyId + resume;
-        httpHandlerForSuspend(url, userId, userName);
+        //dont call engine
+        /*String url = engineUrl + journeyId + resume;
+        httpHandlerForSuspend(url, userId, userName);*/
     }
 
     @Override

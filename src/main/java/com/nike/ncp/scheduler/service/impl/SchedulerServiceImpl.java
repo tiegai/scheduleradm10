@@ -14,11 +14,15 @@ import com.nike.ncp.scheduler.core.model.XxlJobInfo;
 import com.nike.ncp.scheduler.core.model.XxlJobLog;
 import com.nike.ncp.scheduler.core.model.JourneyLogPage;
 import com.nike.ncp.scheduler.exception.ApiExceptions;
+import com.nike.ncp.scheduler.service.RestService;
 import com.nike.ncp.scheduler.service.SchedulerService;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +40,9 @@ import java.util.List;
 public class SchedulerServiceImpl implements SchedulerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SchedulerServiceImpl.class);
+
+    @Resource
+    private RestService restService;
 
     @Value("${ncp.engine.url.start.begin}")
     private transient String engineUrlStartBegin;
@@ -69,6 +76,14 @@ public class SchedulerServiceImpl implements SchedulerService {
     private static final int TRIGGER_STATUS_RUN = 1;
 
     private static final int STATUS_CODE_SUCCESS = 200;
+
+    public static final String JOURNEY_ID_REGEX = "\\{journeyId\\}";
+
+    public static final String USER_ID = "userId";
+    public static final String USER_NAME = "userName";
+
+    public SchedulerServiceImpl() {
+    }
 
     @Override
     @Transactional
@@ -206,8 +221,11 @@ public class SchedulerServiceImpl implements SchedulerService {
     public void manualStopJobs(String journeyId, String userId, String userName) {
         LOGGER.info(journeyId + " begin manual stop by " + userId + " and userName is " + userName);
         xxlJobInfoDao.manualStopJobs(journeyId, userId);
-        String url = engineUrl + journeyId + suspend;
-        httpHandlerForSuspend(url, userId, userName);
+        /*String url = engineUrl + journeyId + suspend;
+        httpHandlerForSuspend(url, userId, userName);*/
+        String url = engineUrl + suspend;
+        restTemplateForSuspend(url, userId, userName, journeyId);
+
     }
 
     @Override
@@ -282,7 +300,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     @SuppressWarnings("all")
     public void httpHandlerForSuspend(String url, String userId, String userName) {
 
-        System.out.println("EngineUrl:" + url);
+        LOGGER.info("EngineUrl:" + url);
 
         HttpURLConnection connection = null;
         BufferedReader bufferedReader = null;
@@ -290,7 +308,7 @@ public class SchedulerServiceImpl implements SchedulerService {
         try {
             // connection
             URL realUrl = new URL(url);
-            System.out.println("EngineRealUrl:" + realUrl);
+            LOGGER.info("EngineRealUrl:" + realUrl);
             connection = (HttpURLConnection) realUrl.openConnection();
 
             // connection setting
@@ -344,6 +362,24 @@ public class SchedulerServiceImpl implements SchedulerService {
             }
         }
 
+    }
+
+    @SuppressWarnings("DLS_DEAD_LOCAL_STORE")
+    public void restTemplateForSuspend(String url, String userId, String userName, String journeyId) {
+
+        LOGGER.info("suspend journeyId: " + journeyId);
+
+        HttpHeaders headers = restService.createHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add(USER_ID, userId);
+        headers.add(USER_NAME, userName);
+        try {
+            restService.exchange(url.replaceFirst(JOURNEY_ID_REGEX, journeyId), HttpMethod.PUT, headers, null, null);
+            LOGGER.info(journeyId + " suspend success!");
+        } catch (Exception e) {
+            LOGGER.error("upstream error " + e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
     }
 
 }

@@ -2,6 +2,8 @@ package com.nike.ncp.scheduler.core.util;
 
 
 import org.quartz.CronExpression;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 public final class CronUtil {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CronUtil.class);
 
     private CronUtil() {
 
@@ -27,7 +31,7 @@ public final class CronUtil {
             dateString = dataFormat.format(date);
             //dateString为转换后的日期格式
         } catch (Exception e) {
-            System.out.println("cron获取下次执行时间异常" + e);
+            LOGGER.error("cron get next execute time error " + e);
         }
         return dateString;
     }

@@ -16,6 +16,6 @@ public final class ConCollections {
     public static final String EXECUTOR_ROUTE_STRATEGY = "FIRST";
     public static final String MISFIRE_STRATEGY = "DO_NOTHING";
     public static final String EXECUTOR_BLOCK_STRATEGY = "SERIAL_EXECUTION";
-    public static final String EXECUTOR_HANDLER = "httpJobHandler";
+    public static final String EXECUTOR_HANDLER = "restTemplateJobHandler";
 
 }
